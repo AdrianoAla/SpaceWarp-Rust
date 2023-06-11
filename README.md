@@ -9,3 +9,4 @@ SpaceWarp++ is a full remake of [SpaceWarp](https://github.com/Wam25/SpaceWarp) 
  - Better art *(created by [txtur](https://github.com/txtur))*
  - Texture packs
  - Actual Puzzles
+ - An actual ending
