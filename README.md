@@ -2,7 +2,7 @@
 
 SpaceWarp++ is a full remake of [SpaceWarp](https://github.com/Wam25/SpaceWarp) in [Rust](https://www.rust-lang.org/)
 
-Planned Features:
+### Planned Features:
  - Level editor
  - Better Jumping
  - Better levels
