@@ -33,7 +33,7 @@ async fn main() {
 
             // Debug text
 
-            draw_text(&format!("x: {} y: {}", player.x, player.y), 0.0, 20.0, 30.0, BLACK);
+            draw_text(&format!("x: {} y: {}", player.get_state().0, player.get_state().1), 0.0, 20.0, 30.0, BLACK);
 
             // Draw and update the player
 

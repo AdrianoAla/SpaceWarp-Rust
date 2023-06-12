@@ -30,5 +30,9 @@ pub fn get_tiles() -> Vec<Tile> {
   tiles.push(Tile::new(400.0, 650.0, BLUE));
   tiles.push(Tile::new(600.0, 600.0, BLUE));
 
+  tiles.push(Tile::new(750.0, 600.0, BLUE));
+  tiles.push(Tile::new(750.0, 650.0, BLUE));
+  tiles.push(Tile::new(750.0, 700.0, BLUE));
+
   return tiles;
 }
