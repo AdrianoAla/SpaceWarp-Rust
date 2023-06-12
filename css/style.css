@@ -1,0 +1,27 @@
+body {
+    background-color: #26292a;
+}
+
+h1, p {
+    font-family: "Arial";
+    color: #fff;
+}
+
+h1 {
+    text-align: center;
+}
+
+div {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+main {
+    background-color: #1e2122;
+    padding: 25px;
+}
+
+main canvas {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
