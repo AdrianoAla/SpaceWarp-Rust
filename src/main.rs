@@ -25,25 +25,41 @@ async fn main() {
 
     
     
+    let mut accumulator: f32 = 0.0;
+    let mut frames: u32 = 0;
     loop {
         
         canvas.set_camera();
         {
+            let mut delta_frame_time = get_frame_time();
+            
+            if (delta_frame_time - 1.0/120.0).abs() < 0.0002 {
+                delta_frame_time = 1.0/120.0;
+            }
+            if (delta_frame_time - 1.0/60.0).abs() < 0.0002 {
+                delta_frame_time = 1.0/60.0;
+            }
+            if (delta_frame_time - 1.0/30.0).abs() < 0.0002 {
+                delta_frame_time = 1.0/30.0;
+            } accumulator += delta_frame_time;
+            
+            while accumulator >= 1.0 / 60.0 {
+                player.update();
+                frames += 1;
+                println!("{}", format!("Accumulator: {} Delta Frame Time: {}", accumulator, delta_frame_time));
+                accumulator -= 1.0 / 60.0;
+            }
+           
             
             clear_background(LIGHTGRAY);
 
             // Debug text
 
-            draw_text(&format!("X: {} Y: {}", player.get_state().0, player.get_state().1),     0.0, 20.0, 30.0, BLACK);
-            draw_text(&format!("Can Jump: {}", player.get_state().4),                          0.0, 45.0, 30.0, BLACK);
-            draw_text(&format!("Tiles Loaded: {}", tiles.len()),                               0.0, 70.0, 30.0, BLACK);
-            draw_text(&format!("FPS: {}", get_fps()),                               0.0, 95.0, 30.0, BLACK);
-            draw_text(&format!("Frametime: {}", get_frame_time()),                               0.0, 120.0, 30.0, BLACK);
+            draw_debug_text(&player, &tiles, frames);
 
-            // Draw and update the player
+            // Draw the player
 
             player.draw();
-            player.update();
 
             // Draw all tiles
 
@@ -56,6 +72,8 @@ async fn main() {
             if is_key_pressed(KeyCode::Escape) {
                 break;
             }
+
+            
         }
         
         set_default_camera();
