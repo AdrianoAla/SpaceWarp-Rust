@@ -1,0 +1,28 @@
+name: Build SpaceWarp++
+
+on:
+  push:
+    branches: ["master"]
+  workflow_dispatch:
+
+permissions: write-all
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: cargo rustc --release -- -Clink-args="/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
+
+    - name: Create Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows
+        path: ./target/release/space_warp-rust.exe
