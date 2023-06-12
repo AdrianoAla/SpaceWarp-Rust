@@ -7,6 +7,7 @@ name = "SpaceWarp-Rust"
 version = "0.1.0"
 dependencies = [
  "macroquad",
+ "macroquad-canvas-2d",
 ]
 
 [[package]]
@@ -205,6 +206,15 @@ dependencies = [
  "miniquad",
  "quad-rand",
  "quad-snd",
+]
+
+[[package]]
+name = "macroquad-canvas-2d"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "973ebfd5245833824f15bb6ed2711b986ac876fbe3f777cc840860e05b8247b9"
+dependencies = [
+ "macroquad",
 ]
 
 [[package]]

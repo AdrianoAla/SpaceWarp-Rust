@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 macroquad = "0.3.25"
+macroquad-canvas-2d = "0.2.3"
 
 [[bin]]
 name = "space_warp-rust"

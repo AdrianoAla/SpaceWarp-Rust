@@ -1,25 +1,60 @@
 use macroquad::{prelude::*};
+use macroquad_canvas_2d::*;
+
+mod player;
+use player::Player;
+
+mod utils;
+use utils::*;
+
+mod tile;
+use tile::Tile;
 
 #[macroquad::main("BasicShapes")]
 async fn main() {
+    
+    let canvas = Canvas2D::new(screen_size(), screen_size());
 
-    let screen_size: f32 = 128.0*3.0;
+    // Get the tiles
 
-    request_new_screen_size(screen_size, screen_size);
+    let tiles: Vec<Tile> = get_tiles();
+    
+    // Create a new player
+    
+    let mut player = Player::new(0.0, 0.0, 50.0, 50.0);
+
     
     loop {
         
-        // Ensure size is correct
+        canvas.set_camera();
+        {
+            
+            clear_background(LIGHTGRAY);
 
-        request_new_screen_size(screen_size, screen_size);
+            // Debug text
+
+            draw_text(&format!("x: {} y: {}", player.x, player.y), 0.0, 20.0, 30.0, BLACK);
+
+            // Draw and update the player
+
+            player.draw();
+            player.update();
+
+            // Draw all tiles
+
+            for tile in &tiles {
+                tile.draw();
+            }
+
+            // Break the loop if the escape key is pressed
+
+            if is_key_pressed(KeyCode::Escape) {
+                break;
+            }
+        }
         
-        clear_background(LIGHTGRAY);
-
-        draw_line(40.0, 40.0, 100.0, 200.0, 15.0, BLUE);
-        draw_rectangle(screen_width() / 2.0 - 60.0, 100.0, 120.0, 60.0, GREEN);
-        draw_circle(screen_width() - 30.0, screen_height() - 30.0, 15.0, YELLOW);
-
-        draw_text("HELLO", 0.0, 20.0, 30.0, BLACK);
+        set_default_camera();
+        canvas.draw_to_screen();
 
         next_frame().await
     }
