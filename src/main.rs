@@ -10,7 +10,7 @@ use utils::*;
 mod tile;
 use tile::Tile;
 
-#[macroquad::main("BasicShapes")]
+#[macroquad::main("SpaceWarp: Definitive Edition")]
 async fn main() {
     
     let canvas = Canvas2D::new(screen_size(), screen_size());
@@ -24,6 +24,7 @@ async fn main() {
     let mut player = Player::new(0.0, 0.0, 50.0, 50.0);
 
     
+    
     loop {
         
         canvas.set_camera();
@@ -33,7 +34,11 @@ async fn main() {
 
             // Debug text
 
-            draw_text(&format!("x: {} y: {}", player.get_state().0, player.get_state().1), 0.0, 20.0, 30.0, BLACK);
+            draw_text(&format!("X: {} Y: {}", player.get_state().0, player.get_state().1),     0.0, 20.0, 30.0, BLACK);
+            draw_text(&format!("Can Jump: {}", player.get_state().4),                          0.0, 45.0, 30.0, BLACK);
+            draw_text(&format!("Tiles Loaded: {}", tiles.len()),                               0.0, 70.0, 30.0, BLACK);
+            draw_text(&format!("FPS: {}", get_fps()),                               0.0, 95.0, 30.0, BLACK);
+            draw_text(&format!("Frametime: {}", get_frame_time()),                               0.0, 120.0, 30.0, BLACK);
 
             // Draw and update the player
 

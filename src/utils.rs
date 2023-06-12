@@ -36,3 +36,7 @@ pub fn get_tiles() -> Vec<Tile> {
 
   return tiles;
 }
+
+pub fn delta_time() -> f32 {
+  return 120.0*get_frame_time();
+}

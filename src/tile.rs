@@ -6,6 +6,7 @@ pub struct Tile {
   pub width: f32,
   pub height: f32,
   color: Color,
+  tile_type: i32
 } impl Tile {
   pub fn new(x: f32, y: f32, color: Color) -> Tile {
     Tile {
@@ -14,6 +15,7 @@ pub struct Tile {
       width: 50.0,
       height: 50.0,
       color,
+      tile_type: 0
     }
   }
 
@@ -21,7 +23,7 @@ pub struct Tile {
     draw_rectangle(self.x, self.y, self.width, self.height, self.color);
   }
 
-  pub fn _get_state(&self) -> (f32, f32, f32, f32) {
-    (self.x, self.y, self.width, self.height)
+  pub fn get_state(&self) -> (f32, f32, f32, f32, i32) {
+    (self.x, self.y, self.width, self.height, self.tile_type)
   }
 }

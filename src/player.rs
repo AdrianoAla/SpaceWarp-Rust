@@ -39,7 +39,13 @@ impl Player {
     }
   }
 
+  fn colliding_with_tile(&self, tile: &Tile) -> bool {
+    colliding(self.x, self.y, self.width, self.height, tile.x, tile.y, tile.width, tile.height)
+    && tile.get_state().4 == 0
+  }
+
   pub fn draw(&self) {
+
     draw_rectangle(self.x, self.y, self.width, self.height, RED);
   }
 
@@ -48,9 +54,9 @@ impl Player {
     // Gravity
 
     if self.y + self.height < screen_size() && self.jump == 0.0 {
-      self.y += self.gravity;
+      self.y += self.gravity * delta_time();
       for tile in &self.tiles {
-        if colliding(self.x, self.y, self.width, self.height, tile.x, tile.y, tile.width, tile.height) {
+        if self.colliding_with_tile(tile) {
           self.y = tile.y - self.height;
           self.jump = 0.0;
           self.can_jump = true;
@@ -66,13 +72,13 @@ impl Player {
     }
 
     if self.jump > 0.0 {
-      self.y -= self.jump_speed;
-      self.jump -= 1.0;
+      self.y -= self.jump_speed * delta_time();
+      self.jump -= 1.0 * delta_time();
       
       // see if block right above us
 
       for tile in &self.tiles {
-        if colliding(self.x, self.y-1.0, self.width, self.height, tile.x, tile.y, tile.width, tile.height) {
+        if self.colliding_with_tile(tile) {
           self.jump = 0.0;
         }
       }
@@ -84,28 +90,29 @@ impl Player {
       // Left and right movement
 
       if is_key_down(KeyCode::Right) {
-        self.x += self.speed;
+        self.x += self.speed * delta_time();
         for tile in &self.tiles {
-            if colliding(self.x, self.y, self.width, self.height, tile.x, tile.y, tile.width, tile.height) {
+            if self.colliding_with_tile(tile) {
               //self.x = tile.x - self.width;
-              self.x -= self.speed;
+              self.x -= self.speed * delta_time();
             }
         }
       }
       if is_key_down(KeyCode::Left) {
-        self.x -= self.speed;
+        self.x -= self.speed * delta_time();
         for tile in &self.tiles {
-          if colliding(self.x, self.y, self.width, self.height, tile.x, tile.y, tile.width, tile.height) {
-            //self.x = tile.x + tile.width;
-            self.x += self.speed;
+          if self.colliding_with_tile(tile) {
+            self.x += self.speed * delta_time();
           }
         }
       }
 
+      self.x = self.x.round();
+
   }
 
-  pub fn get_state(&self) -> (f32, f32, f32, f32) {
-    (self.x, self.y, self.width, self.height)
+  pub fn get_state(&self) -> (f32, f32, f32, f32, bool) {
+    (self.x, self.y, self.width, self.height, self.can_jump)
   }
 
 }
