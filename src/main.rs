@@ -12,6 +12,9 @@ use tile::Tile;
 
 #[macroquad::main("SpaceWarp: Definitive Edition")]
 async fn main() {
+
+    load_tiles_from_file();
+    let player_texture = load_texture("./Player.png").await.unwrap();
     
     let canvas = Canvas2D::new(screen_size(), screen_size());
 
@@ -21,7 +24,7 @@ async fn main() {
     
     // Create a new player
     
-    let mut player = Player::new(0.0, 0.0, 50.0, 50.0);
+    let mut player = Player::new(0.0, 0.0, 50.0, 50.0, player_texture);
 
     
     
@@ -46,17 +49,13 @@ async fn main() {
             while accumulator >= 1.0 / 60.0 {
                 player.update();
                 frames += 1;
-                println!("{}", format!("Accumulator: {} Delta Frame Time: {}", accumulator, delta_frame_time));
                 accumulator -= 1.0 / 60.0;
             }
            
             
             clear_background(LIGHTGRAY);
 
-            // Debug text
-
-            draw_debug_text(&player, &tiles, frames);
-
+           
             // Draw the player
 
             player.draw();
@@ -66,6 +65,11 @@ async fn main() {
             for tile in &tiles {
                 tile.draw();
             }
+
+            // Debug text
+
+            draw_debug_text(&player, &tiles, frames);
+
 
             // Break the loop if the escape key is pressed
 

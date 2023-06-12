@@ -16,11 +16,13 @@ pub struct Player {
   jump: f32,
   jump_speed: f32,
   jump_height: f32,
+
+  texture: Texture2D,
   
   tiles: Vec<Tile>,
 }
 impl Player {
-  pub fn new(x: f32, y: f32, width: f32, height: f32) -> Player {
+  pub fn new(x: f32, y: f32, width: f32, height: f32, player_image:Texture2D) -> Player {
     Player {
       x,
       y,
@@ -34,6 +36,8 @@ impl Player {
       jump: 0.0,
       jump_height: 25.0,
       jump_speed: 6.0,
+
+      texture: player_image,
       
       tiles: get_tiles(),
     }
@@ -53,8 +57,8 @@ impl Player {
   }
 
   pub fn draw(&self) {
-
-    draw_rectangle(self.x, self.y, self.width, self.height, RED);
+    draw_texture(self.texture, self.x, self.x, WHITE);
+    //draw_rectangle(self.x, self.y, self.width, self.height, RED);
   }
 
   pub fn update(&mut self) {
