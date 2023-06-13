@@ -32,9 +32,9 @@ pub fn get_collision(x:i32, y:i32) -> i32 {
 pub fn draw_debug_text(player:&Player, fonts:&Fonts) {
 
   // calculate which screen the player is on based on location knowing that one screen is 128x128
-  let screen_x =( player.x + (player.x%screen_size())) / screen_size();
+  let screen_x = (player.x + (player.x%screen_size())) / screen_size();
   let screen_y = (player.y + (player.y%screen_size())) / screen_size();
 
   fonts.draw_text(&format!("{} {}", player.get_state().0, player.get_state().1),       1.0, 3.0, FONT_SIZE, WHITE);
-  fonts.draw_text(&format!("{} {}", screen_x, screen_y), 1.0, 15.0, FONT_SIZE, WHITE)
+  fonts.draw_text(&format!("{} {}", screen_x, screen_y),                               1.0, 13.0, FONT_SIZE, WHITE)
 }

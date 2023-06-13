@@ -9,6 +9,7 @@ pub struct Player {
   height: i32,
   
   speed: i32,
+  moving: bool,
   
   gravity: i32,
   jump: i32,
@@ -17,12 +18,12 @@ pub struct Player {
 
   flip: bool,
 
-  texture: Texture2D,
+  textures: [Texture2D; 3],
 
   
 }
 impl Player {
-  pub fn new(x: i32, y: i32, width: i32, height: i32, player_image:Texture2D) -> Player {
+  pub fn new(x: i32, y: i32, width: i32, height: i32, player_images:[Texture2D; 3]) -> Player {
     Player {
       x,
       y,
@@ -30,6 +31,7 @@ impl Player {
       height,
       
       speed: 1,
+      moving: false,
       
       gravity: 2,
       jump: 0,
@@ -38,20 +40,32 @@ impl Player {
 
       flip: false,
 
-      texture: player_image,
+      textures: player_images,
       
     }
   }
   
-  pub fn draw(&self) {
+  pub fn draw(&self, frame: u64) {
     
     let mut params:DrawTextureParams = Default::default();
     params.flip_x = self.flip;
-
-    draw_texture_ex(self.texture, self.x as f32, self.y as f32, WHITE, params);
+    
+    let mut texture:Texture2D = *self.textures.clone().get(0).unwrap();
+    
+    if self.moving {
+      texture = *self.textures.clone().get((frame%2) as usize).unwrap();
+    }
+    
+    if self.jump > 0 {
+      texture = *self.textures.clone().get(2).unwrap();
+    }
+    
+    draw_texture_ex(texture, self.x as f32, self.y as f32, WHITE, params);
   }
 
   pub fn update(&mut self) {
+
+      self.moving = false;
 
       // Left and right movement
 
@@ -61,6 +75,7 @@ impl Player {
       {
         self.x += self.speed;
         self.flip = false;
+        self.moving = true;
       }
       if is_key_down(KeyCode::Left)
          && get_collision(self.x, self.y+1) != 1
@@ -68,6 +83,7 @@ impl Player {
       {
         self.x -= self.speed;
         self.flip = true;
+        self.moving = true;
       }
 
       // Jumping

@@ -28,8 +28,13 @@ async fn main() {
 
     // Load player textures
 
-    let player_texture = load_texture("assets/player.png").await.unwrap();
-    player_texture.set_filter(FilterMode::Nearest);
+    let mut player_textures:[Texture2D; 3] = [load_texture("assets/player/player_1.png").await.unwrap(); 3];
+    
+    for i in 0..3 {
+        let texture = load_texture(&format!("assets/player/player_{}.png", i+1)).await.unwrap();
+        texture.set_filter(FilterMode::Nearest);
+        player_textures[i] = texture;
+    }
 
     // Create a new canvas
     
@@ -37,11 +42,13 @@ async fn main() {
     
     // Create a new player
     
-    let mut player = Player::new(0, 0, 8, 8, player_texture);
+    let mut player = Player::new(0, 0, 8, 8, player_textures);
 
     
     
     let mut accumulator: f32 = 0.0;
+    let mut frame: u64 = 0;
+    
     loop {
         
         set_camera(&canvas.camera);
@@ -66,6 +73,8 @@ async fn main() {
                 // RUN ALL UPDATE FUNCTIONS HERE
 
                 player.update();
+                
+                frame += 1;
             
             
                 accumulator -= 1.0 / TARGET_FPS as f32;
@@ -77,7 +86,7 @@ async fn main() {
            
             // Draw the player
 
-            player.draw();
+            player.draw(frame);
 
             // Draw level
 
