@@ -1,134 +1,126 @@
 use macroquad::{prelude::*};
 
-use crate::utils::*;
-use crate::tile::Tile;
+use crate::{utils::*};
 
 pub struct Player {
-  pub x: f32,
-  pub y: f32,
-  width: f32,
-  height: f32,
+  pub x: i32,
+  pub y: i32,
+  width: i32,
+  height: i32,
   
-  speed: f32,
+  speed: i32,
   
-  gravity: f32,
-  can_jump: bool,
-  jump: f32,
-  jump_speed: f32,
-  jump_height: f32,
+  gravity: i32,
+  jump: i32,
+  jump_speed: i32,
+  jump_height: i32,
+
+  flip: bool,
 
   texture: Texture2D,
+
   
-  tiles: Vec<Tile>,
 }
 impl Player {
-  pub fn new(x: f32, y: f32, width: f32, height: f32, player_image:Texture2D) -> Player {
+  pub fn new(x: i32, y: i32, width: i32, height: i32, player_image:Texture2D) -> Player {
     Player {
       x,
       y,
       width,
       height,
       
-      speed: 3.4,
+      speed: 1,
       
-      gravity: 6.0,
-      can_jump: false,
-      jump: 0.0,
-      jump_height: 25.0,
-      jump_speed: 6.0,
+      gravity: 2,
+      jump: 0,
+      jump_height: 12,
+      jump_speed: 2,
+
+      flip: false,
 
       texture: player_image,
       
-      tiles: get_tiles(),
     }
   }
-
-  fn colliding_with_tiles(&self) -> bool {
-    for tile in &self.tiles {
-      if colliding(self.x, self.y, self.width, self.height, tile.x, tile.y, tile.width, tile.height) && tile.get_state().4 == 0 {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  fn colliding_with_tile(&self, tile: &Tile) -> bool {
-    colliding(self.x, self.y, self.width, self.height, tile.x, tile.y, tile.width, tile.height) && tile.get_state().4 == 0
-  }
-
+  
   pub fn draw(&self) {
-    draw_texture(self.texture, self.x, self.x, WHITE);
-    //draw_rectangle(self.x, self.y, self.width, self.height, RED);
+    
+    let mut params:DrawTextureParams = Default::default();
+    params.flip_x = self.flip;
+
+    draw_texture_ex(self.texture, self.x as f32, self.y as f32, WHITE, params);
   }
 
   pub fn update(&mut self) {
 
-    // Gravity
-
-    if self.y + self.height < screen_size() && self.jump == 0.0 {
-      self.y += self.gravity;
-      for tile in &self.tiles {
-        if self.colliding_with_tile(tile) {
-          self.y = tile.y - self.height;
-          self.jump = 0.0;
-          self.can_jump = true;
-        }
-        
-      }
-    }
-
-    // Jumping
-
-    if is_key_down(KeyCode::Space) && self.jump == 0.0 && self.can_jump {
-      let mut jump = true;
-      for tile in &self.tiles {
-        if self.colliding_with_tile(tile) {
-          if tile.get_state().1 + tile.get_state().3 > self.y {
-            jump = false;
-          }
-        }
-      }
-      if jump {
-        self.jump = self.jump_height;
-        self.can_jump = false;
-      }
-    }
-
-    if self.jump > 0.0 {
-      self.y -= self.jump_speed;
-      self.jump -= 1.0;
-      
-      // see if block right above us
-
-      if self.colliding_with_tiles() {
-        self.jump = 0.0;
-      }
-      
-    } else if self.jump < 0.0 {
-      self.jump = 0.0;
-    }
-
       // Left and right movement
 
-      if is_key_down(KeyCode::Right) {
+      if is_key_down(KeyCode::Right)
+         && get_collision(self.x+8, self.y+1) != 1
+         && get_collision(self.x+8, self.y+7) != 1 
+      {
         self.x += self.speed;
-        if self.colliding_with_tiles() {
-          self.x -= self.speed;
-        }
+        self.flip = false;
       }
-      if is_key_down(KeyCode::Left) {
+      if is_key_down(KeyCode::Left)
+         && get_collision(self.x, self.y+1) != 1
+         && get_collision(self.x, self.y+7) != 1 
+      {
         self.x -= self.speed;
-        if self.colliding_with_tiles() {
-          self.x += self.speed;
+        self.flip = true;
+      }
+
+      // Jumping
+
+      if (is_key_down(KeyCode::Up) || is_key_down(KeyCode::Space)) && (get_collision(self.x+1, self.y+self.height) == 1 || get_collision(self.x+7, self.y+self.height) == 1)
+      {
+        self.jump = self.jump_height;
+      }
+
+      if get_collision(self.x+1, self.y-1) == 1 || get_collision(self.x+7, self.y-1) == 1
+      {
+
+        // Hit head on ceiling
+
+        self.jump = 0;
+      }
+
+      // Gravity
+
+      for _ in 0..self.gravity {
+        if self.jump == 0 && get_collision(self.x+1, self.y+self.height) != 1 && get_collision(self.x+7, self.y+self.height) != 1
+        {
+          self.y += 1;
         }
       }
 
-      self.x = self.x.round();
+      // Jumping movement
+
+      if self.jump > 0 {
+        self.y -= self.jump_speed;
+        self.jump -= 1;
+      }
+
+
+      // check if exited to the next screen
+
+      if (self.x + self.width/2) > screen_size() {
+        println!("Exit screen right");
+      }
+      if (self.x + self.width/2) < 0 {
+        println!("Exit screen left");
+      }
+      if (self.y + self.height/2) > screen_size() {
+        println!("Exit screen bottom");
+      }
+      if (self.y - self.height/2) < 0 {
+        println!("Exit screen top");
+      }
 
   }
 
-  pub fn get_state(&self) -> (f32, f32, f32, f32, bool) {
-    (self.x, self.y, self.width, self.height, self.can_jump)
+  pub fn get_state(&self) -> (i32, i32, i32, i32, i32) {
+    (self.x, self.y, self.width, self.height, self.jump)
   }
 
 }

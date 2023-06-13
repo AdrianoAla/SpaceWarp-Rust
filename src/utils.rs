@@ -1,38 +1,16 @@
 
-use std::fs::File;
-use std::io::prelude::*;
-use crate::{tile::Tile, player::Player};
+use crate::{player::Player};
 use macroquad::{prelude::*};
+use macroquad_text::Fonts;
+use crate::level::get_level;
 
-pub fn load_tiles_from_file() -> Vec<Tile> {
+const FONT_SIZE: u16 = 8;
 
-  let file_name = "level.sw";
-  let mut file = File::open(file_name).unwrap();
-  let mut contents = String::new();
-  file.read_to_string(&mut contents).unwrap();
-  // separate into vec by newline
-  let lines: Vec<&str> = contents.split("\n").collect();
-  // create new tile for each character in each line
-
-  let mut tiles:Vec<Tile> = Vec::new();
-
-  for (y, line) in lines.iter().enumerate() {
-    for (x, c) in line.chars().enumerate() {
-      if c == '#' {
-        tiles.push(Tile::new(x as f32 * 50.0, y as f32 * 50.0, BLUE));
-      }
-    }
-  }
-
-  return tiles;
-
-}
-
-pub fn screen_size() -> f32 {
-  return 800.0;
+pub fn screen_size() -> i32 {
+  return 128;
 }  
 
-pub fn colliding(x1:f32, y1:f32, w1:f32, h1:f32, x2:f32, y2:f32, w2:f32, h2:f32) -> bool {
+pub fn _colliding(x1:i32, y1:i32, w1:i32, h1:i32, x2:i32, y2:i32, w2:i32, h2:i32) -> bool {
     if x1 < x2 + w2 &&
        x1 + w1 > x2 &&
        y1 < y2 + h2 &&
@@ -42,20 +20,21 @@ pub fn colliding(x1:f32, y1:f32, w1:f32, h1:f32, x2:f32, y2:f32, w2:f32, h2:f32)
     return false;
 }
 
-pub fn get_tiles() -> Vec<Tile> {
-
-  let tiles:Vec<Tile> = load_tiles_from_file();
-
-
-  return tiles;
+pub fn get_collision(x:i32, y:i32) -> i32 {
+  for tile in get_level().get_tiles() {
+    if x >= tile.x && x <= tile.x + tile.width && y >= tile.y && y <= tile.y + tile.height {
+      return tile.get_state().4;
+    }
+  }
+  return -1;
 }
 
-pub fn draw_debug_text(player:&Player, tiles:&Vec<Tile>, frames:u32) {
-  draw_text(&format!("X: {} Y: {}", player.get_state().0, player.get_state().1),       0.0, 20.0, 30.0, BLACK);
-  draw_text(&format!("Can Jump: {}", player.get_state().4),                            0.0, 45.0, 30.0, BLACK);
-  draw_text(&format!("Tiles Loaded: {}", tiles.len()),                                 0.0, 70.0, 30.0, BLACK);
-  draw_text(&format!("FPS: {}", get_fps()),                                            0.0, 95.0, 30.0, BLACK);
-  draw_text(&format!("Frametime: {}", get_frame_time()),                               0.0, 120.0, 30.0, BLACK);
-  draw_text(&format!("Time: {}", get_time()),                                          0.0, 145.0, 30.0, BLACK);
-  draw_text(&format!("Time (FPS): {}", frames/60),                                     0.0, 170.0, 30.0, BLACK);
+pub fn draw_debug_text(player:&Player, fonts:&Fonts) {
+
+  // calculate which screen the player is on based on location knowing that one screen is 128x128
+  let screen_x =( player.x + (player.x%screen_size())) / screen_size();
+  let screen_y = (player.y + (player.y%screen_size())) / screen_size();
+
+  fonts.draw_text(&format!("{} {}", player.get_state().0, player.get_state().1),       1.0, 3.0, FONT_SIZE, WHITE);
+  fonts.draw_text(&format!("{} {}", screen_x, screen_y), 1.0, 15.0, FONT_SIZE, WHITE)
 }

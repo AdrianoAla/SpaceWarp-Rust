@@ -6,8 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+lazy_static = "1.4.0"
 macroquad = "0.3.25"
-macroquad-canvas-2d = "0.2.3"
+macroquad-canvas= "0.3.2"
+macroquad-text = "0.1.1"
 
 [[bin]]
 name = "space_warp-rust"
