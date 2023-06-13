@@ -25,4 +25,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: windows
-        path: ./target/release/
+        path: ./target/release/space_warp-rust.exe
