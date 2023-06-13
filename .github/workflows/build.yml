@@ -18,11 +18,19 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Set up MinGW
+      uses: egor-tensin/setup-mingw@v2
+      with:
+        platform: x64
+
+    - name: Setup
+      run: rustup target add x86_64-pc-windows-gnu
+
     - name: Build
-      run: cargo rustc --release -- -Clink-args="/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
+      run: cargo build --target x86_64-pc-windows-gnu
 
     - name: Create Artifact
       uses: actions/upload-artifact@v3
       with:
         name: windows
-        path: ./target/release/space_warp-rust.exe
+        path: ./target/x86_64-pc-windows-gnu
