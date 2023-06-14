@@ -24,8 +24,14 @@ jobs:
     - name: Move assets
       run: move "assets" "./target/release"
 
-    - name: Move level
-      run: move level.sw "./target/release"
+    - name: Move level (1)
+      run: move level_1.sw "./target/release"
+
+    - name: Move level (2)
+      run: move level_2.sw "./target/release"
+
+    - name: Move level (3)
+      run: move level_3.sw "./target/release"
 
     - name: Create Artifact
       uses: actions/upload-artifact@v3
