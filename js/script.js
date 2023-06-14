@@ -152,10 +152,29 @@ function keyPressed() {
             }
 
             output = output + s + "\n";
-            // print("\"" + s + "\",");
         }
 
         print(output)
         navigator.clipboard.writeText(output);
+    }
+
+    if (key == 'i') {
+        navigator.clipboard.readText().then((clipboardData) => {
+            const rows = clipboardData.trim().split('\n');
+            if (rows.length !== 16) return console.log("Invalid clipboard data: Expected 16 rows.");
+
+            for (let i = 0; i < 16; i++) {
+                const row = rows[i];
+                if (row.length !== 16) return console.log("Invalid clipboard data: Each row should have 16 characters.");
+
+                for (let j = 0; j < 16; j++) {
+                    grid[i][j] = row.charAt(j);
+                }
+            }
+
+            console.log("Data imported from clipboard successfully.");
+        }).catch((error) => {
+            console.log("Failed to read clipboard data:", error);
+        });
     }
 }
