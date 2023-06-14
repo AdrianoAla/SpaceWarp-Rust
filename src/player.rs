@@ -121,19 +121,33 @@ impl Player {
         self.y -= self.jump_speed;
         self.jump -= 1;
       }
-
+      
+      
+      // Check if touching fire
+      
+      if get_collision(self.x+1, self.y+1) == 2 ||
+      get_collision(self.x+7, self.y+1) == 2 ||
+      get_collision(self.x+1, self.y+7) == 2 ||
+      get_collision(self.x+7, self.y+7) == 2 {
+        let spawn_point = get_level().lock().unwrap().get_spawn_location();
+        self.x = spawn_point.0*8;
+        self.y = spawn_point.1*8;
+      }
+      
+      let mut unwrapped_level = get_level().lock().unwrap();
 
       // check if exited to the next screen
 
-      let mut unwrapped_level = get_level().lock().unwrap();
-
       if (self.x + self.width/2) > screen_size() {
+
+        // Exit from right
         if !unwrapped_level.next(3) {
           self.x = screen_size()-self.width/2;
         } else {
           self.x = 0;
         }
       }
+      // Exit from left
       if (self.x + self.width/2) < 0 {
         if !unwrapped_level.next(2) {
           self.x = -self.width/2;
@@ -141,14 +155,16 @@ impl Player {
           self.x = screen_size()-self.width;
         }
       }
-      if (self.y + self.height/2) > screen_size() {
-        //CALLING HERE
+      // Exit from bottom
+      if (self.y) > screen_size() {
         if !unwrapped_level.next(1) {
           self.y = screen_size()-self.height/2;
         } else {
           self.y = self.height;
         }
       }
+
+      // Exit from top
       if (self.y - self.height/2) < 0 {
         if !unwrapped_level.next(0) {
           self.y = self.height/2;

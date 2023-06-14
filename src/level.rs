@@ -11,18 +11,15 @@ pub struct Level {
   pub tiles: Vec<Tile>,
   pub next_levels: Vec<String>,
   pub spawn_point: (i32, i32),
+  pub next_levels_items: Vec<Level>,
 } 
 
 impl Level {
 
-  pub fn new(filename:&str) -> Level {
+  pub fn new(filename:&str) -> Level {load_from_file(filename)}
 
-    load_from_file(filename)
-    
-  }
-
-  pub fn draw(&self) {
-    for tile in &self.tiles {
+  pub fn draw(&mut self) {
+    for tile in &mut self.tiles {
       tile.draw();
     }
   }
@@ -43,11 +40,8 @@ impl Level {
     self.current_file = String::from(new_file);
     self.next_levels = new_level.next_levels;
     self.tiles = new_level.tiles;
-    
-    println!("Spawn point: {:?}", self.spawn_point);
-    println!("Next levels: {:?}", self.next_levels);
-    println!("Current file: {:?}", self.current_file);
-    
+    self.next_levels_items = new_level.next_levels_items;
+
     return true;
     
   }
@@ -73,7 +67,7 @@ pub fn load_from_file(filename:&str) -> Level {
 
     for (y, line) in lines.iter().enumerate() {
       for (x, c) in line.chars().enumerate() {
-        if c == '#' {
+        if c != '⬜' {
           tiles.push(Tile::new((x * 8) as i32, (y * 8) as i32, c));
         }
       }
@@ -93,6 +87,7 @@ pub fn load_from_file(filename:&str) -> Level {
       tiles,
       next_levels,
       spawn_point: (x,y),
+      next_levels_items: Vec::new(),
     }
 }
 
