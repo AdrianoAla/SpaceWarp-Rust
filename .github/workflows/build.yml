@@ -21,8 +21,14 @@ jobs:
     - name: Build
       run: cargo rustc --release -- -Clink-args="/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
 
+    - name: Move assets
+      run: move "assets" "./target/release"
+
+    - name: Move level
+      run: move level.sw "./target/release"
+
     - name: Create Artifact
       uses: actions/upload-artifact@v3
       with:
         name: windows
-        path: ./target/release/space_warp-rust.exe
+        path: ./target/release/
