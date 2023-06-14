@@ -83,7 +83,7 @@ function keyPressed() {
     }
 
     if (key == '1') {
-        currentColor = [255, 154, 0];
+        currentColor = [136,139,153];
         alert("Walls")
     }
 
