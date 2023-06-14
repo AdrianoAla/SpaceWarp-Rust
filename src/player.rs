@@ -1,6 +1,6 @@
 use macroquad::{prelude::*};
 
-use crate::{utils::*};
+use crate::{utils::*, level::{get_level}};
 
 pub struct Player {
   pub x: i32,
@@ -19,16 +19,21 @@ pub struct Player {
   flip: bool,
 
   textures: [Texture2D; 3],
-
-  
 }
 impl Player {
-  pub fn new(x: i32, y: i32, width: i32, height: i32, player_images:[Texture2D; 3]) -> Player {
+  
+  #[tokio::main]
+  pub async fn new() -> Player {
+    
+    let spawn_point = get_level().lock().unwrap().get_spawn_location();
+
+    let textures = get_textures().await;
+  
     Player {
-      x,
-      y,
-      width,
-      height,
+      x: spawn_point.0*8,
+      y: spawn_point.1*8,
+      width:8,
+      height:8,
       
       speed: 1,
       moving: false,
@@ -40,7 +45,7 @@ impl Player {
 
       flip: false,
 
-      textures: player_images,
+      textures,
       
     }
   }
@@ -120,23 +125,57 @@ impl Player {
 
       // check if exited to the next screen
 
+      let mut unwrapped_level = get_level().lock().unwrap();
+
       if (self.x + self.width/2) > screen_size() {
-        println!("Exit screen right");
+        if !unwrapped_level.next(3) {
+          self.x = screen_size()-self.width/2;
+        } else {
+          self.x = 0;
+        }
       }
       if (self.x + self.width/2) < 0 {
-        println!("Exit screen left");
+        if !unwrapped_level.next(2) {
+          self.x = -self.width/2;
+        } else {
+          self.x = screen_size()-self.width;
+        }
       }
       if (self.y + self.height/2) > screen_size() {
-        println!("Exit screen bottom");
+        //CALLING HERE
+        if !unwrapped_level.next(1) {
+          self.y = screen_size()-self.height/2;
+        } else {
+          self.y = self.height;
+        }
       }
       if (self.y - self.height/2) < 0 {
-        println!("Exit screen top");
+        if !unwrapped_level.next(0) {
+          self.y = self.height/2;
+        } else {
+          self.y = screen_size()-self.height;
+        }
       }
 
   }
+
 
   pub fn get_state(&self) -> (i32, i32, i32, i32, i32) {
     (self.x, self.y, self.width, self.height, self.jump)
   }
 
+}
+
+pub async fn get_textures() -> [Texture2D; 3] {
+  // Load player textures
+
+  let mut player_textures:[Texture2D; 3] = [load_texture("assets/player/player_1.png").await.unwrap(); 3];
+    
+  for i in 0..3 {
+      let texture = load_texture(&format!("assets/player/player_{}.png", i+1)).await.unwrap();
+      texture.set_filter(FilterMode::Nearest);
+      player_textures[i] = texture;
+  }
+  
+  player_textures
 }

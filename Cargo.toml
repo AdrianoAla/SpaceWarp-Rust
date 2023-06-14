@@ -10,6 +10,7 @@ lazy_static = "1.4.0"
 macroquad = "0.3.25"
 macroquad-canvas= "0.3.2"
 macroquad-text = "0.1.1"
+tokio = { version = "1.28.2", features = ["full"] }
 
 [[bin]]
 name = "space_warp-rust"

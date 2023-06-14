@@ -149,6 +149,7 @@ impl Canvas2D {
         let t = self.render_target.as_ref().unwrap();
         t.texture.set_filter(FilterMode::Nearest);
         &t.texture
+
     }
 
     /// Returns a mutable reference to the canvas texture.
