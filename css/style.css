@@ -1,9 +1,10 @@
 body {
+    font-family: "Arial";
     background-color: #26292a;
 }
 
-h1, p {
-    font-family: "Arial";
+h1,
+p {
     color: #fff;
 }
 
@@ -24,4 +25,21 @@ main {
 
 main canvas {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+table {
+    width: 100%;
+    color: #ffffff;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
 }
