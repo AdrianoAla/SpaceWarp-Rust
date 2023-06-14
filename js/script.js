@@ -22,6 +22,9 @@ function draw() {
 
             if (grid[j][i] == '#') fill(136, 139, 153)
             else if (grid[j][i] == '!') fill(255, 154, 0)
+            else if (grid[j][i] == '⁉') fill(255, 193, 99)
+            else if (grid[j][i] == '⁈') fill(157, 95, 0)
+            else if (grid[j][i] == '¡') fill(155, 119, 65)
             else if (grid[j][i] == '(') fill(255, 255, 0)
             else if (grid[j][i] == '<') fill(240, 230, 140)
             else if (grid[j][i] == '-') fill(128, 128, 0)
@@ -50,6 +53,9 @@ function draw() {
         else {
             if (currentColor.join(",") === "136,139,153") grid[gy][gx] = '#';
             else if (currentColor.join(",") === "255,154,0") grid[gy][gx] = '!';
+            else if (currentColor.join(",") === "255,193,99") grid[gy][gx] = '⁉';
+            else if (currentColor.join(",") === "157,95,0") grid[gy][gx] = '⁈';
+            else if (currentColor.join(",") === "155,119,65") grid[gy][gx] = '¡';
             else if (currentColor.join(",") === "255,255,0") grid[gy][gx] = '(';
             else if (currentColor.join(",") === "240,230,140") grid[gy][gx] = '<';
             else if (currentColor.join(",") === "128,128,0") grid[gy][gx] = '-';
@@ -69,8 +75,15 @@ function draw() {
 }
 
 function keyPressed() {
+    if (key == 'r' && ["255,154,0", "255,193,99", "157,95,0", "155,119,65"].includes(currentColor.join(","))) {
+        if (currentColor.join(",") === "255,154,0") currentColor = [255, 193, 99];
+        else if (currentColor.join(",") === "255,193,99") currentColor = [157, 95, 0];
+        else if (currentColor.join(",") === "157,95,0") currentColor = [155, 119, 65];
+        else if (currentColor.join(",") === "155,119,65") currentColor = [255, 154, 0];
+    }
+
     if (key == '1') {
-        currentColor = [136, 139, 153];
+        currentColor = [255, 154, 0];
         alert("Walls")
     }
 
