@@ -24,7 +24,7 @@ impl Level {
     
     // separate into vec by newline
     
-    let lines: Vec<&str> = contents.split("\n").collect();
+    let lines: Vec<&str> = contents.lines().collect();
     
     // create new tile for each character in each line
 
@@ -73,7 +73,7 @@ impl Level {
     
     // separate into vec by newline
     
-    let lines: Vec<&str> = contents.split("\n").collect();
+    let lines: Vec<&str> = contents.lines().collect();
     
     // create new tile for each character in each line
 
