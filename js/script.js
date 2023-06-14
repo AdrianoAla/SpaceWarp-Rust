@@ -8,7 +8,7 @@ function setup() {
     for (let i = 0; i < 16; i++) {
         grid.push([])
         for (let j = 0; j < 16; j++) {
-            grid[i].push('.')
+            grid[i].push('⬜')
         }
     }
 }
@@ -20,20 +20,20 @@ function draw() {
         for (let j = 0; j < 16; j++) {
             noStroke();
 
-            if (grid[j][i] == '#') fill(136, 139, 153)
-            else if (grid[j][i] == '!') fill(255, 154, 0)
-            else if (grid[j][i] == '⁉') fill(255, 193, 99)
-            else if (grid[j][i] == '⁈') fill(157, 95, 0)
-            else if (grid[j][i] == '¡') fill(155, 119, 65)
-            else if (grid[j][i] == '(') fill(255, 255, 0)
-            else if (grid[j][i] == '<') fill(240, 230, 140)
-            else if (grid[j][i] == '-') fill(128, 128, 0)
-            else if (grid[j][i] == '[') fill(255, 0, 0)
-            else if (grid[j][i] == '>') fill(220, 20, 60)
-            else if (grid[j][i] == '=') fill(139, 0, 0)
-            else if (grid[j][i] == '{') fill(0, 0, 255)
-            else if (grid[j][i] == '^') fill(0, 191, 255)
-            else if (grid[j][i] == '+') fill(25, 25, 112)
+            if (grid[j][i] == '⬛') fill(136, 139, 153)
+            else if (grid[j][i] == '⬆️') fill(255, 154, 0)
+            else if (grid[j][i] == '⬅️') fill(255, 193, 99)
+            else if (grid[j][i] == '➡️') fill(157, 95, 0)
+            else if (grid[j][i] == '⬇️') fill(155, 119, 65)
+            else if (grid[j][i] == '🟨') fill(255, 255, 0)
+            else if (grid[j][i] == '🟡') fill(240, 230, 140)
+            else if (grid[j][i] == '💛') fill(128, 128, 0)
+            else if (grid[j][i] == '🟥') fill(255, 0, 0)
+            else if (grid[j][i] == '🔴') fill(220, 20, 60)
+            else if (grid[j][i] == '❤️') fill(139, 0, 0)
+            else if (grid[j][i] == '🟦') fill(0, 0, 255)
+            else if (grid[j][i] == '🔵') fill(0, 191, 255)
+            else if (grid[j][i] == '💙') fill(25, 25, 112)
             else fill(255)
 
             rect(i * 25, j * 25, 25, 25);
@@ -49,22 +49,22 @@ function draw() {
     if (gy < 0) gy = 0;
 
     if (mouseIsPressed) {
-        if (eraser) grid[gy][gx] = '.';
+        if (eraser) grid[gy][gx] = '⬜';
         else {
-            if (currentColor.join(",") === "136,139,153") grid[gy][gx] = '#';
-            else if (currentColor.join(",") === "255,154,0") grid[gy][gx] = '!';
-            else if (currentColor.join(",") === "255,193,99") grid[gy][gx] = '⁉';
-            else if (currentColor.join(",") === "157,95,0") grid[gy][gx] = '⁈';
-            else if (currentColor.join(",") === "155,119,65") grid[gy][gx] = '¡';
-            else if (currentColor.join(",") === "255,255,0") grid[gy][gx] = '(';
-            else if (currentColor.join(",") === "240,230,140") grid[gy][gx] = '<';
-            else if (currentColor.join(",") === "128,128,0") grid[gy][gx] = '-';
-            else if (currentColor.join(",") === "255,0,0") grid[gy][gx] = '[';
-            else if (currentColor.join(",") === "220,20,60") grid[gy][gx] = '>';
-            else if (currentColor.join(",") === "139,0,0") grid[gy][gx] = '=';
-            else if (currentColor.join(",") === "0,0,255") grid[gy][gx] = '{';
-            else if (currentColor.join(",") === "0,191,255") grid[gy][gx] = '^';
-            else if (currentColor.join(",") === "25,25,112") grid[gy][gx] = '+';
+            if (currentColor.join(",") === "136,139,153") grid[gy][gx] = '█';
+            else if (currentColor.join(",") === "255,154,0") grid[gy][gx] = '⬆️';
+            else if (currentColor.join(",") === "255,193,99") grid[gy][gx] = '⬅️';
+            else if (currentColor.join(",") === "157,95,0") grid[gy][gx] = '➡️';
+            else if (currentColor.join(",") === "155,119,65") grid[gy][gx] = '⬇️';
+            else if (currentColor.join(",") === "255,255,0") grid[gy][gx] = '🟨';
+            else if (currentColor.join(",") === "240,230,140") grid[gy][gx] = '🟡';
+            else if (currentColor.join(",") === "128,128,0") grid[gy][gx] = '💛';
+            else if (currentColor.join(",") === "255,0,0") grid[gy][gx] = '🟥';
+            else if (currentColor.join(",") === "220,20,60") grid[gy][gx] = '🔴';
+            else if (currentColor.join(",") === "139,0,0") grid[gy][gx] = '❤️';
+            else if (currentColor.join(",") === "0,0,255") grid[gy][gx] = '🟦';
+            else if (currentColor.join(",") === "0,191,255") grid[gy][gx] = '🔵';
+            else if (currentColor.join(",") === "25,25,112") grid[gy][gx] = '💙';
         }
     }
 
