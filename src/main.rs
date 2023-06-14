@@ -20,14 +20,19 @@ const FONT: &[u8] = include_bytes!("../assets/font.ttf");
 #[macroquad::main("SpaceWarp: Definitive Edition")]
 async fn main() {
 
-    // Create a player
-
+    // Create a level
+    
     let level = get_level();
+    
+    // Create a player
 
     let mut player:Player = Player::new();
 
     let mut target_fps: u32 = 30;
     
+    // Load background texture
+
+    let background_texture = load_texture("assets/background.png").await.unwrap();
     
     // Load a font
 
@@ -38,9 +43,12 @@ async fn main() {
     
     let canvas = Canvas2D::new(screen_size() as f32, screen_size() as f32);
 
+    // Debug
+
     let mut accumulator: f32 = 0.0;
     let mut frame: u64 = 0;
     let mut allow_update:bool = false;
+    let mut allow_debug:bool = false;
     
     loop {
         
@@ -64,7 +72,7 @@ async fn main() {
             while accumulator >= 1.0 / target_fps as f32 {
                 
                 // RUN ALL UPDATE FUNCTIONS HERE
-                if allow_update || 1==1 {
+                if allow_update || !allow_debug {
                     
                     allow_update = false;
                     // update the player
@@ -80,7 +88,8 @@ async fn main() {
             
             clear_background(BLACK);
 
-           
+            draw_texture(background_texture, 0.0, 0.0, WHITE);
+
             // Draw the player
             
             player.draw(frame);
@@ -91,7 +100,9 @@ async fn main() {
 
             // Debug text
 
-            draw_debug_text(&fonts, &target_fps, &player);
+            if allow_debug {
+                draw_debug_text(&fonts, &target_fps, &player);
+            }
 
 
             // Break the loop if the escape key is pressed
@@ -109,7 +120,10 @@ async fn main() {
                 target_fps += 5;
             }
             
-            if is_key_pressed(KeyCode::A) {
+            if is_key_pressed(KeyCode::F1) {
+                allow_debug = !allow_debug;
+            }
+            if is_key_pressed(KeyCode::Enter) {
                 allow_update = true
             }
 

@@ -22,7 +22,9 @@ pub fn _colliding(x1:i32, y1:i32, w1:i32, h1:i32, x2:i32, y2:i32, w2:i32, h2:i32
 pub fn get_collision(x:i32, y:i32) -> i32 {
   for tile in get_level().lock().unwrap().tiles.iter() {
     if x >= tile.x && x <= tile.x + tile.width && y >= tile.y && y <= tile.y + tile.height {
-      return tile.get_state().4;
+      if tile.get_state().4 == '#' {
+        return 1;
+      }
     }
   }
   return -1;
