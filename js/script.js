@@ -51,7 +51,7 @@ function draw() {
     if (mouseIsPressed) {
         if (eraser) grid[gy][gx] = '⬜';
         else {
-            if (currentColor.join(",") === "136,139,153") grid[gy][gx] = '█';
+            if (currentColor.join(",") === "136,139,153") grid[gy][gx] = '⬛';
             else if (currentColor.join(",") === "255,154,0") grid[gy][gx] = '⬆️';
             else if (currentColor.join(",") === "255,193,99") grid[gy][gx] = '⬅️';
             else if (currentColor.join(",") === "157,95,0") grid[gy][gx] = '➡️';
