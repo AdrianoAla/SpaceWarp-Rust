@@ -82,7 +82,7 @@ function draw() {
     }
 
     if (eraser) fill(255, 255, 255, 100);
-    else fill(255, 255, 255, 100);
+    else fill(0, 0, 0, 100);
 
     rect(gx * 25, gy * 25, 25, 25);
 }
