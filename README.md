@@ -12,20 +12,20 @@ SpaceWarp++ Level Editor is a web-based tool designed to facilitate the creation
 
 ## Object Legend
 
-| Object        | Color | Key  |
-| ------------- | ------| ---- |
-| Wall          | Color | 1    |
-| Fire          | Color | 2+r  |
-| Yellow door   | Color | 3    |
-| Yellow button | Color | 4    |
-| Yellow key    | Color | 5    |
-| Red door      | Color | 6    |
-| Red button    | Color | 7    |
-| Red key       | Color | 8    |
-| Blue door     | Color | 9    |
-| Blue button   | Color | 0    |
-| Blue key      | Color | -    |
+| Object        | Key  |
+| ------------- | ---- |
+| Wall          | 1    |
+| Fire          | 2+r  |
+| Yellow door   | 3    |
+| Yellow button | 4    |
+| Yellow key    | 5    |
+| Red door      | 6    |
+| Red button    | 7    |
+| Red key       | 8    |
+| Blue door     | 9    |
+| Blue button   | 0    |
+| Blue key      | -    |
 
-Use the legend to identify and place different objects within your level. Each object is associated with a specific color and key value.
+Use the legend to identify and place different objects within your level. Each object is associated with a specific image and key value.
 
 Create unique and challenging levels using the SpaceWarp++ Level Editor!
