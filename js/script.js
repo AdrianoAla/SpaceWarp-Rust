@@ -78,7 +78,7 @@ function draw() {
             if ((selected === '🟨' || selected === '🟥' || selected === '🟦') && (gy > 0 && grid[gy - 1][gx] !== '⬜')) return;
             else if ((gy < 15 && grid[gy + 1][gx] === '🟨') || (gy < 15 && grid[gy + 1][gx] === '🟥') || (gy < 15 && grid[gy + 1][gx] === '🟦')) return;
 
-            if (selected === '⬛') grid[gy][gx] = '⬛';
+            if (selected === '0️⃣') grid[gy][gx] = '0️⃣';
             else if (selected === '1️⃣') grid[gy][gx] = '1️⃣';
             else if (selected === '2️⃣') grid[gy][gx] = '2️⃣';
             else if (selected === '3️⃣') grid[gy][gx] = '3️⃣';
