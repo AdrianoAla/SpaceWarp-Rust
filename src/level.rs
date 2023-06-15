@@ -57,9 +57,16 @@ pub fn load_from_file(filename:&str) -> Level {
     let mut contents = String::new(); 
     file.read_to_string(&mut contents).unwrap();
     
+    // filter out \u{fe0f} and \u{20e3} (aka: extra emoji characters)
+    
+    let filtered_input: String = contents
+        .chars()
+        .filter(|&c| c != '\u{fe0f}' && c != '\u{20e3}')
+        .collect();
+    
     // separate into vec by newline
     
-    let lines: Vec<&str> = contents.lines().collect();
+    let lines: Vec<&str> = filtered_input.lines().collect();
     
     // create new tile for each character in each line
 

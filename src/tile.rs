@@ -20,7 +20,7 @@ pub struct Tile {
     
     if tile_type == '⬛' {
       color = DARKGRAY;
-    } else if tile_type == '⏴' || tile_type == '⏵' || tile_type == '⏷' || tile_type == '⏶' {
+    } else if tile_type == '⬅' || tile_type == '➡' || tile_type == '⬇' || tile_type == '⬆' {
       textures.push(IMAGE_LOADER.get_texture());
     }
 
@@ -37,18 +37,18 @@ pub struct Tile {
   }
 
   pub fn is_fire(&self) -> bool {
-    self.tile_type == '⏴' || self.tile_type == '⏵' || self.tile_type == '⏷' || self.tile_type == '⏶'
+    self.tile_type == '⬅' || self.tile_type == '➡' || self.tile_type == '⬇' || self.tile_type == '⬆'
   }
 
   pub fn get_fire_rotation(&self) -> f32 {
     let mut rotation: f32 = 0.;
-    if self.tile_type == '⏴' {
+    if self.tile_type == '⬆' {
       rotation = PI*1.5;
     }
-    if self.tile_type == '⏵' {
+    if self.tile_type == '➡' {
       rotation = PI/2.;
     }
-    if self.tile_type == '⏷' {
+    if self.tile_type == '⬇' {
       rotation = PI;
     }
     rotation
