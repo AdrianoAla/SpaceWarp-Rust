@@ -1,10 +1,10 @@
 let grid = [];
 let eraser = false;
-let selected = "⬛"
+let selected = "0️⃣"
 let tileImages = {};
 
 function preload() {
-    tileImages['⬛'] = loadImage('img/wall/0.png');
+    tileImages['0️⃣'] = loadImage('img/wall/0.png');
     tileImages['1️⃣'] = loadImage('img/wall/1.png');
     tileImages['2️⃣'] = loadImage('img/wall/2.png');
     tileImages['3️⃣'] = loadImage('img/wall/3.png');
