@@ -111,12 +111,19 @@ function draw() {
     rect(gx * 25, gy * 25, 25, 25);
 }
 
+function keyPressed() {
+    if (key == 'e') {
+        toggleEraser();
+        alert('Eraser ' + eraser);
+    }
+}
+
 function setObject(value) {
     selected = value;
 }
 
 function toggleEraser() {
-    eraser === true ? eraser = false : eraser = true;
+    eraser = !eraser;
 }
 
 function importRoom() {
