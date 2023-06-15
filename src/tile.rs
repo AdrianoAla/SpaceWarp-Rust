@@ -42,7 +42,7 @@ pub struct Tile {
 
   pub fn get_fire_rotation(&self) -> f32 {
     let mut rotation: f32 = 0.;
-    if self.tile_type == '⬆' {
+    if self.tile_type == '⬅' {
       rotation = PI*1.5;
     }
     if self.tile_type == '➡' {
