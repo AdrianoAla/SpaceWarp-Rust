@@ -86,6 +86,7 @@ function draw() {
             else if (selected === '5️⃣') grid[gy][gx] = '5️⃣';
             else if (selected === '6️⃣') grid[gy][gx] = '6️⃣';
             else if (selected === '7️⃣') grid[gy][gx] = '7️⃣';
+            else if (selected === '8️⃣') grid[gy][gx] = '8️⃣';
             else if (selected === '9️⃣') grid[gy][gx] = '9️⃣';
             else if (selected === '🔟') grid[gy][gx] = '🔟';
             else if (selected === '⬆️') grid[gy][gx] = '⬆️';
@@ -122,43 +123,32 @@ function importRoom() {
     navigator.clipboard
     .readText()
     .then((clipboardData) => {
-        const clipboardText = (clipboardData.toString())
-            .replace(/⬆️/g, "⬆")
-            .replace(/⬅️/g, "⬅")
-            .replace(/➡️/g, "➡")
-            .replace(/⬇️/g, "⬇")
-            .replace(/1️⃣/g, "1")
-            .replace(/2️⃣/g, "2")
-            .replace(/3️⃣/g, "3")
-            .replace(/4️⃣/g, "4")
-            .replace(/5️⃣/g, "5")
-            .replace(/6️⃣/g, "6")
-            .replace(/7️⃣/g, "7")
-            .replace(/8️⃣/g, "8")
-            .replace(/9️⃣/g, "9");
+        const clipboardText = Array.from(clipboardData.toString())
+            .filter(c => c !== '\u{fe0f}' && c !== '\u{20e3}')
+            .join('');
 
         const rows = clipboardText.split('\n');
-        // if (rows.length !== 16) return console.log('Invalid clipboard data: Expected 16 rows.');
 
         for (let i = 0; i < 16; i++) {
             const row = rows[i];
-            // if (row.length !== 16) return console.log('Invalid clipboard data: Each row should have 16 characters.');
 
             for (let j = 0; j < 16; j++) {
-                grid[i][j] = row.charAt(j)
-                    .replace('⬆', "⬆️")
-                    .replace('⬅', "⬅️")
-                    .replace('➡', "➡️")
-                    .replace('⬇', "⬇️")
-                    .replace('1', "1️⃣")
-                    .replace('2', "2️⃣")
-                    .replace('3', "3️⃣")
-                    .replace('4', "4️⃣")
-                    .replace('5', "5️⃣")
-                    .replace('6', "6️⃣")
-                    .replace('7', "7️⃣")
-                    .replace('8', "8️⃣")
-                    .replace('9', "9️⃣");
+                const char = [...row][j];
+                grid[i][j] = char
+                    .replace('⬆', '⬆️')
+                    .replace('⬅', '⬅️')
+                    .replace('➡', '➡️')
+                    .replace('⬇', '⬇️')
+                    .replace('0', '0️⃣')
+                    .replace('1', '1️⃣')
+                    .replace('2', '2️⃣')
+                    .replace('3', '3️⃣')
+                    .replace('4', '4️⃣')
+                    .replace('5', '5️⃣')
+                    .replace('6', '6️⃣')
+                    .replace('7', '7️⃣')
+                    .replace('8', '8️⃣')
+                    .replace('9', '9️⃣')
             }
         }
 
