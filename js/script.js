@@ -75,8 +75,8 @@ function draw() {
     if (mouseIsPressed) {
         if (eraser) grid[gy][gx] = '⬜';
         else {
-            if ((selected === '🟨' || selected === '🟥' || selected === '🟦') && ((gy > 0 && grid[gy - 1][gx] !== '⬜') || (gy < 15 && grid[gy + 1][gx] !== '⬜'))) return;
-            else if (((gy > 0 && grid[gy - 1][gx] === '🟨') || (gy < 15 && grid[gy + 1][gx] === '🟨')) || ((gy > 0 && grid[gy - 1][gx] === '🟥') || (gy < 15 && grid[gy + 1][gx] === '🟥')) || ((gy > 0 && grid[gy - 1][gx] === '🟦') || (gy < 15 && grid[gy + 1][gx] === '🟦'))) return;
+            if ((selected === '🟨' || selected === '🟥' || selected === '🟦') && (gy > 0 && grid[gy - 1][gx] !== '⬜')) return;
+            else if ((gy < 15 && grid[gy + 1][gx] === '🟨') || (gy < 15 && grid[gy + 1][gx] === '🟥') || (gy < 15 && grid[gy + 1][gx] === '🟦')) return;
 
             if (selected === '⬛') grid[gy][gx] = '⬛';
             else if (selected === '1️⃣') grid[gy][gx] = '1️⃣';
