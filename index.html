@@ -5,151 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./js/p5.min.js"></script>
     <script src="./js/script.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./css/style.css">
     <title>SpaceWarp (Editor)</title>
 </head>
 <body>
-    <div>
-        <main>
-            <h1>SpaceWarp (Editor)</h1>
-            <p>- E = Toggle eraser</p>
-            <p>- S = Copy level to clipboard</p>
-            <p>- I = Import level from clipboard</p>
-            <table>
-                <tr>
-                    <td>
-                        Object
-                    </td>
-                    <td>
-                        Color
-                    </td>
-                    <td>
-                        Key
-                    </td>
-                <tr>
-                <tr>
-                    <td>
-                        Wall
-                    </td>
-                    <td>
-                        Color
-                    </td>
-                    <td>
-                        1
-                    </td>
-                <tr>
-                <tr>
-                    <td>
-                        Fire
-                    </td>
-                    <td>
-                        Color
-                    </td>
-                    <td>
-                        2 + r
-                    </td>
-                <tr>
-                <tr>
-                    <td>
-                        Yellow door
-                    </td>
-                    <td>
-                        Color
-                    </td>
-                    <td>
-                        3
-                    </td>
-                <tr>
-                <tr>
-                    <td>
-                        Yellow button
-                    </td>
-                    <td>
-                        Color
-                    </td>
-                    <td>
-                        4
-                    </td>
-                <tr>
-                <tr>
-                    <td>
-                        Yellow key
-                    </td>
-                    <td>
-                        Color
-                    </td>
-                    <td>
-                        5
-                    </td>
-                <tr>
-                <tr>
-                    <td>
-                        Red door
-                    </td>
-                    <td>
-                        Color
-                    </td>
-                    <td>
-                        6
-                    </td>
-                <tr>
-                <tr>
-                    <td>
-                        Red button
-                    </td>
-                    <td>
-                        Color
-                    </td>
-                    <td>
-                        7
-                    </td>
-                <tr>
-                <tr>
-                    <td>
-                        Red key
-                    </td>
-                    <td>
-                        Color
-                    </td>
-                    <td>
-                        8
-                    </td>
-                <tr>
-                <tr>
-                    <td>
-                        Blue door
-                    </td>
-                    <td>
-                        Color
-                    </td>
-                    <td>
-                        9
-                    </td>
-                <tr>
-                <tr>
-                    <td>
-                        Blue button
-                    </td>
-                    <td>
-                        Color
-                    </td>
-                    <td>
-                        0
-                    </td>
-                <tr>
-                <tr>
-                    <td>
-                        Blue key
-                    </td>
-                    <td>
-                        Color
-                    </td>
-                    <td>
-                        -
-                    </td>
-                <tr>
-            </table>
-        </main>
+    <div class="main container">
+        <div class="row">
+            <div class="col">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-light btn-first" onclick="importRoom()">Import</button>
+                    <button class="btn btn-light" onclick="exportRoom()">Export</button>
+                    <button class="btn btn-light" onclick="toggleEraser()">Eraser</button>
+                </div>
+                <br>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-secondary" onclick="setObject('⬛')"><img width="16px" height="16px" src="./img/wall/0.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('1️⃣')"><img width="16px" height="16px" src="./img/wall/1.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('2️⃣')"><img width="16px" height="16px" src="./img/wall/2.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('3️⃣')"><img width="16px" height="16px" src="./img/wall/3.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('4️⃣')"><img width="16px" height="16px" src="./img/wall/4.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('5️⃣')"><img width="16px" height="16px" src="./img/wall/5.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('6️⃣')"><img width="16px" height="16px" src="./img/wall/6.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('7️⃣')"><img width="16px" height="16px" src="./img/wall/7.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('8️⃣')"><img width="16px" height="16px" src="./img/wall/8.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('9️⃣')"><img width="16px" height="16px" src="./img/wall/9.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('🔟')"><img width="16px" height="16px" src="./img/wall/10.png"></button>
+                </div>
+                <br>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-info" onclick="setObject('⬆️')"><img width="16px" height="16px" src="./img/fire/up.png"></button>
+                    <button class="btn btn-info" onclick="setObject('⬇️')"><img width="16px" height="16px" src="./img/fire/down.png"></button>
+                    <button class="btn btn-info" onclick="setObject('⬅️')"><img width="16px" height="16px" src="./img/fire/left.png"></button>
+                    <button class="btn btn-info" onclick="setObject('➡️')"><img width="16px" height="16px" src="./img/fire/right.png"></button>
+                </div>
+                <br>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-warning" onclick="setObject('🟨')"><img width="16px" height="16px" src="./img/yellow/door.png"></button>
+                    <button class="btn btn-warning" onclick="setObject('🟡')"><img width="16px" height="16px" src="./img/yellow/button.png"></button>
+                    <button class="btn btn-warning" onclick="setObject('💛')"><img width="16px" height="16px" src="./img/yellow/key.png"></button>
+                </div>
+                <br>
+                <div class="btn-group" role="group" aria-label="Basic example"">
+                    <button class="btn btn-danger" onclick="setObject('🟥')"><img width="16px" height="16px" src="./img/red/door.png"></button>
+                    <button class="btn btn-danger" onclick="setObject('🔴')"><img width="16px" height="16px" src="./img/red/button.png"></button>
+                    <button class="btn btn-danger" onclick="setObject('❤️')"><img width="16px" height="16px" src="./img/red/key.png"></button>
+                </div>
+                <br>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-primary" onclick="setObject('🟦')"><img width="16px" height="16px" src="./img/blue/door.png"></button>
+                    <button class="btn btn-primary" onclick="setObject('🔵')"><img width="16px" height="16px" src="./img/blue/button.png"></button>
+                    <button class="btn btn-primary" onclick="setObject('💙')"><img width="16px" height="16px" src="./img/blue/key.png"></button>
+                </div>
+            </div>
+            <div class="col" id="editor"></div>
+        </div>
     </div>
 </body>
 </html>

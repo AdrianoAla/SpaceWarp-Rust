@@ -1,45 +1,36 @@
 body {
+    color: #fff;
+    text-align: center;
     font-family: "Arial";
     background-color: #26292a;
 }
 
-h1,
-p {
-    color: #fff;
+img {
+    image-rendering: pixelated;
 }
 
-h1 {
-    text-align: center;
-}
-
-div {
-    justify-content: center;
-    align-items: center;
-    display: flex;
-}
-
-main {
+.main {
+    margin-top: 20px;
+    border-radius: 10px;
     background-color: #1e2122;
-    padding: 25px;
 }
 
-main canvas {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+.row > * {
+    padding-left: 0px!important;
+    padding-right: 0px!important;
 }
 
-table {
+.btn-group {
     width: 100%;
-    color: #ffffff;
-    border-collapse: collapse;
 }
 
-th,
-td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+.btn {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
 }
 
-th {
-    background-color: #f2f2f2;
+.btn-first {
+    border-top-left-radius: 10px;
 }
