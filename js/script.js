@@ -15,10 +15,10 @@ function preload() {
     tileImages['8️⃣'] = loadImage('img/editor/wall/8.png');
     tileImages['9️⃣'] = loadImage('img/editor/wall/9.png');
     tileImages['🔟'] = loadImage('img/editor/wall/10.png');
-    tileImages['⬆️'] = loadImage('img/editor/fire/up.png');
-    tileImages['⬅️'] = loadImage('img/editor/fire/left.png');
-    tileImages['➡️'] = loadImage('img/editor/fire/right.png');
-    tileImages['⬇️'] = loadImage('img/editor/fire/down.png');
+    tileImages['👆'] = loadImage('img/editor/fire/up.png');
+    tileImages['👈'] = loadImage('img/editor/fire/left.png');
+    tileImages['👉'] = loadImage('img/editor/fire/right.png');
+    tileImages['👇'] = loadImage('img/editor/fire/down.png');
     tileImages['🟨'] = loadImage('img/editor/yellow/door.png');
     tileImages['🟡'] = loadImage('img/editor/yellow/button.png');
     tileImages['💛'] = loadImage('img/editor/yellow/key.png');
@@ -85,10 +85,10 @@ function draw() {
             else if (selected === '8️⃣') grid[gy][gx] = '8️⃣';
             else if (selected === '9️⃣') grid[gy][gx] = '9️⃣';
             else if (selected === '🔟') grid[gy][gx] = '🔟';
-            else if (selected === '⬆️') grid[gy][gx] = '⬆️';
-            else if (selected === '⬅️') grid[gy][gx] = '⬅️';
-            else if (selected === '➡️') grid[gy][gx] = '➡️';
-            else if (selected === '⬇️') grid[gy][gx] = '⬇️';
+            else if (selected === '👆') grid[gy][gx] = '👆';
+            else if (selected === '👈') grid[gy][gx] = '👈';
+            else if (selected === '👉') grid[gy][gx] = '👉';
+            else if (selected === '👇') grid[gy][gx] = '👇';
             else if (selected === '🟨') grid[gy][gx] = '🟨';
             else if (selected === '🟡') grid[gy][gx] = '🟡';
             else if (selected === '💛') grid[gy][gx] = '💛';
@@ -138,10 +138,10 @@ function importRoom() {
             for (let j = 0; j < 16; j++) {
                 const char = [...row][j];
                 grid[i][j] = char
-                    .replace('⬆', '⬆️')
-                    .replace('⬅', '⬅️')
-                    .replace('➡', '➡️')
-                    .replace('⬇', '⬇️')
+                    .replace('⬆', '👆')
+                    .replace('⬅', '👈')
+                    .replace('➡', '👉')
+                    .replace('⬇', '👇')
                     .replace('0', '0️⃣')
                     .replace('1', '1️⃣')
                     .replace('2', '2️⃣')
