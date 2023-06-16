@@ -4,30 +4,30 @@ let selected = "0️⃣"
 let tileImages = {};
 
 function preload() {
-    tileImages['0️⃣'] = loadImage('img/wall/0.png');
-    tileImages['1️⃣'] = loadImage('img/wall/1.png');
-    tileImages['2️⃣'] = loadImage('img/wall/2.png');
-    tileImages['3️⃣'] = loadImage('img/wall/3.png');
-    tileImages['4️⃣'] = loadImage('img/wall/4.png');
-    tileImages['5️⃣'] = loadImage('img/wall/5.png');
-    tileImages['6️⃣'] = loadImage('img/wall/6.png');
-    tileImages['7️⃣'] = loadImage('img/wall/7.png');
-    tileImages['8️⃣'] = loadImage('img/wall/8.png');
-    tileImages['9️⃣'] = loadImage('img/wall/9.png');
-    tileImages['🔟'] = loadImage('img/wall/10.png');
-    tileImages['⬆️'] = loadImage('img/fire/up.png');
-    tileImages['⬅️'] = loadImage('img/fire/left.png');
-    tileImages['➡️'] = loadImage('img/fire/right.png');
-    tileImages['⬇️'] = loadImage('img/fire/down.png');
-    tileImages['🟨'] = loadImage('img/yellow/door.png');
-    tileImages['🟡'] = loadImage('img/yellow/button.png');
-    tileImages['💛'] = loadImage('img/yellow/key.png');
-    tileImages['🟥'] = loadImage('img/red/door.png');
-    tileImages['🔴'] = loadImage('img/red/button.png');
-    tileImages['❤️'] = loadImage('img/red/key.png');
-    tileImages['🟦'] = loadImage('img/blue/door.png');
-    tileImages['🔵'] = loadImage('img/blue/button.png');
-    tileImages['💙'] = loadImage('img/blue/key.png');
+    tileImages['0️⃣'] = loadImage('img/editor/wall/0.png');
+    tileImages['1️⃣'] = loadImage('img/editor/wall/1.png');
+    tileImages['2️⃣'] = loadImage('img/editor/wall/2.png');
+    tileImages['3️⃣'] = loadImage('img/editor/wall/3.png');
+    tileImages['4️⃣'] = loadImage('img/editor/wall/4.png');
+    tileImages['5️⃣'] = loadImage('img/editor/wall/5.png');
+    tileImages['6️⃣'] = loadImage('img/editor/wall/6.png');
+    tileImages['7️⃣'] = loadImage('img/editor/wall/7.png');
+    tileImages['8️⃣'] = loadImage('img/editor/wall/8.png');
+    tileImages['9️⃣'] = loadImage('img/editor/wall/9.png');
+    tileImages['🔟'] = loadImage('img/editor/wall/10.png');
+    tileImages['⬆️'] = loadImage('img/editor/fire/up.png');
+    tileImages['⬅️'] = loadImage('img/editor/fire/left.png');
+    tileImages['➡️'] = loadImage('img/editor/fire/right.png');
+    tileImages['⬇️'] = loadImage('img/editor/fire/down.png');
+    tileImages['🟨'] = loadImage('img/editor/yellow/door.png');
+    tileImages['🟡'] = loadImage('img/editor/yellow/button.png');
+    tileImages['💛'] = loadImage('img/editor/yellow/key.png');
+    tileImages['🟥'] = loadImage('img/editor/red/door.png');
+    tileImages['🔴'] = loadImage('img/editor/red/button.png');
+    tileImages['❤️'] = loadImage('img/editor/red/key.png');
+    tileImages['🟦'] = loadImage('img/editor/blue/door.png');
+    tileImages['🔵'] = loadImage('img/editor/blue/button.png');
+    tileImages['💙'] = loadImage('img/editor/blue/key.png');
 
 }
 
@@ -69,7 +69,7 @@ function draw() {
 
     if (mouseIsPressed) {
         if (gx < 0 || gx > 15 || gy < 0 || gy > 15) return;
-        if (eraser) grid[gy][gx] = '⬜';
+        else if (eraser) grid[gy][gx] = '⬜';
         else {
             if ((selected === '🟨' || selected === '🟥' || selected === '🟦') && (gy > 0 && grid[gy - 1][gx] !== '⬜')) return;
             else if ((gy < 15 && grid[gy + 1][gx] === '🟨') || (gy < 15 && grid[gy + 1][gx] === '🟥') || (gy < 15 && grid[gy + 1][gx] === '🟦')) return;
@@ -137,6 +137,7 @@ function importRoom() {
 
             for (let j = 0; j < 16; j++) {
                 const char = [...row][j];
+                console.log(char)
                 grid[i][j] = char
                     .replace('⬆', '⬆️')
                     .replace('⬅', '⬅️')
@@ -152,6 +153,7 @@ function importRoom() {
                     .replace('7', '7️⃣')
                     .replace('8', '8️⃣')
                     .replace('9', '9️⃣')
+                    .replace('❤', '❤️');
             }
         }
 
