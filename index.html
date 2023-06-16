@@ -19,7 +19,11 @@
                     <button class="btn btn-light" onclick="exportRoom()">Export</button>
                     <button class="btn btn-light" onclick="toggleEraser()">Eraser</button>
                 </div>
-                <br>
+                <div class="input-group">
+                    <div class="input-group-text" id="forminfo">Spawn</div>
+                    <input id="spawn-x" type="text" class="form-control" placeholder="X" aria-label="Player X" aria-describedby="forminfo">
+                    <input id="spawn-y" type="text" class="form-control" placeholder="Y" aria-label="Player Y">
+                </div>
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <button class="btn btn-secondary" onclick="setObject('0️⃣')"><img width="16px" height="16px" src="./img/icons/wall/0.png"></button>
                     <button class="btn btn-secondary" onclick="setObject('1️⃣')"><img width="16px" height="16px" src="./img/icons/wall/1.png"></button>
@@ -33,26 +37,22 @@
                     <button class="btn btn-secondary" onclick="setObject('9️⃣')"><img width="16px" height="16px" src="./img/icons/wall/9.png"></button>
                     <button class="btn btn-secondary" onclick="setObject('🔟')"><img width="16px" height="16px" src="./img/icons/wall/10.png"></button>
                 </div>
-                <br>
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <button class="btn btn-info" onclick="setObject('⬆️')"><img width="16px" height="16px" src="./img/icons/fire/up.png"></button>
                     <button class="btn btn-info" onclick="setObject('⬇️')"><img width="16px" height="16px" src="./img/icons/fire/down.png"></button>
                     <button class="btn btn-info" onclick="setObject('⬅️')"><img width="16px" height="16px" src="./img/icons/fire/left.png"></button>
                     <button class="btn btn-info" onclick="setObject('➡️')"><img width="16px" height="16px" src="./img/icons/fire/right.png"></button>
                 </div>
-                <br>
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <button class="btn btn-warning" onclick="setObject('🟨')"><img width="16px" height="16px" src="./img/icons/yellow/door.png"></button>
                     <button class="btn btn-warning" onclick="setObject('🟡')"><img width="16px" height="16px" src="./img/icons/yellow/button.png"></button>
                     <button class="btn btn-warning" onclick="setObject('💛')"><img width="16px" height="16px" src="./img/icons/yellow/key.png"></button>
                 </div>
-                <br>
                 <div class="btn-group" role="group" aria-label="Basic example"">
                     <button class="btn btn-danger" onclick="setObject('🟥')"><img width="16px" height="16px" src="./img/icons/red/door.png"></button>
                     <button class="btn btn-danger" onclick="setObject('🔴')"><img width="16px" height="16px" src="./img/icons/red/button.png"></button>
                     <button class="btn btn-danger" onclick="setObject('❤️')"><img width="16px" height="16px" src="./img/icons/red/key.png"></button>
                 </div>
-                <br>
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <button class="btn btn-primary" onclick="setObject('🟦')"><img width="16px" height="16px" src="./img/icons/blue/door.png"></button>
                     <button class="btn btn-primary" onclick="setObject('🔵')"><img width="16px" height="16px" src="./img/icons/blue/button.png"></button>

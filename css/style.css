@@ -24,7 +24,9 @@ img {
     width: 100%;
 }
 
-.btn {
+.btn,
+.form-control,
+.input-group-text {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
     border-bottom-left-radius: 0px;
@@ -33,4 +35,8 @@ img {
 
 .btn-first {
     border-top-left-radius: 10px;
+}
+
+.input-group {
+    display: inline-flex;
 }

@@ -137,7 +137,6 @@ function importRoom() {
 
             for (let j = 0; j < 16; j++) {
                 const char = [...row][j];
-                console.log(char)
                 grid[i][j] = char
                     .replace('⬆', '⬆️')
                     .replace('⬅', '⬅️')
@@ -165,16 +164,16 @@ function importRoom() {
 }
 
 function exportRoom() {
-    output = '';
+    let output = '';
 
     for (let i = 0; i < 16; i++) {
-        s = '';
-        for (let j = 0; j < 16; j++) {
-            s += grid[i][j];
-        }
-
-        output = output + s + '\n';
+        let s = grid[i].join('');
+        output += s + '\n';
     }
+
+    const spawnX = document.getElementById('spawn-x').value;
+    const spawnY = document.getElementById('spawn-y').value;
+    if (spawnX && spawnY) output += '-1\n-1\n-1\n' + spawnX + '\n' + spawnY;
 
     print(output);
     navigator.clipboard.writeText(output);
