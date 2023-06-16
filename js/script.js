@@ -67,12 +67,8 @@ function draw() {
     let gx = int((mouseX - mouseX % 25) / 25);
     let gy = int((mouseY - mouseY % 25) / 25);
 
-    if (gx > 15) gx = 15;
-    if (gx < 0) gx = 0;
-    if (gy > 15) gy = 15;
-    if (gy < 0) gy = 0;
-
     if (mouseIsPressed) {
+        if (gx < 0 || gx > 15 || gy < 0 || gy > 15) return;
         if (eraser) grid[gy][gx] = '⬜';
         else {
             if ((selected === '🟨' || selected === '🟥' || selected === '🟦') && (gy > 0 && grid[gy - 1][gx] !== '⬜')) return;
