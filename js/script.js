@@ -9,7 +9,7 @@ function preload() {
 }
 
 function loadTileImages() {
-    const texturePath = `img/${texturePack}/editor`;
+    const texturePath = `img/${texturePack}`;
 
     const imagePaths = [
         ['⬆️', '/square/top.png'],
@@ -36,12 +36,12 @@ function loadTileImages() {
         ['👇', '/fire/down.png'],
         ['👈', '/fire/left.png'],
         ['👉', '/fire/right.png'],
-        ['🟨', '/yellow/door.png'],
-        ['🟡', '/yellow/button.png'],
-        ['💛', '/yellow/key.png'],
-        ['🟥', '/red/door.png'],
-        ['🔴', '/red/button.png'],
-        ['❤️', '/red/key.png']
+        ['🟨', '/objects/yellow/door.png'],
+        ['🟡', '/objects/yellow/button.png'],
+        ['💛', '/objects/yellow/key.png'],
+        ['🟥', '/objects/red/door.png'],
+        ['🔴', '/objects/red/button.png'],
+        ['❤️', '/objects/red/key.png']
     ];
 
     for (const [tileValue, imagePath] of imagePaths) {
@@ -53,10 +53,14 @@ function setup() {
     const canvas = createCanvas(400, 400);
     canvas.parent('editor');
 
+    background(255);
+
     grid = Array.from({ length: 16 }, () => Array(16).fill('⬜'));
 }
 
 function draw() {
+    background(255);
+
     noStroke();
     noSmooth();
 
@@ -176,16 +180,16 @@ function exportRoom() {
 }
 
 function changeMenu() {
-    const texturePath = `./img/${texturePack}/icons`;
+    const texturePath = `./img/${texturePack}`;
 
     setElement("tiles-image", `${texturePath}/square/top.png`);
     document.getElementById("tiles-text").innerText = texturePack === "natural" ? "Natural" : "Metal";
 
     setMultipleElements("wall-", 20, (i) => `${texturePath}/${getImageName(i)}.png`);
     setMultipleElements("fire-", 4, (i) => `${texturePath}/fire/${getFireImageName(i)}.png`);
-    setMultipleElements("yellow-", 3, (i) => `${texturePath}/yellow/${getObjectImageName(i)}.png`);
-    setMultipleElements("red-", 3, (i) => `${texturePath}/red/${getObjectImageName(i)}.png`);
-    setMultipleElements("blue-", 3, (i) => `${texturePath}/blue/${getObjectImageName(i)}.png`);
+    setMultipleElements("yellow-", 3, (i) => `${texturePath}/objects/yellow/${getObjectImageName(i)}.png`);
+    setMultipleElements("red-", 3, (i) => `${texturePath}/objects/red/${getObjectImageName(i)}.png`);
+    setMultipleElements("blue-", 3, (i) => `${texturePath}/objects/blue/${getObjectImageName(i)}.png`);
 }
 
 function setElement(elementId, imagePath) {
