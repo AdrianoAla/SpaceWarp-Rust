@@ -25,10 +25,10 @@ function preload() {
     tileImages['4️⃣'] = loadImage('img/metal/editor/corner/bottom-left.png');
     tileImages['5️⃣'] = loadImage('img/metal/editor/corner/bottom-right.png');
 
-    tileImages['👆'] = loadImage('img/editor/fire/up.png');
-    tileImages['👇'] = loadImage('img/editor/fire/down.png');
-    tileImages['👈'] = loadImage('img/editor/fire/left.png');
-    tileImages['👉'] = loadImage('img/editor/fire/right.png');
+    tileImages['👆'] = loadImage('img/metal/editor/fire/up.png');
+    tileImages['👇'] = loadImage('img/metal/editor/fire/down.png');
+    tileImages['👈'] = loadImage('img/metal/editor/fire/left.png');
+    tileImages['👉'] = loadImage('img/metal/editor/fire/right.png');
 
     tileImages['🟨'] = loadImage('img/editor/yellow/door.png');
     tileImages['🟡'] = loadImage('img/editor/yellow/button.png');
@@ -166,6 +166,14 @@ function importRoom() {
                     .replace('3', '3️⃣')
                     .replace('4', '4️⃣')
                     .replace('5', '5️⃣')
+                    .replace('⬆', '⬆️')
+                    .replace('⬇', '⬇️')
+                    .replace('⬅', '⬅️')
+                    .replace('➡', '➡️')
+                    .replace('↖', '↖️')
+                    .replace('↗', '↗️')
+                    .replace('↙', '↙️')
+                    .replace('↘', '↘️')
                     .replace('❤', '❤️');
             }
         }
