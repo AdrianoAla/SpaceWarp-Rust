@@ -17,6 +17,7 @@
                 <div class="btn-group" role="group">
                     <button class="btn btn-light btn-first" onclick="importRoom()">Import</button>
                     <button class="btn btn-light" onclick="exportRoom()">Export</button>
+                    <button class="btn btn-light" onclick="ToggleTiles()" ><img id="tiles-image" width="16px" height="16px" src="./img/metal/icons/square/top.png"> <span id="tiles-text">Metal</span></button>
                     <button class="btn btn-light" onclick="toggleEraser()">Eraser</button>
                 </div>
                 <div class="input-group">
@@ -25,47 +26,47 @@
                     <input id="spawn-y" type="text" class="form-control" placeholder="Y" aria-label="Player Y">
                 </div>
                 <div class="btn-group" role="group">
-                    <button class="btn btn-secondary" onclick="setObject('⬆️')"><img width="16px" height="16px" src="./img/metal/icons/square/top.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('⬇️')"><img width="16px" height="16px" src="./img/metal/icons/square/bottom.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('⬅️')"><img width="16px" height="16px" src="./img/metal/icons/square/left.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('➡️')"><img width="16px" height="16px" src="./img/metal/icons/square/right.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('↖️')"><img width="16px" height="16px" src="./img/metal/icons/square/top-left.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('↗️')"><img width="16px" height="16px" src="./img/metal/icons/square/top-right.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('↙️')"><img width="16px" height="16px" src="./img/metal/icons/square/bottom-left.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('↘️')"><img width="16px" height="16px" src="./img/metal/icons/square/bottom-right.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('⏹️')"><img width="16px" height="16px" src="./img/metal/icons/square/center.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('⏪')"><img width="16px" height="16px" src="./img/metal/icons/bottom/left.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('0️⃣')"><img width="16px" height="16px" src="./img/metal/icons/bottom/center.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('⏩')"><img width="16px" height="16px" src="./img/metal/icons/bottom/right.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('⏫')"><img width="16px" height="16px" src="./img/metal/icons/top/top.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('1️⃣')"><img width="16px" height="16px" src="./img/metal/icons/top/center.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('⏬')"><img width="16px" height="16px" src="./img/metal/icons/top/bottom.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('⏺️')"><img width="16px" height="16px" src="./img/metal/icons/single.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('2️⃣')"><img width="16px" height="16px" src="./img/metal/icons/corner/top-left.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('3️⃣')"><img width="16px" height="16px" src="./img/metal/icons/corner/top-right.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('4️⃣')"><img width="16px" height="16px" src="./img/metal/icons/corner/bottom-left.png"></button>
-                    <button class="btn btn-secondary" onclick="setObject('5️⃣')"><img width="16px" height="16px" src="./img/metal/icons/corner/bottom-right.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('⬆️')"><img id="wall-1" width="16px" height="16px" src="./img/metal/icons/square/top.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('⬇️')"><img id="wall-2" width="16px" height="16px" src="./img/metal/icons/square/bottom.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('⬅️')"><img id="wall-3" width="16px" height="16px" src="./img/metal/icons/square/left.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('➡️')"><img id="wall-4" width="16px" height="16px" src="./img/metal/icons/square/right.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('↖️')"><img id="wall-5" width="16px" height="16px" src="./img/metal/icons/square/top-left.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('↗️')"><img id="wall-6" width="16px" height="16px" src="./img/metal/icons/square/top-right.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('↙️')"><img id="wall-7" width="16px" height="16px" src="./img/metal/icons/square/bottom-left.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('↘️')"><img id="wall-8" width="16px" height="16px" src="./img/metal/icons/square/bottom-right.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('⏹️')"><img id="wall-9" width="16px" height="16px" src="./img/metal/icons/square/center.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('⏪')"><img id="wall-10" width="16px" height="16px" src="./img/metal/icons/bottom/left.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('0️⃣')"><img id="wall-11" width="16px" height="16px" src="./img/metal/icons/bottom/center.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('⏩')"><img id="wall-12" width="16px" height="16px" src="./img/metal/icons/bottom/right.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('⏫')"><img id="wall-13" width="16px" height="16px" src="./img/metal/icons/top/top.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('1️⃣')"><img id="wall-14" width="16px" height="16px" src="./img/metal/icons/top/center.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('⏬')"><img id="wall-15" width="16px" height="16px" src="./img/metal/icons/top/bottom.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('⏺️')"><img id="wall-16" width="16px" height="16px" src="./img/metal/icons/single.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('2️⃣')"><img id="wall-17" width="16px" height="16px" src="./img/metal/icons/corner/top-left.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('3️⃣')"><img id="wall-18" width="16px" height="16px" src="./img/metal/icons/corner/top-right.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('4️⃣')"><img id="wall-19" width="16px" height="16px" src="./img/metal/icons/corner/bottom-left.png"></button>
+                    <button class="btn btn-secondary" onclick="setObject('5️⃣')"><img id="wall-20" width="16px" height="16px" src="./img/metal/icons/corner/bottom-right.png"></button>
                 </div>
                 <div class="btn-group" role="group">
-                    <button class="btn btn-info" onclick="setObject('👆')"><img width="16px" height="16px" src="./img/metal/icons/fire/up.png"></button>
-                    <button class="btn btn-info" onclick="setObject('👇')"><img width="16px" height="16px" src="./img/metal/icons/fire/down.png"></button>
-                    <button class="btn btn-info" onclick="setObject('👈')"><img width="16px" height="16px" src="./img/metal/icons/fire/left.png"></button>
-                    <button class="btn btn-info" onclick="setObject('👉')"><img width="16px" height="16px" src="./img/metal/icons/fire/right.png"></button>
+                    <button class="btn btn-info" onclick="setObject('👆')"><img id="fire-1" width="16px" height="16px" src="./img/metal/icons/fire/up.png"></button>
+                    <button class="btn btn-info" onclick="setObject('👇')"><img id="fire-2" width="16px" height="16px" src="./img/metal/icons/fire/down.png"></button>
+                    <button class="btn btn-info" onclick="setObject('👈')"><img id="fire-3" width="16px" height="16px" src="./img/metal/icons/fire/left.png"></button>
+                    <button class="btn btn-info" onclick="setObject('👉')"><img id="fire-4" width="16px" height="16px" src="./img/metal/icons/fire/right.png"></button>
                 </div>
                 <div class="btn-group" role="group">
-                    <button class="btn btn-warning" onclick="setObject('🟨')"><img width="16px" height="16px" src="./img/icons/yellow/door.png"></button>
-                    <button class="btn btn-warning" onclick="setObject('🟡')"><img width="16px" height="16px" src="./img/icons/yellow/button.png"></button>
-                    <button class="btn btn-warning" onclick="setObject('💛')"><img width="16px" height="16px" src="./img/icons/yellow/key.png"></button>
+                    <button class="btn btn-warning" onclick="setObject('🟨')"><img id="yellow-1" width="16px" height="16px" src="./img/metal/icons/yellow/door.png"></button>
+                    <button class="btn btn-warning" onclick="setObject('🟡')"><img id="yellow-2" width="16px" height="16px" src="./img/metal/icons/yellow/button.png"></button>
+                    <button class="btn btn-warning" onclick="setObject('💛')"><img id="yellow-3" width="16px" height="16px" src="./img/metal/icons/yellow/key.png"></button>
                 </div>
                 <div class="btn-group" role="group"">
-                    <button class="btn btn-danger" onclick="setObject('🟥')"><img width="16px" height="16px" src="./img/icons/red/door.png"></button>
-                    <button class="btn btn-danger" onclick="setObject('🔴')"><img width="16px" height="16px" src="./img/icons/red/button.png"></button>
-                    <button class="btn btn-danger" onclick="setObject('❤️')"><img width="16px" height="16px" src="./img/icons/red/key.png"></button>
+                    <button class="btn btn-danger" onclick="setObject('🟥')"><img id="red-1" width="16px" height="16px" src="./img/metal/icons/red/door.png"></button>
+                    <button class="btn btn-danger" onclick="setObject('🔴')"><img id="red-2" width="16px" height="16px" src="./img/metal/icons/red/button.png"></button>
+                    <button class="btn btn-danger" onclick="setObject('❤️')"><img id="red-3" width="16px" height="16px" src="./img/metal/icons/red/key.png"></button>
                 </div>
                 <div class="btn-group" role="group">
-                    <button class="btn btn-primary" onclick="setObject('🟦')"><img width="16px" height="16px" src="./img/icons/blue/door.png"></button>
-                    <button class="btn btn-primary" onclick="setObject('🔵')"><img width="16px" height="16px" src="./img/icons/blue/button.png"></button>
-                    <button class="btn btn-primary" onclick="setObject('💙')"><img width="16px" height="16px" src="./img/icons/blue/key.png"></button>
+                    <button class="btn btn-primary" onclick="setObject('🟦')"><img id="blue-1" width="16px" height="16px" src="./img/metal/icons/blue/door.png"></button>
+                    <button class="btn btn-primary" onclick="setObject('🔵')"><img id="blue-2" width="16px" height="16px" src="./img/metal/icons/blue/button.png"></button>
+                    <button class="btn btn-primary" onclick="setObject('💙')"><img id="blue-3" width="16px" height="16px" src="./img/metal/icons/blue/key.png"></button>
                 </div>
             </div>
             <div class="col" id="editor"></div>

@@ -4,54 +4,56 @@ let selected = "⬆️"
 let tileImages = {};
 let texturePack = "metal";
 
-
 function preload() {
-    tileImages['⬆️'] = loadImage('img/metal/editor/square/top.png');
-    tileImages['⬇️'] = loadImage('img/metal/editor/square/bottom.png');
-    tileImages['⬅️'] = loadImage('img/metal/editor/square/left.png');
-    tileImages['➡️'] = loadImage('img/metal/editor/square/right.png');
-    tileImages['↖️'] = loadImage('img/metal/editor/square/top-left.png');
-    tileImages['↗️'] = loadImage('img/metal/editor/square/top-right.png');
-    tileImages['↙️'] = loadImage('img/metal/editor/square/bottom-left.png');
-    tileImages['↘️'] = loadImage('img/metal/editor/square/bottom-right.png');
-    tileImages['⏹️'] = loadImage('img/metal/editor/square/center.png');
-    tileImages['⏪'] = loadImage('img/metal/editor/bottom/left.png');
-    tileImages['0️⃣'] = loadImage('img/metal/editor/bottom/center.png');
-    tileImages['⏩'] = loadImage('img/metal/editor/bottom/right.png');
-    tileImages['⏫'] = loadImage('img/metal/editor/top/top.png');
-    tileImages['1️⃣'] = loadImage('img/metal/editor/top/center.png');
-    tileImages['⏬'] = loadImage('img/metal/editor/top/bottom.png');
-    tileImages['⏺️'] = loadImage('img/metal/editor/single.png');
-    tileImages['2️⃣'] = loadImage('img/metal/editor/corner/top-left.png');
-    tileImages['3️⃣'] = loadImage('img/metal/editor/corner/top-right.png');
-    tileImages['4️⃣'] = loadImage('img/metal/editor/corner/bottom-left.png');
-    tileImages['5️⃣'] = loadImage('img/metal/editor/corner/bottom-right.png');
+    loadTileImages();
+}
 
-    tileImages['👆'] = loadImage('img/metal/editor/fire/up.png');
-    tileImages['👇'] = loadImage('img/metal/editor/fire/down.png');
-    tileImages['👈'] = loadImage('img/metal/editor/fire/left.png');
-    tileImages['👉'] = loadImage('img/metal/editor/fire/right.png');
+function loadTileImages() {
+    const texturePath = `img/${texturePack}/editor`;
 
-    tileImages['🟨'] = loadImage('img/editor/yellow/door.png');
-    tileImages['🟡'] = loadImage('img/editor/yellow/button.png');
-    tileImages['💛'] = loadImage('img/editor/yellow/key.png');
+    const imagePaths = [
+        ['⬆️', '/square/top.png'],
+        ['⬇️', '/square/bottom.png'],
+        ['⬅️', '/square/left.png'],
+        ['➡️', '/square/right.png'],
+        ['↖️', '/square/top-left.png'],
+        ['↗️', '/square/top-right.png'],
+        ['↙️', '/square/bottom-left.png'],
+        ['↘️', '/square/bottom-right.png'],
+        ['⏹️', '/square/center.png'],
+        ['⏪', '/bottom/left.png'],
+        ['0️⃣', '/bottom/center.png'],
+        ['⏩', '/bottom/right.png'],
+        ['⏫', '/top/top.png'],
+        ['1️⃣', '/top/center.png'],
+        ['⏬', '/top/bottom.png'],
+        ['⏺️', '/single.png'],
+        ['2️⃣', '/corner/top-left.png'],
+        ['3️⃣', '/corner/top-right.png'],
+        ['4️⃣', '/corner/bottom-left.png'],
+        ['5️⃣', '/corner/bottom-right.png'],
+        ['👆', '/fire/up.png'],
+        ['👇', '/fire/down.png'],
+        ['👈', '/fire/left.png'],
+        ['👉', '/fire/right.png'],
+        ['🟨', '/yellow/door.png'],
+        ['🟡', '/yellow/button.png'],
+        ['💛', '/yellow/key.png'],
+        ['🟥', '/red/door.png'],
+        ['🔴', '/red/button.png'],
+        ['❤️', '/red/key.png']
+    ];
 
-    tileImages['🟥'] = loadImage('img/editor/red/door.png');
-    tileImages['🔴'] = loadImage('img/editor/red/button.png');
-    tileImages['❤️'] = loadImage('img/editor/red/key.png');
-
-    tileImages['🟦'] = loadImage('img/editor/blue/door.png');
-    tileImages['🔵'] = loadImage('img/editor/blue/button.png');
-    tileImages['💙'] = loadImage('img/editor/blue/key.png');
+    for (const [tileValue, imagePath] of imagePaths) {
+        tileImages[tileValue] = loadImage(`${texturePath}${imagePath}`);
+    }
 }
 
 function setup() {
     const canvas = createCanvas(400, 400);
     canvas.parent('editor');
 
-    for (let i = 0; i < 16; i++) {
-        grid.push(Array(16).fill('⬜'));
-    }
+    grid = Array.from({ length: 16 }, () => Array(16).fill('⬜'));
 }
 
 function draw() {
@@ -72,13 +74,13 @@ function draw() {
         }
     }
 
-    let gx = int((mouseX - mouseX % 25) / 25);
-    let gy = int((mouseY - mouseY % 25) / 25);
+    const gx = int((mouseX - mouseX % 25) / 25);
+    const gy = int((mouseY - mouseY % 25) / 25);
 
     if (mouseIsPressed) {
         const row = floor(mouseY / (height / grid.length));
         const col = floor(mouseX / (width / grid[0].length));
-        if (row >= 0 && row < grid.length && col >= 0 && col < grid[row].length) {
+        if (isValidCell(row, col)) {
             if ((selected === '🟨' || selected === '🟥' || selected === '🟦') && (gy > 0 && grid[gy - 1][gx] !== '⬜')) return;
             else if ((gy < 15 && grid[gy + 1][gx] === '🟨') || (gy < 15 && grid[gy + 1][gx] === '🟥') || (gy < 15 && grid[gy + 1][gx] === '🟦')) return;
 
@@ -86,12 +88,16 @@ function draw() {
         }
     }
 
-    eraser ? fill(255, 255, 255, 100) : fill(0, 0, 0, 100);
+    fill(eraser ? 255 : 0, eraser ? 255 : 0, eraser ? 255 : 0, 100);
     rect(gx * 25, gy * 25, 25, 25);
 }
 
+function isValidCell(row, col) {
+    return row >= 0 && row < grid.length && col >= 0 && col < grid[row].length;
+}
+
 function keyPressed() {
-    if (key == 'e') {
+    if (key === 'e') {
         toggleEraser();
         alert('Eraser ' + eraser);
     }
@@ -99,6 +105,12 @@ function keyPressed() {
 
 function setObject(value) {
     selected = value;
+}
+
+function ToggleTiles() {
+    texturePack = texturePack === "natural" ? "metal" : "natural";
+    loadTileImages();
+    changeMenu();
 }
 
 function toggleEraser() {
@@ -151,14 +163,58 @@ function exportRoom() {
     let output = '';
 
     for (let i = 0; i < 16; i++) {
-        let s = grid[i].join('');
-        output += s + '\n';
+        const row = grid[i].join('');
+        output += row + '\n';
     }
 
     const spawnX = document.getElementById('spawn-x').value;
     const spawnY = document.getElementById('spawn-y').value;
     if (spawnX && spawnY) output += '-1\n-1\n-1\n' + spawnX + '\n' + spawnY;
 
-    print(output);
+    console.log(output);
     navigator.clipboard.writeText(output);
+}
+
+function changeMenu() {
+    const texturePath = `./img/${texturePack}/icons`;
+
+    setElement("tiles-image", `${texturePath}/square/top.png`);
+    document.getElementById("tiles-text").innerText = texturePack === "natural" ? "Natural" : "Metal";
+
+    setMultipleElements("wall-", 20, (i) => `${texturePath}/${getImageName(i)}.png`);
+    setMultipleElements("fire-", 4, (i) => `${texturePath}/fire/${getFireImageName(i)}.png`);
+    setMultipleElements("yellow-", 3, (i) => `${texturePath}/yellow/${getObjectImageName(i)}.png`);
+    setMultipleElements("red-", 3, (i) => `${texturePath}/red/${getObjectImageName(i)}.png`);
+    setMultipleElements("blue-", 3, (i) => `${texturePath}/blue/${getObjectImageName(i)}.png`);
+}
+
+function setElement(elementId, imagePath) {
+    document.getElementById(elementId).src = imagePath;
+}
+
+function setMultipleElements(elementPrefix, count, imagePathFn) {
+    for (let i = 1; i <= count; i++) {
+        setElement(`${elementPrefix}${i}`, imagePathFn(i));
+    }
+}
+
+function getImageName(index) {
+    const imageNames = [
+        'square/top', 'square/bottom', 'square/left', 'square/right', 'square/top-left',
+        'square/top-right', 'square/bottom-left', 'square/bottom-right', 'square/center',
+        'bottom/left', 'bottom/center', 'bottom/right', 'top/top', 'top/center',
+        'top/bottom', 'single', 'corner/top-left', 'corner/top-right', 'corner/bottom-left',
+        'corner/bottom-right'
+    ];
+    return imageNames[index - 1] || '';
+}
+
+function getFireImageName(index) {
+    const fireImageNames = ['up', 'down', 'left', 'right'];
+    return fireImageNames[index - 1] || '';
+}
+
+function getObjectImageName(index) {
+    const objectImageNames = ['door', 'button', 'key'];
+    return objectImageNames[index - 1] || '';
 }
