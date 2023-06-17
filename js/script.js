@@ -2,6 +2,8 @@ let grid = [];
 let eraser = false;
 let selected = "⬆️"
 let tileImages = {};
+let texturePack = "metal";
+
 
 function preload() {
     tileImages['⬆️'] = loadImage('img/metal/editor/square/top.png');
@@ -41,7 +43,6 @@ function preload() {
     tileImages['🟦'] = loadImage('img/editor/blue/door.png');
     tileImages['🔵'] = loadImage('img/editor/blue/button.png');
     tileImages['💙'] = loadImage('img/editor/blue/key.png');
-
 }
 
 function setup() {
@@ -49,30 +50,24 @@ function setup() {
     canvas.parent('editor');
 
     for (let i = 0; i < 16; i++) {
-        grid.push([]);
-        for (let j = 0; j < 16; j++) {
-            grid[i].push('⬜');
-        }
+        grid.push(Array(16).fill('⬜'));
     }
 }
 
 function draw() {
-    background(220);
+    noStroke();
+    noSmooth();
 
-    for (let i = 0; i < 16; i++) {
-        for (let j = 0; j < 16; j++) {
-            noStroke();
-            noSmooth();
-
-            let tile = grid[j][i];
-            let x = i * 25;
-            let y = j * 25;
-
-            if (tileImages[tile]) {
-                image(tileImages[tile], x, y, 25, 25);
-            } else {
+    const tileSize = width / grid.length;
+    for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[i].length; j++) {
+            const tileX = j * tileSize;
+            const tileY = i * tileSize;
+            const tileValue = grid[i][j];
+            if (tileImages[tileValue]) image(tileImages[tileValue], tileX, tileY, tileSize, tileSize);
+            else {
                 fill(255);
-                rect(x, y, 25, 25);
+                rect(tileX, tileY, tileSize, tileSize);
             }
         }
     }
@@ -81,51 +76,17 @@ function draw() {
     let gy = int((mouseY - mouseY % 25) / 25);
 
     if (mouseIsPressed) {
-        if (gx < 0 || gx > 15 || gy < 0 || gy > 15) return;
-        else if (eraser) grid[gy][gx] = '⬜';
-        else {
+        const row = floor(mouseY / (height / grid.length));
+        const col = floor(mouseX / (width / grid[0].length));
+        if (row >= 0 && row < grid.length && col >= 0 && col < grid[row].length) {
             if ((selected === '🟨' || selected === '🟥' || selected === '🟦') && (gy > 0 && grid[gy - 1][gx] !== '⬜')) return;
             else if ((gy < 15 && grid[gy + 1][gx] === '🟨') || (gy < 15 && grid[gy + 1][gx] === '🟥') || (gy < 15 && grid[gy + 1][gx] === '🟦')) return;
 
-            if (selected === '⬆️') grid[gy][gx] = '⬆️';
-            else if (selected === '⬇️') grid[gy][gx] = '⬇️';
-            else if (selected === '⬅️') grid[gy][gx] = '⬅️';
-            else if (selected === '➡️') grid[gy][gx] = '➡️';
-            else if (selected === '↖️') grid[gy][gx] = '↖️';
-            else if (selected === '↗️') grid[gy][gx] = '↗️';
-            else if (selected === '↙️') grid[gy][gx] = '↙️';
-            else if (selected === '↘️') grid[gy][gx] = '↘️';
-            else if (selected === '⏹️') grid[gy][gx] = '⏹️';
-            else if (selected === '⏪') grid[gy][gx] = '⏪';
-            else if (selected === '0️⃣') grid[gy][gx] = '0️⃣';
-            else if (selected === '⏩') grid[gy][gx] = '⏩';
-            else if (selected === '⏫') grid[gy][gx] = '⏫';
-            else if (selected === '1️⃣') grid[gy][gx] = '1️⃣';
-            else if (selected === '⏬') grid[gy][gx] = '⏬';
-            else if (selected === '⏺️') grid[gy][gx] = '⏺️';
-            else if (selected === '2️⃣') grid[gy][gx] = '2️⃣';
-            else if (selected === '3️⃣') grid[gy][gx] = '3️⃣';
-            else if (selected === '4️⃣') grid[gy][gx] = '4️⃣';
-            else if (selected === '5️⃣') grid[gy][gx] = '5️⃣';
-            else if (selected === '👆') grid[gy][gx] = '👆';
-            else if (selected === '👇') grid[gy][gx] = '👇';
-            else if (selected === '👈') grid[gy][gx] = '👈';
-            else if (selected === '👉') grid[gy][gx] = '👉';
-            else if (selected === '🟨') grid[gy][gx] = '🟨';
-            else if (selected === '🟡') grid[gy][gx] = '🟡';
-            else if (selected === '💛') grid[gy][gx] = '💛';
-            else if (selected === '🟥') grid[gy][gx] = '🟥';
-            else if (selected === '🔴') grid[gy][gx] = '🔴';
-            else if (selected === '❤️') grid[gy][gx] = '❤️';
-            else if (selected === '🟦') grid[gy][gx] = '🟦';
-            else if (selected === '🔵') grid[gy][gx] = '🔵';
-            else if (selected === '💙') grid[gy][gx] = '💙';
+            grid[row][col] = eraser ? '⬜' : selected;
         }
     }
 
-    if (eraser) fill(255, 255, 255, 100);
-    else fill(0, 0, 0, 100);
-
+    eraser ? fill(255, 255, 255, 100) : fill(0, 0, 0, 100);
     rect(gx * 25, gy * 25, 25, 25);
 }
 
@@ -174,6 +135,7 @@ function importRoom() {
                     .replace('↗', '↗️')
                     .replace('↙', '↙️')
                     .replace('↘', '↘️')
+                    .replace('⏹', '⏹️')
                     .replace('❤', '❤️');
             }
         }
