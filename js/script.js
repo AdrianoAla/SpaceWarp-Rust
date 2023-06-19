@@ -41,7 +41,10 @@ function loadTileImages() {
         ['💛', '/objects/yellow/key.png'],
         ['🟥', '/objects/red/door.png'],
         ['🔴', '/objects/red/button.png'],
-        ['❤️', '/objects/red/key.png']
+        ['❤️', '/objects/red/key.png'],
+        ['🟦', '/objects/blue/door.png'],
+        ['🔵', '/objects/blue/button.png'],
+        ['💙', '/objects/blue/key.png']
     ];
 
     for (const [tileValue, imagePath] of imagePaths) {
