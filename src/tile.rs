@@ -1,7 +1,7 @@
 use std::f32::consts::PI;
 
 use macroquad::{prelude::*};
-use lazy_static::lazy_static;
+// use lazy_static::lazy_static;
 
 pub struct Tile {
   pub x: i32,
@@ -13,15 +13,18 @@ pub struct Tile {
   textures: Vec<Texture2D>
 } impl Tile {
   
-  pub fn new(x: i32, y: i32, tile_type:char) -> Tile {
+  pub fn new(x: i32, y: i32, mut tile_type:char) -> Tile {
 
     let mut color:Color = WHITE;
     let mut textures = Vec::new();
+    // let mut tile_type = tile_type;
     
     if tile_type == '⬛' {
-      color = DARKGRAY;
+      textures.push(ImageLoader::new("assets/packs/metal/tiles/square/center.png").get_texture());
     } else if tile_type == '⬅' || tile_type == '➡' || tile_type == '⬇' || tile_type == '⬆' {
-      textures.push(IMAGE_LOADER.get_texture());
+      textures.push(ImageLoader::new("assets/packs/metal/objects/fire.png").get_texture());
+    } else {
+      tile_type = '⬜';
     }
 
 
@@ -36,6 +39,10 @@ pub struct Tile {
     }
   }
 
+  pub fn is_object(&self) -> bool {
+    self.tile_type != '⬜'
+  }
+  
   pub fn is_fire(&self) -> bool {
     self.tile_type == '⬅' || self.tile_type == '➡' || self.tile_type == '⬇' || self.tile_type == '⬆'
   }
@@ -55,7 +62,7 @@ pub struct Tile {
   }
 
   pub fn draw(&mut self) {
-    if self.is_fire() {
+    if self.is_object() {
       let params:DrawTextureParams = DrawTextureParams {  rotation: self.get_fire_rotation(), ..Default::default() };
       draw_texture_ex(*self.textures.get(0).unwrap(), self.x as f32, self.y as f32, WHITE, params);
     } else {
@@ -85,6 +92,6 @@ impl ImageLoader {
   }
 }
 
-lazy_static! {
-  static ref IMAGE_LOADER: ImageLoader = ImageLoader::new("assets/fire.png");
-}
+// lazy_static! {
+//   static ref IMAGE_LOADER: ImageLoader = ImageLoader::new("assets/fire.png");
+// }
