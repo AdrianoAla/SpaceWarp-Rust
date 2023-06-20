@@ -1,7 +1,7 @@
 use std::f32::consts::PI;
 
 use macroquad::{prelude::*};
-// use lazy_static::lazy_static;
+use lazy_static::lazy_static;
 
 pub struct Tile {
   pub x: i32,
@@ -17,12 +17,11 @@ pub struct Tile {
 
     let mut color:Color = WHITE;
     let mut textures = Vec::new();
-    // let mut tile_type = tile_type;
     
     if tile_type == '⬛' {
-      textures.push(ImageLoader::new("assets/packs/metal/tiles/square/center.png").get_texture());
+      textures.push(IMAGE_WALL.get_texture());
     } else if tile_type == '⬅' || tile_type == '➡' || tile_type == '⬇' || tile_type == '⬆' {
-      textures.push(ImageLoader::new("assets/packs/metal/objects/fire.png").get_texture());
+      textures.push(IMAGE_FIRE.get_texture());
     } else {
       tile_type = '⬜';
     }
@@ -92,6 +91,7 @@ impl ImageLoader {
   }
 }
 
-// lazy_static! {
-//   static ref IMAGE_LOADER: ImageLoader = ImageLoader::new("assets/fire.png");
-// }
+lazy_static! {
+  static ref IMAGE_FIRE: ImageLoader = ImageLoader::new("assets/packs/metal/objects/fire.png");
+  static ref IMAGE_WALL: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/center.png");
+}
