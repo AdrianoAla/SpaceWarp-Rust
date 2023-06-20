@@ -139,6 +139,8 @@ function importRoom() {
 
             for (let j = 0; j < 16; j++) {
                 const char = [...row][j];
+                console.log(char)
+
                 grid[i][j] = char
                     .replace('0', '0️⃣')
                     .replace('1', '1️⃣')
@@ -155,6 +157,7 @@ function importRoom() {
                     .replace('↙', '↙️')
                     .replace('↘', '↘️')
                     .replace('⏹', '⏹️')
+                    .replace('⏺', '⏺️')
                     .replace('❤', '❤️');
             }
         }
