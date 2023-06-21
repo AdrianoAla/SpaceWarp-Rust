@@ -5,13 +5,7 @@ let selectedElement = "recent-1";
 let tileImages = {};
 let texturePack = "metal";
 let menuCheck = false;
-let recent = [
-    "⬆️",
-    "⬇️",
-    "⬅️",
-    "➡️"
-];
-
+let recent = ["⬆️", "⬇️", "⬅️", "➡️"];
 let texturePath = `img/${texturePack}`;
 
 function preload() {
@@ -89,8 +83,8 @@ function draw() {
         }
     }
 
-    const gx = int((mouseX - mouseX % 25) / 25);
-    const gy = int((mouseY - mouseY % 25) / 25);
+    const gx = int((mouseX - mouseX % 50) / 25);
+    const gy = int((mouseY - mouseY % 50) / 25);
 
     if (mouseIsPressed && !menuCheck) {
         const row = floor(mouseY / (height / grid.length));
