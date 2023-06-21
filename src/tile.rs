@@ -15,7 +15,7 @@ pub struct Tile {
   
   pub fn new(x: i32, y: i32, mut tile_type:char) -> Tile {
 
-    let mut color:Color = WHITE;
+    let color:Color = WHITE;
     let mut textures = Vec::new();
     
     if tile_type == '⬛' {
@@ -63,7 +63,7 @@ pub struct Tile {
   pub fn draw(&mut self) {
     if self.is_object() {
       let params:DrawTextureParams = DrawTextureParams {  rotation: self.get_fire_rotation(), ..Default::default() };
-      draw_texture_ex(*self.textures.get(0).unwrap(), self.x as f32, self.y as f32, WHITE, params);
+      draw_texture_ex(*self.textures.get(0).unwrap(), self.x as f32, self.y as f32, self.color, params);
     } else {
       draw_rectangle(self.x as f32, self.y as f32, self.width as f32, self.height as f32, self.color);
     }
