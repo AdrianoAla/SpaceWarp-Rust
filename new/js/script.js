@@ -83,14 +83,16 @@ function draw() {
         }
     }
 
-    const gx = int((mouseX - mouseX % 50) / 25);
-    const gy = int((mouseY - mouseY % 50) / 25);
+    const gx = int((mouseX - mouseX % 50) / 50);
+    const gy = int((mouseY - mouseY % 50) / 50);
 
     if (mouseIsPressed && !menuCheck) {
         const row = floor(mouseY / (height / grid.length));
         const col = floor(mouseX / (width / grid[0].length));
 
         if (isValidCell(row, col)) {
+            console.log(gx, gy, grid[gy - 1][gx])
+
             if ((selected === '🟨' || selected === '🟥' || selected === '🟦') && (gy > 0 && grid[gy - 1][gx] !== '⬜')) return;
             else if ((gy < 15 && grid[gy + 1][gx] === '🟨') || (gy < 15 && grid[gy + 1][gx] === '🟥') || (gy < 15 && grid[gy + 1][gx] === '🟦')) return;
 
@@ -100,7 +102,7 @@ function draw() {
 
     if (!menuCheck) {
         fill(eraser ? 255 : 0, eraser ? 255 : 0, eraser ? 255 : 0, 100);
-        rect(gx * 25, gy * 25, 50, 50);
+        rect(gx * 50, gy * 50, 50, 50);
     }
 }
 
@@ -307,18 +309,18 @@ function toggleMenu() {
     }
 }
 
-// function audio() {
-//     const audio = document.getElementById("music");
+function audio() {
+    const audio = document.getElementById("music");
 
-//     audio.play();
-//     audio.loop = true;
+    audio.play();
+    audio.loop = true;
 
-//     audio.volume = 0.3;
-// }
+    audio.volume = 0.3;
+}
 
 document.addEventListener('keydown', function(event) {
     if (event.code === 'KeyE') toggleEraser();
 });
 
 refreshMenu();
-// audio();
+audio();
