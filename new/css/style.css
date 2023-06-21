@@ -128,3 +128,7 @@ br {
 .last {
     margin-right: 15px
 }
+
+.hidden {
+    display: none;
+}

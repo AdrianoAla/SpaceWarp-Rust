@@ -108,10 +108,6 @@ function isValidCell(row, col) {
     return row >= 0 && row < grid.length && col >= 0 && col < grid[row].length;
 }
 
-function keyPressed() {
-    if (key === 'e') toggleEraser();
-}
-
 function setObject(value, id) {
     selected = !isNaN(value) ? recent[value] : value;
 
@@ -311,4 +307,18 @@ function toggleMenu() {
     }
 }
 
+// function audio() {
+//     const audio = document.getElementById("music");
+
+//     audio.play();
+//     audio.loop = true;
+
+//     audio.volume = 0.3;
+// }
+
+document.addEventListener('keydown', function(event) {
+    if (event.code === 'KeyE') toggleEraser();
+});
+
 refreshMenu();
+// audio();
