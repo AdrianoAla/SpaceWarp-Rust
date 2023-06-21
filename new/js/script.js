@@ -104,8 +104,10 @@ function draw() {
         }
     }
 
-    fill(eraser ? 255 : 0, eraser ? 255 : 0, eraser ? 255 : 0, 100);
-    rect(gx * 25, gy * 25, 50, 50);
+    if (!menuCheck) {
+        fill(eraser ? 255 : 0, eraser ? 255 : 0, eraser ? 255 : 0, 100);
+        rect(gx * 25, gy * 25, 50, 50);
+    }
 }
 
 function isValidCell(row, col) {
