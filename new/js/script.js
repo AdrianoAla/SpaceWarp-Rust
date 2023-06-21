@@ -115,10 +115,7 @@ function isValidCell(row, col) {
 }
 
 function keyPressed() {
-    if (key === 'e') {
-        toggleEraser();
-        alert('Eraser ' + eraser);
-    }
+    if (key === 'e') toggleEraser();
 }
 
 function setObject(value, id) {
@@ -216,9 +213,9 @@ function exportRoom() {
         output += row + '\n';
     }
 
-    const spawnX = document.getElementById('spawn-x').value;
-    const spawnY = document.getElementById('spawn-y').value;
-    if (spawnX && spawnY) output += '-1\n-1\n-1\n' + spawnX + '\n' + spawnY;
+    // const spawnX = document.getElementById('spawn-x').value;
+    // const spawnY = document.getElementById('spawn-y').value;
+    // if (spawnX && spawnY) output += '-1\n-1\n-1\n' + spawnX + '\n' + spawnY;
 
     console.log(output);
     navigator.clipboard.writeText(output);
@@ -309,31 +306,20 @@ function getPath(value) {
 }
 
 function toggleMenu() {
+    const menuButton = document.getElementById("menuButton");
     const menu = document.getElementById("menu");
 
     if (menuCheck) {
         setElement("menuButton", "./img/menu/down.png");
+        menuButton.classList.remove("selected");
         menu.style.display = "none";
         menuCheck = false;
     } else {
         setElement("menuButton", "./img/menu/up.png");
+        menuButton.classList.add("selected");
         menu.style.display = "block";
         menuCheck = true;
     }
-}
-
-function openMenu() {
-    const menu = document.getElementById("menu");
-    menu.style.display = "block";
-
-    menuCheck = true;
-}
-
-function closeMenu() {
-    const menu = document.getElementById("menu");
-    menu.style.display = "none";
-
-    menuCheck = false;
 }
 
 refreshMenu();
