@@ -169,7 +169,6 @@ function importRoom() {
 
             for (let j = 0; j < 16; j++) {
                 const char = [...row][j];
-                console.log(char)
 
                 grid[i][j] = char
                     .replace('0', '0️⃣')
@@ -207,18 +206,13 @@ function exportRoom() {
         output += row + '\n';
     }
 
-    // const spawnX = document.getElementById('spawn-x').value;
-    // const spawnY = document.getElementById('spawn-y').value;
-    // if (spawnX && spawnY) output += '-1\n-1\n-1\n' + spawnX + '\n' + spawnY;
-
     console.log(output);
     navigator.clipboard.writeText(output);
 }
 
 function changePack() {
-    setElement("tiles", `./img/menu/${texturePack}.png`);
-
     refreshMenu();
+    setElement("tiles", `./img/menu/${texturePack}.png`);
     setMultipleElements("wall-", 20, (i) => `${texturePath}/${getImageName(i)}.png`);
     setMultipleElements("default-wall-", 4, (i) => `${texturePath}/${getImageName(i)}.png`);
     setMultipleElements("fire-", 4, (i) => `${texturePath}/fire/${getFireImageName(i)}.png`);
@@ -229,13 +223,11 @@ function changePack() {
 }
 
 function setElement(elementId, imagePath) {
-    (document.getElementById(elementId).querySelector("img")).src = imagePath;
+    document.getElementById(elementId).querySelector("img").src = imagePath;
 }
 
 function setMultipleElements(elementPrefix, count, imagePathFn) {
-    for (let i = 1; i <= count; i++) {
-        setElement(`${elementPrefix}${i}`, imagePathFn(i));
-    }
+    for (let i = 1; i <= count; i++) setElement(`${elementPrefix}${i}`, imagePathFn(i));
 }
 
 function getImageName(index) {
@@ -246,16 +238,19 @@ function getImageName(index) {
         'top/bottom', 'single', 'corner/top-left', 'corner/top-right', 'corner/bottom-left',
         'corner/bottom-right'
     ];
+
     return imageNames[index - 1] || '';
 }
 
 function getFireImageName(index) {
     const fireImageNames = ['up', 'down', 'left', 'right'];
+
     return fireImageNames[index - 1] || '';
 }
 
 function getObjectImageName(index) {
     const objectImageNames = ['door', 'button', 'key'];
+
     return objectImageNames[index - 1] || '';
 }
 
@@ -294,7 +289,7 @@ function getPath(value) {
         "🟦": "objects/blue/door",
         "🔵": "objects/blue/button",
         "💙": "objects/blue/key"
-    }
+    };
 
     return `${texturePath}/${paths[value]}.png`;
 }
