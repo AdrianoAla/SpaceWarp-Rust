@@ -308,6 +308,20 @@ function getPath(value) {
     return `${texturePath}/${paths[value]}.png`;
 }
 
+function toggleMenu() {
+    const menu = document.getElementById("menu");
+
+    if (menuCheck) {
+        setElement("menuButton", "./img/menu/down.png");
+        menu.style.display = "none";
+        menuCheck = false;
+    } else {
+        setElement("menuButton", "./img/menu/up.png");
+        menu.style.display = "block";
+        menuCheck = true;
+    }
+}
+
 function openMenu() {
     const menu = document.getElementById("menu");
     menu.style.display = "block";
