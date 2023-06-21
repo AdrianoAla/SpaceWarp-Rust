@@ -61,7 +61,7 @@ function loadTileImages() {
 }
 
 function setup() {
-    const canvas = createCanvas(400, 400);
+    const canvas = createCanvas(800, 800);
     canvas.parent('editor');
 
     background(255);
@@ -105,7 +105,7 @@ function draw() {
     }
 
     fill(eraser ? 255 : 0, eraser ? 255 : 0, eraser ? 255 : 0, 100);
-    rect(gx * 25, gy * 25, 25, 25);
+    rect(gx * 25, gy * 25, 50, 50);
 }
 
 function isValidCell(row, col) {
