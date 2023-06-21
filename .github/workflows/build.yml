@@ -33,6 +33,9 @@ jobs:
     - name: Move level (3)
       run: move level_3.sw "./target/release"
 
+    - name: Move level (4)
+      run: move level_4.sw "./target/release"
+
     - name: Create Artifact
       uses: actions/upload-artifact@v3
       with:
