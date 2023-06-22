@@ -1,16 +1,18 @@
 let grid = [];
 let eraser = false;
-let selected = "⬆️"
+let selected = "⬆️";
+let selectedElement = "recent-1";
 let tileImages = {};
 let texturePack = "metal";
+let menuCheck = false;
+let recent = ["⬆️", "⬇️", "⬅️", "➡️"];
+let texturePath = `img/${texturePack}`;
 
 function preload() {
     loadTileImages();
 }
 
 function loadTileImages() {
-    const texturePath = `img/${texturePack}`;
-
     const imagePaths = [
         ['⬆️', '/square/top.png'],
         ['⬇️', '/square/bottom.png'],
@@ -53,7 +55,7 @@ function loadTileImages() {
 }
 
 function setup() {
-    const canvas = createCanvas(400, 400);
+    const canvas = createCanvas(800, 800);
     canvas.parent('editor');
 
     background(255);
@@ -81,13 +83,16 @@ function draw() {
         }
     }
 
-    const gx = int((mouseX - mouseX % 25) / 25);
-    const gy = int((mouseY - mouseY % 25) / 25);
+    const gx = int((mouseX - mouseX % 50) / 50);
+    const gy = int((mouseY - mouseY % 50) / 50);
 
-    if (mouseIsPressed) {
+    if (mouseIsPressed && !menuCheck) {
         const row = floor(mouseY / (height / grid.length));
         const col = floor(mouseX / (width / grid[0].length));
+
         if (isValidCell(row, col)) {
+            console.log(gx, gy, grid[gy - 1][gx])
+
             if ((selected === '🟨' || selected === '🟥' || selected === '🟦') && (gy > 0 && grid[gy - 1][gx] !== '⬜')) return;
             else if ((gy < 15 && grid[gy + 1][gx] === '🟨') || (gy < 15 && grid[gy + 1][gx] === '🟥') || (gy < 15 && grid[gy + 1][gx] === '🟦')) return;
 
@@ -95,32 +100,55 @@ function draw() {
         }
     }
 
-    fill(eraser ? 255 : 0, eraser ? 255 : 0, eraser ? 255 : 0, 100);
-    rect(gx * 25, gy * 25, 25, 25);
+    if (!menuCheck) {
+        fill(eraser ? 255 : 0, eraser ? 255 : 0, eraser ? 255 : 0, 100);
+        rect(gx * 50, gy * 50, 50, 50);
+    }
 }
 
 function isValidCell(row, col) {
     return row >= 0 && row < grid.length && col >= 0 && col < grid[row].length;
 }
 
-function keyPressed() {
-    if (key === 'e') {
-        toggleEraser();
-        alert('Eraser ' + eraser);
+function setObject(value, id) {
+    selected = !isNaN(value) ? recent[value] : value;
+
+    document.getElementById(selectedElement).classList.remove('selected');
+
+    selectedElement = id;
+
+    if (isNaN(value)) {
+        if (!recent.includes(value)) recent.unshift(value);
+        else selectedElement = `recent-${recent.indexOf(value) + 1}`;
+
+        if (recent.length > 4) recent.pop();
     }
+
+    refreshMenu();
+    setSelected();
 }
 
-function setObject(value) {
-    selected = value;
+function setSelected() {
+    document.getElementById(selectedElement).classList.add('selected');
+}
+
+function refreshMenu() {
+    const paths = recent.map((element) => getPath(element));
+
+    setMultipleElements("recent-", 4, (i) => paths[i - 1]);
 }
 
 function ToggleTiles() {
     texturePack = texturePack === "natural" ? "metal" : "natural";
+    texturePath = `img/${texturePack}`;
+
     loadTileImages();
-    changeMenu();
+    changePack();
 }
 
 function toggleEraser() {
+    eraser ? document.getElementById("eraser").classList.remove("selected") : document.getElementById("eraser").classList.add("selected");
+
     eraser = !eraser;
 }
 
@@ -139,7 +167,6 @@ function importRoom() {
 
             for (let j = 0; j < 16; j++) {
                 const char = [...row][j];
-                console.log(char)
 
                 grid[i][j] = char
                     .replace('0', '0️⃣')
@@ -177,35 +204,28 @@ function exportRoom() {
         output += row + '\n';
     }
 
-    const spawnX = document.getElementById('spawn-x').value;
-    const spawnY = document.getElementById('spawn-y').value;
-    if (spawnX && spawnY) output += '-1\n-1\n-1\n' + spawnX + '\n' + spawnY;
-
     console.log(output);
     navigator.clipboard.writeText(output);
 }
 
-function changeMenu() {
-    const texturePath = `./img/${texturePack}`;
-
-    setElement("tiles-image", `${texturePath}/square/top.png`);
-    document.getElementById("tiles-text").innerText = texturePack === "natural" ? "Natural" : "Metal";
-
+function changePack() {
+    refreshMenu();
+    setElement("tiles", `./img/menu/${texturePack}.png`);
     setMultipleElements("wall-", 20, (i) => `${texturePath}/${getImageName(i)}.png`);
+    setMultipleElements("default-wall-", 4, (i) => `${texturePath}/${getImageName(i)}.png`);
     setMultipleElements("fire-", 4, (i) => `${texturePath}/fire/${getFireImageName(i)}.png`);
+    setMultipleElements("default-fire-", 4, (i) => `${texturePath}/fire/${getFireImageName(i)}.png`);
     setMultipleElements("yellow-", 3, (i) => `${texturePath}/objects/yellow/${getObjectImageName(i)}.png`);
     setMultipleElements("red-", 3, (i) => `${texturePath}/objects/red/${getObjectImageName(i)}.png`);
     setMultipleElements("blue-", 3, (i) => `${texturePath}/objects/blue/${getObjectImageName(i)}.png`);
 }
 
 function setElement(elementId, imagePath) {
-    document.getElementById(elementId).src = imagePath;
+    document.getElementById(elementId).querySelector("img").src = imagePath;
 }
 
 function setMultipleElements(elementPrefix, count, imagePathFn) {
-    for (let i = 1; i <= count; i++) {
-        setElement(`${elementPrefix}${i}`, imagePathFn(i));
-    }
+    for (let i = 1; i <= count; i++) setElement(`${elementPrefix}${i}`, imagePathFn(i));
 }
 
 function getImageName(index) {
@@ -216,15 +236,91 @@ function getImageName(index) {
         'top/bottom', 'single', 'corner/top-left', 'corner/top-right', 'corner/bottom-left',
         'corner/bottom-right'
     ];
+
     return imageNames[index - 1] || '';
 }
 
 function getFireImageName(index) {
     const fireImageNames = ['up', 'down', 'left', 'right'];
+
     return fireImageNames[index - 1] || '';
 }
 
 function getObjectImageName(index) {
     const objectImageNames = ['door', 'button', 'key'];
+
     return objectImageNames[index - 1] || '';
 }
+
+function getPath(value) {
+    const paths = {
+        "⬆️": "square/top",
+        "⬇️": "square/bottom",
+        "⬅️": "square/left",
+        "➡️": "square/right",
+        "↖️": "square/top-left",
+        "↗️": "square/top-right",
+        "↙️": "square/bottom-left",
+        "↘️": "square/bottom-right",
+        "⏹️": "square/center",
+        "⏪": "bottom/left",
+        "0️⃣": "bottom/center",
+        "⏩": "bottom/right",
+        "⏫": "top/top",
+        "1️⃣": "top/center",
+        "⏬": "top/bottom",
+        "⏺️": "single",
+        "2️⃣": "corner/top-left",
+        "3️⃣": "corner/top-right",
+        "4️⃣": "corner/bottom-left",
+        "5️⃣": "corner/bottom-right",
+        "👆": "fire/up",
+        "👇": "fire/down",
+        "👈": "fire/left",
+        "👉": "fire/right",
+        "🟨": "objects/yellow/door",
+        "🟡": "objects/yellow/button",
+        "💛": "objects/yellow/key",
+        "🟥": "objects/red/door",
+        "🔴": "objects/red/button",
+        "❤️": "objects/red/key",
+        "🟦": "objects/blue/door",
+        "🔵": "objects/blue/button",
+        "💙": "objects/blue/key"
+    };
+
+    return `${texturePath}/${paths[value]}.png`;
+}
+
+function toggleMenu() {
+    const menuButton = document.getElementById("menuButton");
+    const menu = document.getElementById("menu");
+
+    if (menuCheck) {
+        setElement("menuButton", "./img/menu/down.png");
+        menuButton.classList.remove("selected");
+        menu.style.display = "none";
+        menuCheck = false;
+    } else {
+        setElement("menuButton", "./img/menu/up.png");
+        menuButton.classList.add("selected");
+        menu.style.display = "block";
+        menuCheck = true;
+    }
+}
+
+function audio() {
+    const audio = document.getElementById("music");
+
+    audio.play();
+    audio.loop = true;
+
+    audio.volume = 1.5;
+}
+
+document.addEventListener('keydown', function(event) {
+    if (event.code === 'KeyE') toggleEraser();
+});
+
+refreshMenu();
+audio();
