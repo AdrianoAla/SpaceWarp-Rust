@@ -1,6 +1,6 @@
 # Celestial Puzzle Constructor
 
-Welcome to Celestial Puzzle Constructor *(the SpaceWarp Level Editor)*! This powerful tool allows you to create and customize levels for the exciting game, SpaceWarp. With a user-friendly interface inspired by Super Mario Maker, you can unleash your creativity and design unique gameplay experiences. Whether you're a seasoned game designer or a casual player looking to create your own challenges, the Celestial Puzzle Constructor has got you covered.
+Welcome to the Celestial Puzzle Constructor *(the SpaceWarp Level Editor)*! This powerful tool allows you to create and customize levels for the exciting game, SpaceWarp. With a user-friendly interface inspired by Super Mario Maker, you can unleash your creativity and design unique gameplay experiences. Whether you're a seasoned game designer or a casual player looking to create your own challenges, the Celestial Puzzle Constructor has got you covered.
 
 ## Getting Started
 
