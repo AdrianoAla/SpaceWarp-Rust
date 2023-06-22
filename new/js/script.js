@@ -315,7 +315,7 @@ function audio() {
     audio.play();
     audio.loop = true;
 
-    audio.volume = 0.3;
+    audio.volume = 1.5;
 }
 
 document.addEventListener('keydown', function(event) {
