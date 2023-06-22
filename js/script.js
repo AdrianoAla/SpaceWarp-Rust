@@ -309,18 +309,8 @@ function toggleMenu() {
     }
 }
 
-function audio() {
-    const audio = document.getElementById("music");
-
-    audio.play();
-    audio.loop = true;
-
-    audio.volume = 1.5;
-}
-
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', (event) => {
     if (event.code === 'KeyE') toggleEraser();
 });
 
 refreshMenu();
-audio();
