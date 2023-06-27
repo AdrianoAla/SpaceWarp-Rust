@@ -91,8 +91,6 @@ function draw() {
         const col = floor(mouseX / (width / grid[0].length));
 
         if (isValidCell(row, col)) {
-            console.log(gx, gy, grid[gy - 1][gx])
-
             if ((selected === '🟨' || selected === '🟥' || selected === '🟦') && (gy > 0 && grid[gy - 1][gx] !== '⬜')) return;
             else if ((gy < 15 && grid[gy + 1][gx] === '🟨') || (gy < 15 && grid[gy + 1][gx] === '🟥') || (gy < 15 && grid[gy + 1][gx] === '🟦')) return;
 

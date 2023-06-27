@@ -6,7 +6,7 @@ Welcome to the Celestial Puzzle Constructor *(SpaceWarp Level Editor)*! This pow
 
 To get started with the Celestial Puzzle Constructor, follow these steps:
 
-1. Launch the Celestial Puzzle Constructor editor on your device.
+1. Launch the [Celestial Puzzle Constructor](https://adrianoala.github.io/SpaceWarp-Rust) editor on your device.
 2. You will be greeted by an intuitive user interface that resembles the familiar Super Mario Maker style.
 3. Familiarize yourself with the various blocks, objects, and textures available in the editor. These elements will allow you to construct your levels.
 4. Use the provided tools to place blocks and objects on the level canvas, creating your desired layout. You can choose from a variety of options, such as walls, doors, buttons, keys, and more.
@@ -61,26 +61,26 @@ The meaning of each emoji in the exported format is as follows:
 | Emoji  | Meaning               |
 |--------|-----------------------|
 | ⬜     | Nothing               |
-| ➡️     | Wall (Right)          |
-| ⬅️     | Wall (Left)           |
-| ⬆️     | Wall (Up)             |
-| ⬇️     | Wall (Down)           |
-| ↗️     | Wall (Top Right)      |
-| ↘️     | Wall (Bottom Right)   |
-| ↙️     | Wall (Bottom Left)    |
-| ↖️     | Wall (Top Left)       |
-| ⏹️     | Wall (Block)          |
-| ⏺️     | Wall (Ground)         |
-| ⏩     | Wall (Right Arrow)    |
-| ⏪     | Wall (Left Arrow)     |
-| ⏫     | Wall (Up Arrow)       |
-| ⏬     | Wall (Down Arrow)     |
-| 0️⃣     | Wall (Number 0)       |
-| 1️⃣     | Wall (Number 1)       |
-| 2️⃣     | Wall (Number 2)       |
-| 3️⃣     | Wall (Number 3)       |
-| 4️⃣     | Wall (Number 4)       |
-| 5️⃣     | Wall (Number 5)       |
+| ➡️      | Wal                   |
+| ⬅️      | Wall                  |
+| ⬆️      | Wall                  |
+| ⬇️      | Wall                  |
+| ↗️      | Wall                  |
+| ↘️      | Wall                  |
+| ↙️      | Wall                  |
+| ↖️      | Wall                  |
+| ⏹️     | Wall                  |
+| ⏺️     | Wall                  |
+| ⏩     | Wall                  |
+| ⏪     | Wall                  |
+| ⏫     | Wall                  |
+| ⏬     | Wall                  |
+| 0️⃣     | Wall                  |
+| 1️⃣     | Wall                  |
+| 2️⃣     | Wall                  |
+| 3️⃣     | Wall                  |
+| 4️⃣     | Wall                  |
+| 5️⃣     | Wall                  |
 | 👆     | Fire (Up)             |
 | 👈     | Fire (Left)           |
 | 👉     | Fire (Right)          |
@@ -90,7 +90,7 @@ The meaning of each emoji in the exported format is as follows:
 | 💛     | Yellow Key            |
 | 🟥     | Red Door              |
 | 🔴     | Red Button            |
-| ❤️     | Red Key               |
+| ❤️      | Red Key               |
 | 🟦     | Blue Door             |
 | 🔵     | Blue Button           |
 | 💙     | Blue Key              |

@@ -1,3 +1,4 @@
+/* Simplify this CSS file, mostly the @media section :skull: */
 @font-face {
     font-family: "pixel";
     src: url("../font/font.ttf") format("truetype");
@@ -7,13 +8,14 @@ body {
     margin: 0;
     font-family: "pixel";
     background-size: cover;
+    image-rendering: pixelated;
     image-rendering: crisp-edges;
     background-image: url("../img/background.png");
 }
 
 .frosted {
-    background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .top-nav {
@@ -70,6 +72,8 @@ body {
 }
 
 .button img {
+    width: 40px;
+    height: 40px;
     padding: 0.25rem;
 }
 
@@ -82,7 +86,7 @@ body {
     border: solid 4px rgba(84, 77, 104, 0.5);
 }
 
-br {
+.gap {
     display: block;
     width: 25px;
 }
@@ -131,4 +135,91 @@ br {
 
 .hidden {
     display: none;
+}
+
+@media (max-width: 1360px) {
+    .menu-content {
+        width: 75%;
+    }
+}
+
+@media (max-width: 1320px) {
+    .button img {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .button img {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+@media (max-width: 930px) {
+    #default-fire-1,
+    #default-fire-2,
+    #default-fire-3,
+    #default-fire-4 {
+        display: none;
+    }
+}
+
+@media (max-width: 730px) {
+    #default-wall-1,
+    #default-wall-2,
+    #default-wall-3,
+    #default-wall-4 {
+        display: none;
+    }
+}
+
+@media (max-width: 520px) {
+    .button img {
+        width: 15px;
+        height: 15px;
+    }
+}
+
+@media (max-width: 460px) {
+    .button img {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    .button {
+        border: none;
+    }
+    .button img {
+        padding: 0.25rem;
+    }
+}
+
+@media (max-height: 1000px) {
+    canvas {
+        width: 400px!important;
+        height: 400px!important;
+    }
+}
+
+@media (max-height: 600px) {
+    canvas {
+        width: 300px!important;
+        height: 300px!important;
+    }
+}
+
+@media (max-width: 592px) {
+    .gap {
+        width: 10px;
+    }
+}
+
+@media (max-width: 375px) {
+    .gap {
+        width: 5px;
+    }
 }
