@@ -61,14 +61,14 @@ The meaning of each emoji in the exported format is as follows:
 | Emoji  | Meaning               |
 |--------|-----------------------|
 | ⬜     | Nothing               |
-| ➡️      | Wal                   |
-| ⬅️      | Wall                  |
-| ⬆️      | Wall                  |
-| ⬇️      | Wall                  |
-| ↗️      | Wall                  |
-| ↘️      | Wall                  |
-| ↙️      | Wall                  |
-| ↖️      | Wall                  |
+| ➡️     | Wall                  |
+| ⬅️     | Wall                  |
+| ⬆️     | Wall                  |
+| ⬇️     | Wall                  |
+| ↗️     | Wall                  |
+| ↘️     | Wall                  |
+| ↙️     | Wall                  |
+| ↖️     | Wall                  |
 | ⏹️     | Wall                  |
 | ⏺️     | Wall                  |
 | ⏩     | Wall                  |
@@ -90,7 +90,7 @@ The meaning of each emoji in the exported format is as follows:
 | 💛     | Yellow Key            |
 | 🟥     | Red Door              |
 | 🔴     | Red Button            |
-| ❤️      | Red Key               |
+| ❤️     | Red Key               |
 | 🟦     | Blue Door             |
 | 🔵     | Blue Button           |
 | 💙     | Blue Key              |
