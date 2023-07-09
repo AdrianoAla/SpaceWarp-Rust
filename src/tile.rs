@@ -18,14 +18,30 @@ pub struct Tile {
     let color:Color = WHITE;
     let mut textures = Vec::new();
     
-    if tile_type == '⬛' {
-      textures.push(IMAGE_WALL.get_texture());
-    } else if tile_type == '⬅' || tile_type == '➡' || tile_type == '⬇' || tile_type == '⬆' {
-      textures.push(IMAGE_FIRE.get_texture());
-    } else {
-      tile_type = '⬜';
+    match tile_type {
+      '⬆' => textures.push(IMAGE_WALL_1.get_texture()),
+      '⬇' => textures.push(IMAGE_WALL_2.get_texture()),
+      '⬅' => textures.push(IMAGE_WALL_3.get_texture()),
+      '➡' => textures.push(IMAGE_WALL_4.get_texture()),
+      '↖' => textures.push(IMAGE_WALL_5.get_texture()),
+      '↗' => textures.push(IMAGE_WALL_6.get_texture()),
+      '↙' => textures.push(IMAGE_WALL_7.get_texture()),
+      '↘' => textures.push(IMAGE_WALL_8.get_texture()),
+      '⏹' => textures.push(IMAGE_WALL_9.get_texture()),
+      '⏪' => textures.push(IMAGE_WALL_10.get_texture()),
+      '0' => textures.push(IMAGE_WALL_11.get_texture()),
+      '⏩' => textures.push(IMAGE_WALL_12.get_texture()),
+      '⏫' => textures.push(IMAGE_WALL_13.get_texture()),
+      '1' => textures.push(IMAGE_WALL_14.get_texture()),
+      '⏬' => textures.push(IMAGE_WALL_15.get_texture()),
+      '⏺' => textures.push(IMAGE_WALL_16.get_texture()),
+      '2' => textures.push(IMAGE_WALL_17.get_texture()),
+      '3' => textures.push(IMAGE_WALL_18.get_texture()),
+      '4' => textures.push(IMAGE_WALL_19.get_texture()),
+      '5' => textures.push(IMAGE_WALL_20.get_texture()),
+      '👈' | '👉' | '👇' | '👆' => textures.push(IMAGE_FIRE.get_texture()),
+      _ => tile_type = '⬜',
     }
-
 
     Tile {
       x,
@@ -43,18 +59,18 @@ pub struct Tile {
   }
   
   pub fn is_fire(&self) -> bool {
-    self.tile_type == '⬅' || self.tile_type == '➡' || self.tile_type == '⬇' || self.tile_type == '⬆'
+    self.tile_type == '👈' || self.tile_type == '👉' || self.tile_type == '👇' || self.tile_type == '👆'
   }
 
   pub fn get_fire_rotation(&self) -> f32 {
     let mut rotation: f32 = 0.;
-    if self.tile_type == '⬅' {
+    if self.tile_type == '👈' {
       rotation = PI*1.5;
     }
-    if self.tile_type == '➡' {
+    if self.tile_type == '👉' {
       rotation = PI/2.;
     }
-    if self.tile_type == '⬇' {
+    if self.tile_type == '👇' {
       rotation = PI;
     }
     rotation
@@ -93,5 +109,24 @@ impl ImageLoader {
 
 lazy_static! {
   static ref IMAGE_FIRE: ImageLoader = ImageLoader::new("assets/packs/metal/objects/fire.png");
-  static ref IMAGE_WALL: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/center.png");
+  static ref IMAGE_WALL_1: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/top.png");
+  static ref IMAGE_WALL_2: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/bottom.png");
+  static ref IMAGE_WALL_3: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/left.png");
+  static ref IMAGE_WALL_4: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/right.png");
+  static ref IMAGE_WALL_5: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/top-left.png");
+  static ref IMAGE_WALL_6: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/top-right.png");
+  static ref IMAGE_WALL_7: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/bottom-left.png");
+  static ref IMAGE_WALL_8: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/bottom-right.png");
+  static ref IMAGE_WALL_9: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/center.png");
+  static ref IMAGE_WALL_10: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/bottom/left.png");
+  static ref IMAGE_WALL_11: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/bottom/center.png");
+  static ref IMAGE_WALL_12: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/bottom/right.png");
+  static ref IMAGE_WALL_13: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/top/top.png");
+  static ref IMAGE_WALL_14: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/top/center.png");
+  static ref IMAGE_WALL_15: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/top/bottom.png");
+  static ref IMAGE_WALL_16: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/single.png");
+  static ref IMAGE_WALL_17: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/corner/top-left.png");
+  static ref IMAGE_WALL_18: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/corner/top-right.png");
+  static ref IMAGE_WALL_19: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/corner/bottom-left.png");
+  static ref IMAGE_WALL_20: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/corner/bottom-right.png");
 }
