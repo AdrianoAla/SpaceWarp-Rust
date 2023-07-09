@@ -38,16 +38,16 @@ function loadTileImages() {
         ['👇', '/fire/down.png'],
         ['👈', '/fire/left.png'],
         ['👉', '/fire/right.png'],
-        ['🟨', '/objects/yellow/door.png'],
-        ['🟨⬇️', '/objects/yellow/door-flipped.png'],
+        ['🟨', '/objects/yellow/door/bottom.png'],
+        ['🟨⬇️', '/objects/yellow/door/top.png'],
         ['🟡', '/objects/yellow/button.png'],
         ['💛', '/objects/yellow/key.png'],
-        ['🟥', '/objects/red/door.png'],
-        ['🟥⬇️', '/objects/red/door-flipped.png'],
+        ['🟥', '/objects/red/door/bottom.png'],
+        ['🟥⬇️', '/objects/red/door/top.png'],
         ['🔴', '/objects/red/button.png'],
         ['❤️', '/objects/red/key.png'],
-        ['🟦', '/objects/blue/door.png'],
-        ['🟦⬇️', '/objects/blue/door-flipped.png'],
+        ['🟦', '/objects/blue/door/bottom.png'],
+        ['🟦⬇️', '/objects/blue/door/top.png'],
         ['🔵', '/objects/blue/button.png'],
         ['💙', '/objects/blue/key.png']
     ];
@@ -216,7 +216,7 @@ function processData(clipboardData) {
         while (currentIndex < graphemes.length) {
             const row = graphemes.slice(currentIndex, currentIndex + chunkSize);
 
-            if (row.length < chunkSize) rows.push(row.concat(Array(chunkSize - row.length).fill('❔')));
+            if (row.length < chunkSize) rows.push(row.concat(Array(chunkSize - row.length).fill('⬜')));
             else rows.push(row);
 
             currentIndex += chunkSize;
@@ -224,10 +224,11 @@ function processData(clipboardData) {
     }
 
     for (let i = 0; i < 16; i++) {
-        const row = rows[i] || ''.padEnd(16, '❔');
+        const row = rows[i] || ''.padEnd(16, '⬜');
 
         for (let j = 0; j < 16; j++) {
             const char = row[j];
+            console.log(char)
 
             grid[i][j] = char
                 .replace('0', '0️⃣')
@@ -304,7 +305,7 @@ function getFireImageName(index) {
 }
 
 function getObjectImageName(index) {
-    const objectImageNames = ['door', 'button', 'key'];
+    const objectImageNames = ['door/bottom', 'button', 'key'];
 
     return objectImageNames[index - 1] || '';
 }
@@ -335,13 +336,13 @@ function getPath(value) {
         "👇": "fire/down",
         "👈": "fire/left",
         "👉": "fire/right",
-        "🟨": "objects/yellow/door",
+        "🟨": "objects/yellow/door/bottom",
         "🟡": "objects/yellow/button",
         "💛": "objects/yellow/key",
-        "🟥": "objects/red/door",
+        "🟥": "objects/red/door/bottom",
         "🔴": "objects/red/button",
         "❤️": "objects/red/key",
-        "🟦": "objects/blue/door",
+        "🟦": "objects/blue/door/bottom",
         "🔵": "objects/blue/button",
         "💙": "objects/blue/key"
     };
