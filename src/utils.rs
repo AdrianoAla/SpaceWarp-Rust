@@ -3,6 +3,7 @@ use crate::{player::Player};
 use macroquad::{prelude::*};
 use macroquad_text::Fonts;
 use crate::level::get_level;
+use lazy_static::lazy_static;
 
 const FONT_SIZE: u16 = 8;
 
@@ -21,16 +22,33 @@ pub fn _colliding(x1:i32, y1:i32, w1:i32, h1:i32, x2:i32, y2:i32, w2:i32, h2:i32
 }
 
 pub fn get_collision(x:i32, y:i32) -> i32 {
-  for tile in get_level().lock().unwrap().tiles.iter() {
+  let mut level = get_level().lock().unwrap();
+  for (index, tile) in level.tiles.iter().enumerate() {
     if x >= tile.x && x <= tile.x + tile.width && y >= tile.y && y <= tile.y + tile.height {
       if tile.is_fire() {
         return 2;
       } else {
-        if tile.is_door() {
-          
+        if tile.tile_type == '❤' {
+          let mut to_remove: Vec<usize> = Vec::new();
+          to_remove.push(index);
+          for (i, t) in level.tiles.iter().enumerate() {
+            if t.is_door() {
+              to_remove.push(i-to_remove.len());
+            }
+          }
+
+          for i in to_remove {
+            level.tiles.remove(i);
+          }
+          play_sound(PICKUP_SOUND.get_sound(), PlaySoundParams {looped:false, volume:0.5});
+          return 3;
         }
         return 1;
       }
+    }
+    if tile.is_door() && x >= tile.x && x <= tile.x + tile.width && y >= tile.y - 8 && y <= tile.y - 8 + tile.height {
+      println!("{}, {}, {}, {}", tile.x, tile.y, tile.tile_type, index);
+      return 1;
     }
   }
   return -1;
@@ -74,4 +92,8 @@ impl ImageLoader {
   pub fn get_texture(&self) -> Texture2D {
     self.texture
   }
+}
+
+lazy_static! {
+  static ref PICKUP_SOUND:SoundLoader = SoundLoader::new("assets/sounds/item.wav");
 }

@@ -11,7 +11,7 @@ pub struct Level {
   pub tiles: Vec<Tile>,
   pub next_levels: Vec<String>,
   pub spawn_point: (i32, i32),
-  pub next_levels_items: Vec<Level>,
+  pub original_state: Vec<Tile>,
 } 
 
 impl Level {
@@ -40,7 +40,7 @@ impl Level {
     self.current_file = String::from(new_file);
     self.next_levels = new_level.next_levels;
     self.tiles = new_level.tiles;
-    self.next_levels_items = new_level.next_levels_items;
+    self.original_state = new_level.original_state;
 
     return true;
     
@@ -71,15 +71,18 @@ pub fn load_from_file(filename:&str) -> Level {
     // create new tile for each character in each line
 
     let mut tiles:Vec<Tile> = Vec::new();
+    let mut original_state: Vec<Tile> = Vec::new();
 
     for (y, line) in lines.iter().enumerate() {
       for (x, c) in line.chars().enumerate() {
         if c != '⬜' {
           tiles.push(Tile::new((x * 8) as i32, (y * 8) as i32, c));
+          original_state.push(Tile::new((x * 8) as i32, (y * 8) as i32, c));
         }
       }
     }
     
+
     let mut next_levels:Vec<String> = Vec::new();
     
     for (_y, line) in lines.iter().enumerate().skip(16).take(4) {
@@ -94,7 +97,7 @@ pub fn load_from_file(filename:&str) -> Level {
       tiles,
       next_levels,
       spawn_point: (x,y),
-      next_levels_items: Vec::new(),
+      original_state
     }
 }
 

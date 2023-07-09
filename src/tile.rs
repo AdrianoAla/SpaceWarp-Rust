@@ -5,7 +5,7 @@ use crate::utils::ImageLoader;
 use lazy_static::lazy_static;
 
 
-
+#[derive(Clone)]
 pub struct Tile {
   pub x: i32,
   pub y: i32,
@@ -44,6 +44,7 @@ pub struct Tile {
       '5' => textures.push(IMAGE_WALL_20.get_texture()),
       '👈' | '👉' | '👇' | '👆' => textures.push(IMAGE_FIRE.get_texture()),
       '🟥' => textures.push(BOTTOM_DOOR_RED.get_texture()),
+      '❤' => textures.push(KEY_RED.get_texture()),
       _ => tile_type = '⬜',
     }
 
@@ -87,8 +88,7 @@ pub struct Tile {
   pub fn draw(&mut self) {
     if self.is_object() {
       if self.is_door() {
-        
-
+        draw_texture_ex(TOP_DOOR_RED.get_texture(), self.x as f32, self.y as f32 - 8.0, self.color, DrawTextureParams::default());  
       }
       let params:DrawTextureParams = DrawTextureParams {  rotation: self.get_fire_rotation(), ..Default::default() };
       draw_texture_ex(*self.textures.get(0).unwrap(), self.x as f32, self.y as f32, self.color, params);
@@ -101,7 +101,7 @@ pub struct Tile {
 
 lazy_static! {
   static ref PACK: String = {
-    let pack = "natural";
+    let pack = "metal";
     pack.to_owned()
   };
 
@@ -126,5 +126,7 @@ lazy_static! {
   static ref IMAGE_WALL_18: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/top-right.png", *PACK));
   static ref IMAGE_WALL_19: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/bottom-left.png", *PACK));
   static ref IMAGE_WALL_20: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/bottom-right.png", *PACK));
-  static ref BOTTOM_DOOR_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/door.png", *PACK));
+  static ref BOTTOM_DOOR_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/door/bottom.png", *PACK));
+  static ref TOP_DOOR_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/door/top.png", *PACK));
+  static ref KEY_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/key.png", *PACK));
 }

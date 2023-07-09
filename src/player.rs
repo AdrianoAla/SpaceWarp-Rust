@@ -94,10 +94,10 @@ impl Player {
 
       // Jumping
 
-      if (is_key_down(KeyCode::Up) || is_key_down(KeyCode::Space)) && (get_collision(self.x+1, self.y+self.height) == 1 || get_collision(self.x+7, self.y+self.height) == 1)
+      if (is_key_down(KeyCode::Up) || is_key_down(KeyCode::Space)) && (get_collision(self.x+1, self.y+self.height) == 1 || get_collision(self.x+7, self.y+self.height) == 1) && !(get_collision(self.x+1, self.y-1) == 1 || get_collision(self.x+7, self.y-1) == 1)
       {
         self.jump = self.jump_height;
-        play_sound(SOUND_JUMP.get_sound(), PlaySoundParams {looped: false, volume: 0.2})
+        play_sound(SOUND_JUMP.get_sound(), PlaySoundParams {looped: false, volume: 0.15})
       }
 
       if get_collision(self.x+1, self.y-1) == 1 || get_collision(self.x+7, self.y-1) == 1
@@ -106,6 +106,12 @@ impl Player {
         // Hit head on ceiling
 
         self.jump = 0;
+      }
+
+      // Check for items
+
+      if get_collision(self.x+8, self.y+1) == 3 || get_collision(self.x+8, self.y+7) == 3 || get_collision(self.x, self.y+1) == 3 || get_collision(self.x+7, self.y+1) == 3 {
+        println!("Got new item")
       }
 
       // Gravity
@@ -131,9 +137,22 @@ impl Player {
       get_collision(self.x+7, self.y+1) == 2 ||
       get_collision(self.x+1, self.y+7) == 2 ||
       get_collision(self.x+7, self.y+7) == 2 {
-        let spawn_point = get_level().lock().unwrap().get_spawn_location();
+        
+        let mut level = get_level().lock().unwrap();
+        let spawn_point = level.get_spawn_location();
+        let original_state = level.original_state.clone();
+        
+        level.tiles = Vec::new();
+        for tile in original_state.iter() {
+          let owned = tile.clone();
+          level.tiles.push(owned);
+        }
+        
+        play_sound(DIE_SOUND.get_sound(), PlaySoundParams { looped: false, volume: 1.5 });
+
         self.x = spawn_point.0*8;
         self.y = spawn_point.1*8;
+        
       }
       
       let mut unwrapped_level = get_level().lock().unwrap();
@@ -200,4 +219,5 @@ pub async fn get_textures() -> [Texture2D; 3] {
 
 lazy_static! {
   static ref SOUND_JUMP: SoundLoader = SoundLoader::new(&format!("assets/sounds/jump.wav"));
+  static ref DIE_SOUND: SoundLoader = SoundLoader::new(&format!("assets/sounds/explosion.wav"));
 }
