@@ -39,12 +39,15 @@ function loadTileImages() {
         ['👈', '/fire/left.png'],
         ['👉', '/fire/right.png'],
         ['🟨', '/objects/yellow/door.png'],
+        ['🟨⬇️', '/objects/yellow/door-flipped.png'],
         ['🟡', '/objects/yellow/button.png'],
         ['💛', '/objects/yellow/key.png'],
         ['🟥', '/objects/red/door.png'],
+        ['🟥⬇️', '/objects/red/door-flipped.png'],
         ['🔴', '/objects/red/button.png'],
         ['❤️', '/objects/red/key.png'],
         ['🟦', '/objects/blue/door.png'],
+        ['🟦⬇️', '/objects/blue/door-flipped.png'],
         ['🔵', '/objects/blue/button.png'],
         ['💙', '/objects/blue/key.png']
     ];
@@ -75,7 +78,10 @@ function draw() {
             const tileX = j * tileSize;
             const tileY = i * tileSize;
             const tileValue = grid[i][j];
-            if (tileImages[tileValue]) image(tileImages[tileValue], tileX, tileY, tileSize, tileSize);
+            if (tileImages[tileValue]) {
+                if (tileValue === '🟥' || tileValue === '🟦' || tileValue === '🟨') image(tileImages[`${tileValue}⬇️`], tileX, tileY - tileSize, tileSize, tileSize);
+                image(tileImages[tileValue], tileX, tileY, tileSize, tileSize);
+            }
             else {
                 fill(255);
                 rect(tileX, tileY, tileSize, tileSize);
@@ -151,47 +157,100 @@ function toggleEraser() {
 }
 
 function importRoom() {
-    navigator.clipboard
-    .readText()
-    .then((clipboardData) => {
-        const clipboardText = Array.from(clipboardData.toString())
-            .filter(c => c !== '\u{fe0f}' && c !== '\u{20e3}')
-            .join('');
+    if (navigator.clipboard && navigator.clipboard.readText) {
+        navigator.clipboard
+            .readText()
+            .then((clipboardData) => {
+                processData(clipboardData);
+            })
+            .catch((error) => {
+                console.log('Failed to read clipboard data:', error);
+            });
+    } else {
+        const clipboardData = window.prompt('Please enter the data:');
+        processData(clipboardData);
+    }
+}
 
-        const rows = clipboardText.split('\n');
+function getSurrogatePairArray(str) {
+    const arr = [];
+    let index = 0;
 
-        for (let i = 0; i < 16; i++) {
-            const row = rows[i];
+    while (index < str.length) {
+        const char = str.charAt(index);
+        const charCode = char.charCodeAt(0);
 
-            for (let j = 0; j < 16; j++) {
-                const char = [...row][j];
+        if (charCode >= 0xd800 && charCode <= 0xdbff) {
+            const highSurrogate = charCode;
+            const lowSurrogate = str.charCodeAt(index + 1);
 
-                grid[i][j] = char
-                    .replace('0', '0️⃣')
-                    .replace('1', '1️⃣')
-                    .replace('2', '2️⃣')
-                    .replace('3', '3️⃣')
-                    .replace('4', '4️⃣')
-                    .replace('5', '5️⃣')
-                    .replace('⬆', '⬆️')
-                    .replace('⬇', '⬇️')
-                    .replace('⬅', '⬅️')
-                    .replace('➡', '➡️')
-                    .replace('↖', '↖️')
-                    .replace('↗', '↗️')
-                    .replace('↙', '↙️')
-                    .replace('↘', '↘️')
-                    .replace('⏹', '⏹️')
-                    .replace('⏺', '⏺️')
-                    .replace('❤', '❤️');
+            if (lowSurrogate >= 0xdc00 && lowSurrogate <= 0xdfff) {
+                const pair = String.fromCharCode(highSurrogate, lowSurrogate);
+                arr.push(pair);
+                index += 2;
+                continue;
             }
         }
 
-        console.log('Data imported from clipboard successfully.');
-    })
-    .catch((error) => {
-        console.log('Failed to read clipboard data:', error);
-    });
+        arr.push(char);
+        index++;
+    }
+
+    return arr;
+}
+
+function processData(clipboardData) {
+    const rows = [];
+
+    if (clipboardData) {
+        const clipboardClean = Array.from(clipboardData.toString())
+            .filter(c => c !== '\u{fe0f}' && c !== '\u{20e3}')
+            .join('');
+
+        const clipboardText = clipboardClean.toString().replace(/\s/g, '');
+        const chunkSize = 16;
+
+        const graphemes = getSurrogatePairArray(clipboardText);
+        let currentIndex = 0;
+
+        while (currentIndex < graphemes.length) {
+            const row = graphemes.slice(currentIndex, currentIndex + chunkSize);
+
+            if (row.length < chunkSize) rows.push(row.concat(Array(chunkSize - row.length).fill('❔')));
+            else rows.push(row);
+
+            currentIndex += chunkSize;
+        }
+    }
+
+    for (let i = 0; i < 16; i++) {
+        const row = rows[i] || ''.padEnd(16, '❔');
+
+        for (let j = 0; j < 16; j++) {
+            const char = row[j];
+
+            grid[i][j] = char
+                .replace('0', '0️⃣')
+                .replace('1', '1️⃣')
+                .replace('2', '2️⃣')
+                .replace('3', '3️⃣')
+                .replace('4', '4️⃣')
+                .replace('5', '5️⃣')
+                .replace('⬆', '⬆️')
+                .replace('⬇', '⬇️')
+                .replace('⬅', '⬅️')
+                .replace('➡', '➡️')
+                .replace('↖', '↖️')
+                .replace('↗', '↗️')
+                .replace('↙', '↙️')
+                .replace('↘', '↘️')
+                .replace('⏹', '⏹️')
+                .replace('⏺', '⏺️')
+                .replace('❤', '❤️');
+        }
+    }
+
+    console.log('Data imported successfully.');
 }
 
 function exportRoom() {
