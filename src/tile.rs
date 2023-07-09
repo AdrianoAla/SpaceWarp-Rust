@@ -1,7 +1,10 @@
 use std::f32::consts::PI;
 
 use macroquad::{prelude::*};
+use crate::utils::ImageLoader;
 use lazy_static::lazy_static;
+
+
 
 pub struct Tile {
   pub x: i32,
@@ -40,6 +43,7 @@ pub struct Tile {
       '4' => textures.push(IMAGE_WALL_19.get_texture()),
       '5' => textures.push(IMAGE_WALL_20.get_texture()),
       '👈' | '👉' | '👇' | '👆' => textures.push(IMAGE_FIRE.get_texture()),
+      '🟥' => textures.push(BOTTOM_DOOR_RED.get_texture()),
       _ => tile_type = '⬜',
     }
 
@@ -76,8 +80,16 @@ pub struct Tile {
     rotation
   }
 
+  pub fn is_door(&self) -> bool {
+    self.tile_type == '🟥'
+  }
+
   pub fn draw(&mut self) {
     if self.is_object() {
+      if self.is_door() {
+        
+
+      }
       let params:DrawTextureParams = DrawTextureParams {  rotation: self.get_fire_rotation(), ..Default::default() };
       draw_texture_ex(*self.textures.get(0).unwrap(), self.x as f32, self.y as f32, self.color, params);
     } else {
@@ -85,48 +97,34 @@ pub struct Tile {
     }
   }
 
-  pub fn get_state(&self) -> (i32, i32, i32, i32, char) {
-    (self.x, self.y, self.width, self.height, self.tile_type)
-  }
-}
-
-struct ImageLoader {
-  pub texture: Texture2D,
-}
-impl ImageLoader {
-  #[tokio::main]
-  pub async fn new(path: &str) -> ImageLoader {
-    let texture = load_texture(path).await.unwrap();
-    ImageLoader {
-      texture,
-    }
-  }
-
-  pub fn get_texture(&self) -> Texture2D {
-    self.texture
-  }
 }
 
 lazy_static! {
-  static ref IMAGE_FIRE: ImageLoader = ImageLoader::new("assets/packs/metal/objects/fire.png");
-  static ref IMAGE_WALL_1: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/top.png");
-  static ref IMAGE_WALL_2: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/bottom.png");
-  static ref IMAGE_WALL_3: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/left.png");
-  static ref IMAGE_WALL_4: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/right.png");
-  static ref IMAGE_WALL_5: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/top-left.png");
-  static ref IMAGE_WALL_6: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/top-right.png");
-  static ref IMAGE_WALL_7: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/bottom-left.png");
-  static ref IMAGE_WALL_8: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/bottom-right.png");
-  static ref IMAGE_WALL_9: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/square/center.png");
-  static ref IMAGE_WALL_10: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/bottom/left.png");
-  static ref IMAGE_WALL_11: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/bottom/center.png");
-  static ref IMAGE_WALL_12: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/bottom/right.png");
-  static ref IMAGE_WALL_13: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/top/top.png");
-  static ref IMAGE_WALL_14: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/top/center.png");
-  static ref IMAGE_WALL_15: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/top/bottom.png");
-  static ref IMAGE_WALL_16: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/single.png");
-  static ref IMAGE_WALL_17: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/corner/top-left.png");
-  static ref IMAGE_WALL_18: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/corner/top-right.png");
-  static ref IMAGE_WALL_19: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/corner/bottom-left.png");
-  static ref IMAGE_WALL_20: ImageLoader = ImageLoader::new("assets/packs/metal/tiles/corner/bottom-right.png");
+  static ref PACK: String = {
+    let pack = "natural";
+    pack.to_owned()
+  };
+
+  static ref IMAGE_FIRE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/fire.png", *PACK));
+  static ref IMAGE_WALL_1: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/top.png", *PACK));
+  static ref IMAGE_WALL_2: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/bottom.png", *PACK));
+  static ref IMAGE_WALL_3: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/left.png", *PACK));
+  static ref IMAGE_WALL_4: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/right.png", *PACK));
+  static ref IMAGE_WALL_5: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/top-left.png", *PACK));
+  static ref IMAGE_WALL_6: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/top-right.png", *PACK));
+  static ref IMAGE_WALL_7: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/bottom-left.png", *PACK));
+  static ref IMAGE_WALL_8: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/bottom-right.png", *PACK));
+  static ref IMAGE_WALL_9: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/center.png", *PACK));
+  static ref IMAGE_WALL_10: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/bottom/left.png", *PACK));
+  static ref IMAGE_WALL_11: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/bottom/center.png", *PACK));
+  static ref IMAGE_WALL_12: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/bottom/right.png", *PACK));
+  static ref IMAGE_WALL_13: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/top/top.png", *PACK));
+  static ref IMAGE_WALL_14: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/top/center.png", *PACK));
+  static ref IMAGE_WALL_15: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/top/bottom.png", *PACK));
+  static ref IMAGE_WALL_16: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/single.png", *PACK));
+  static ref IMAGE_WALL_17: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/top-left.png", *PACK));
+  static ref IMAGE_WALL_18: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/top-right.png", *PACK));
+  static ref IMAGE_WALL_19: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/bottom-left.png", *PACK));
+  static ref IMAGE_WALL_20: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/bottom-right.png", *PACK));
+  static ref BOTTOM_DOOR_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/door.png", *PACK));
 }

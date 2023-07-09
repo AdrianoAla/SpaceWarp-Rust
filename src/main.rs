@@ -1,4 +1,4 @@
-use macroquad::{prelude::*};
+use macroquad::{prelude::*, audio::{play_sound, PlaySoundParams}};
 use macroquad_text::*;
 
 mod canvas;
@@ -14,6 +14,8 @@ mod tile;
 
 mod level;
 use level::*;
+
+use lazy_static::lazy_static;
 
 const FONT: &[u8] = include_bytes!("../assets/font.ttf");
 
@@ -49,6 +51,8 @@ async fn main() {
     let mut frame: u64 = 0;
     let mut allow_update:bool = false;
     let mut allow_debug:bool = false;
+
+    play_sound(BGM.get_sound(), PlaySoundParams {looped:true, volume: 1.0});
     
     loop {
         
@@ -135,4 +139,8 @@ async fn main() {
 
         next_frame().await
     }
+}
+
+lazy_static! {
+    static ref BGM: SoundLoader = SoundLoader::new(&format!("assets/sounds/bgm.wav"));
 }

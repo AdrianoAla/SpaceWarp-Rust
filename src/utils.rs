@@ -1,3 +1,4 @@
+use macroquad::audio::*;
 use crate::{player::Player};
 use macroquad::{prelude::*};
 use macroquad_text::Fonts;
@@ -25,6 +26,9 @@ pub fn get_collision(x:i32, y:i32) -> i32 {
       if tile.is_fire() {
         return 2;
       } else {
+        if tile.is_door() {
+          
+        }
         return 1;
       }
     }
@@ -35,4 +39,39 @@ pub fn get_collision(x:i32, y:i32) -> i32 {
 pub fn draw_debug_text(fonts:&Fonts, target_fps:&u32, player:&Player) {
   fonts.draw_text(&format!("{} {}", player.get_state().0, player.get_state().1),       1.0, 3.0, FONT_SIZE, WHITE);
   fonts.draw_text(&format!("{:.2}%", (target_fps*100) as f32 / 30.0),                                          1.0, 13.0, FONT_SIZE, WHITE);
+}
+
+
+pub struct SoundLoader {
+  pub sound: Sound,
+}
+impl SoundLoader {
+  #[tokio::main]
+  pub async fn new(path: &str) -> SoundLoader {
+    let sound = load_sound(path).await.unwrap();
+    SoundLoader {
+      sound,
+    }
+  }
+
+  pub fn get_sound(&self) -> Sound {
+    self.sound
+  }
+}
+
+pub struct ImageLoader {
+  pub texture: Texture2D,
+}
+impl ImageLoader {
+  #[tokio::main]
+  pub async fn new(path: &str) -> ImageLoader {
+    let texture = load_texture(path).await.unwrap();
+    ImageLoader {
+      texture,
+    }
+  }
+
+  pub fn get_texture(&self) -> Texture2D {
+    self.texture
+  }
 }

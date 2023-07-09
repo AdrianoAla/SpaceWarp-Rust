@@ -1,6 +1,7 @@
-use macroquad::{prelude::*};
+use macroquad::{prelude::*, audio::{play_sound, PlaySoundParams}};
 
 use crate::{utils::*, level::{get_level}};
+use lazy_static::lazy_static;
 
 pub struct Player {
   pub x: i32,
@@ -96,6 +97,7 @@ impl Player {
       if (is_key_down(KeyCode::Up) || is_key_down(KeyCode::Space)) && (get_collision(self.x+1, self.y+self.height) == 1 || get_collision(self.x+7, self.y+self.height) == 1)
       {
         self.jump = self.jump_height;
+        play_sound(SOUND_JUMP.get_sound(), PlaySoundParams {looped: false, volume: 0.2})
       }
 
       if get_collision(self.x+1, self.y-1) == 1 || get_collision(self.x+7, self.y-1) == 1
@@ -194,4 +196,8 @@ pub async fn get_textures() -> [Texture2D; 3] {
   }
   
   player_textures
+}
+
+lazy_static! {
+  static ref SOUND_JUMP: SoundLoader = SoundLoader::new(&format!("assets/sounds/jump.wav"));
 }

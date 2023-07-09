@@ -53,7 +53,7 @@ impl Level {
 
 pub fn load_from_file(filename:&str) -> Level {
   let file_name = filename;
-    let mut file = File::open(file_name).unwrap();
+    let mut file = File::open(format!("levels/{file_name}")).unwrap();
     let mut contents = String::new(); 
     file.read_to_string(&mut contents).unwrap();
     
