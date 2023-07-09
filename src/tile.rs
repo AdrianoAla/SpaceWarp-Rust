@@ -13,7 +13,8 @@ pub struct Tile {
   pub height: i32,
   pub color: Color,
   pub tile_type: char,
-  textures: Vec<Texture2D>
+  textures: Vec<Texture2D>,
+  pub collidable: bool
 } impl Tile {
   
   pub fn new(x: i32, y: i32, mut tile_type:char) -> Tile {
@@ -56,6 +57,7 @@ pub struct Tile {
       color,
       tile_type,
       textures,
+      collidable: true,
     }
   }
 
@@ -86,6 +88,9 @@ pub struct Tile {
   }
 
   pub fn draw(&mut self) {
+    
+    if self.is_door() && !self.collidable {return;}
+
     if self.is_object() {
       if self.is_door() {
         draw_texture_ex(TOP_DOOR_RED.get_texture(), self.x as f32, self.y as f32 - 8.0, self.color, DrawTextureParams::default());  

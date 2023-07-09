@@ -24,22 +24,20 @@ pub fn _colliding(x1:i32, y1:i32, w1:i32, h1:i32, x2:i32, y2:i32, w2:i32, h2:i32
 pub fn get_collision(x:i32, y:i32) -> i32 {
   let mut level = get_level().lock().unwrap();
   for (index, tile) in level.tiles.iter().enumerate() {
+    if tile.collidable == false { continue; }
     if x >= tile.x && x <= tile.x + tile.width && y >= tile.y && y <= tile.y + tile.height {
       if tile.is_fire() {
         return 2;
       } else {
         if tile.tile_type == '❤' {
-          let mut to_remove: Vec<usize> = Vec::new();
-          to_remove.push(index);
-          for (i, t) in level.tiles.iter().enumerate() {
+          level.tiles.remove(index);
+          
+          for t in level.tiles.iter_mut() {
             if t.is_door() {
-              to_remove.push(i-to_remove.len());
+              t.collidable = false;
             }
           }
 
-          for i in to_remove {
-            level.tiles.remove(i);
-          }
           play_sound(PICKUP_SOUND.get_sound(), PlaySoundParams {looped:false, volume:0.5});
           return 3;
         }
