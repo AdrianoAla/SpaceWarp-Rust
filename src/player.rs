@@ -14,13 +14,13 @@ pub struct Player {
   moving: bool,
   
   gravity: i32,
-  jump: i32,
+  pub jump: i32,
   jump_speed: i32,
   jump_height: i32,
 
   flip: bool,
 
-  textures: [Texture2D; 3],
+  textures: [Texture2D; 132],
 }
 impl Player {
   
@@ -57,14 +57,14 @@ impl Player {
     let mut params:DrawTextureParams = Default::default();
     params.flip_x = self.flip;
     
-    let mut texture:Texture2D = *self.textures.clone().get(0).unwrap();
+    let mut texture:Texture2D = *self.textures.clone().get((frame/2%44) as usize).unwrap();
     
     if self.moving {
-      texture = *self.textures.clone().get((frame%2) as usize).unwrap();
+      texture = *self.textures.clone().get((frame%44) as usize+44).unwrap();
     }
     
     if self.jump > 0 {
-      texture = *self.textures.clone().get(2).unwrap();
+      texture = *self.textures.clone().get((((12-self.jump) as f32*3.5).round()) as usize + 88).unwrap();
     }
     
     draw_texture_ex(texture, self.x as f32, self.y as f32, WHITE, params);
@@ -153,6 +153,7 @@ impl Player {
 
         self.x = spawn_point.0*8;
         self.y = spawn_point.1*8;
+        self.jump = 0;
         
       }
       
@@ -204,16 +205,28 @@ impl Player {
 
 }
 
-pub async fn get_textures() -> [Texture2D; 3] {
+pub async fn get_textures() -> [Texture2D; 132] {
   // Load player textures
 
-  let mut player_textures:[Texture2D; 3] = [load_texture("assets/player/player_1.png").await.unwrap(); 3];
+  let mut player_textures:[Texture2D; 132] = [load_texture("assets/player/idle_0.png").await.unwrap(); 132];
     
-  for i in 0..3 {
-      let texture = load_texture(&format!("assets/player/player_{}.png", i+1)).await.unwrap();
+  for i in 0..44 {
+      let texture = load_texture(&format!("assets/player/idle_{}.png", i)).await.unwrap();
       texture.set_filter(FilterMode::Nearest);
       player_textures[i] = texture;
   }
+
+  for i in 44..88 {
+    let texture = load_texture(&format!("assets/player/walk_{}.png", i-44)).await.unwrap();
+    texture.set_filter(FilterMode::Nearest);
+    player_textures[i] = texture;
+}
+
+for i in 89..132 {
+  let texture = load_texture(&format!("assets/player/jump_{}.png", i-89)).await.unwrap();
+  texture.set_filter(FilterMode::Nearest);
+  player_textures[i] = texture;
+}
   
   player_textures
 }

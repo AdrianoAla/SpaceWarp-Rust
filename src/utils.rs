@@ -50,6 +50,9 @@ pub fn get_collision(x:i32, y:i32) -> i32 {
               
             }
           }
+
+          play_sound(BUTTON_SOUND.get_sound(), PlaySoundParams {looped:false, volume:0.5});
+
           return 4;
 
         }
@@ -78,7 +81,7 @@ pub fn get_collision(x:i32, y:i32) -> i32 {
               }
             }
 
-            play_sound(PICKUP_SOUND.get_sound(), PlaySoundParams {looped:false, volume:0.5});
+            play_sound(KEY_SOUND.get_sound(), PlaySoundParams {looped:false, volume:0.5});
             return 3;
           }
         }
@@ -133,5 +136,6 @@ impl ImageLoader {
 }
 
 lazy_static! {
-  static ref PICKUP_SOUND:SoundLoader = SoundLoader::new("assets/sounds/item.wav");
+  static ref KEY_SOUND:SoundLoader = SoundLoader::new("assets/sounds/item.wav");
+  static ref BUTTON_SOUND:SoundLoader = SoundLoader::new("assets/sounds/button.wav");
 }

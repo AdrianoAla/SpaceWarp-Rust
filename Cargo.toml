@@ -9,7 +9,6 @@ edition = "2021"
 lazy_static = "1.4.0"
 macroquad = "0.3.25"
 macroquad-text = "0.1.1"
-rand = "0.8.5"
 tokio = { version = "1.28.2", features = ["full"] }
 
 [[bin]]

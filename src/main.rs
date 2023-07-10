@@ -80,11 +80,12 @@ async fn main() {
     let mut allow_update:bool = false;
     let mut allow_debug:bool = false;
 
+    let mut anim_frames = 0;
+    let mut animating = false;
+
     let mut selected_option: i32 = 0;
 
     let options = vec!["Play", "Settings", "Quit"];
-
-    play_sound(BGM.get_sound(), PlaySoundParams {looped:true, volume: 1.0});
     
     loop {
         
@@ -127,6 +128,15 @@ async fn main() {
                             ship_angle = (PI as f64/4.0)*3.0;
                         } 
                         accumulator -= 1.0 / target_fps as f32;
+
+                        if anim_frames > 0 {
+                            anim_frames -= 1;
+                            if anim_frames == 0 {
+                                game_state = GameStates::Game;
+                                frame = 0;
+                                play_sound(BGM.sound, PlaySoundParams {looped:true, volume: 1.0});
+                            }
+                        }
                     }
 
                     clear_background(BLACK);
@@ -138,6 +148,7 @@ async fn main() {
                     
                     draw_rectangle(10.0, 30.0, screen_size() as f32 - 20.0, screen_size() as f32 - 40.0, Color::from_rgba(0, 0, 0, 100));
                     
+                    
                     fonts.draw_text(&format!("SpaceWarp"), (screen_size()/2) as f32 - (fonts.measure_text(&format!("SpaceWarp"), 8).width/2.0), 15.0, 8, WHITE);
 
                     for (index, option) in options.iter().enumerate() {
@@ -146,6 +157,10 @@ async fn main() {
                             color = YELLOW;
                         }
                         fonts.draw_text(&format!("{option}"), (screen_size()/2) as f32 - (fonts.measure_text(&format!("{option}"), 8).width/2.0), (index*20+40) as f32, 8, color);
+                    }
+
+                    if animating {
+                        draw_rectangle(0.0, 0.0, screen_size() as f32, screen_size() as f32, Color::from_rgba(0, 0, 0, 255-(anim_frames*5) as u8));
                     }
 
                     if is_key_pressed(KeyCode::Up) {
@@ -161,7 +176,8 @@ async fn main() {
 
                     if is_key_pressed(KeyCode::Enter) {
                         if options[selected_option as usize] == "Play" {
-                            game_state = GameStates::Game;
+                            anim_frames = 51;
+                            animating = true;
                         } else if options[selected_option as usize] == "Settings" {
 
                         } 
@@ -231,6 +247,7 @@ async fn main() {
 
                         player.x = spawn_point.0*8;
                         player.y = spawn_point.1*8;
+                        player.jump = 0;
                     }
 
 
