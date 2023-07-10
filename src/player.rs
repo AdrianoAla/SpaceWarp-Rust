@@ -3,11 +3,12 @@ use macroquad::{prelude::*, audio::{play_sound, PlaySoundParams}};
 use crate::{utils::*, level::{get_level}};
 use lazy_static::lazy_static;
 
+#[derive(Clone, Copy)]
 pub struct Player {
   pub x: i32,
   pub y: i32,
-  width: i32,
-  height: i32,
+  pub width: i32,
+  pub height: i32,
   
   speed: i32,
   moving: bool,
@@ -162,7 +163,7 @@ impl Player {
       if (self.x + self.width/2) > screen_size() {
 
         // Exit from right
-        if !unwrapped_level.next(3) {
+        if !unwrapped_level.next(3, self.clone()) {
           self.x = screen_size()-self.width/2;
         } else {
           self.x = 0;
@@ -170,7 +171,7 @@ impl Player {
       }
       // Exit from left
       if (self.x + self.width/2) < 0 {
-        if !unwrapped_level.next(2) {
+        if !unwrapped_level.next(2, self.clone()) {
           self.x = -self.width/2;
         } else {
           self.x = screen_size()-self.width;
@@ -178,7 +179,7 @@ impl Player {
       }
       // Exit from bottom
       if (self.y) > screen_size() {
-        if !unwrapped_level.next(1) {
+        if !unwrapped_level.next(1, self.clone()) {
           self.y = screen_size()-self.height/2;
         } else {
           self.y = self.height;
@@ -187,7 +188,7 @@ impl Player {
 
       // Exit from top
       if (self.y - self.height/2) < 0 {
-        if !unwrapped_level.next(0) {
+        if !unwrapped_level.next(0, self.clone()) {
           self.y = self.height/2;
         } else {
           self.y = screen_size()-self.height;

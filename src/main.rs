@@ -69,9 +69,9 @@ async fn main() {
     let ship = load_texture("assets/rocket.png").await.unwrap();
     let mut ship_x = 0.0;
     let mut ship_y = 0.0;
-    let ship_angle: f64 = (PI as f64/4.0)*3.0;
-    let ship_dx = 0.1;
-    let ship_dy = 0.1;
+    let mut ship_angle: f64 = (PI as f64/4.0)*3.0;
+    let mut ship_dx = 0.1;
+    let mut ship_dy = 0.1;
 
     // Debug
 
@@ -114,6 +114,18 @@ async fn main() {
                         
                         ship_x += ship_dx;
                         ship_y += ship_dy;
+
+                        if ship_x >= 115.0 {
+                            ship_dx = -0.1;
+                            ship_dy = -0.1;
+                            ship_angle = (PI as f64/4.0)*7.0;
+                        } 
+
+                        if ship_x <= 0.0 {
+                            ship_dx = 0.1;
+                            ship_dy = 0.1;
+                            ship_angle = (PI as f64/4.0)*3.0;
+                        } 
                         accumulator -= 1.0 / target_fps as f32;
                     }
 
@@ -205,6 +217,22 @@ async fn main() {
                     // Draw level
 
                     level.lock().unwrap().draw();
+
+                    if is_key_pressed(KeyCode::R) {
+                        let mut level = get_level().lock().unwrap();
+                        let spawn_point = level.get_spawn_location();
+                        let original_state = level.original_state.clone();
+                        
+                        level.tiles = Vec::new();
+                        for tile in original_state.iter() {
+                        let owned = tile.clone();
+                        level.tiles.push(owned);
+                        }
+
+                        player.x = spawn_point.0*8;
+                        player.y = spawn_point.1*8;
+                    }
+
 
                     // Debug text
 

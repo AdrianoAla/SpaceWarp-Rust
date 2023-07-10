@@ -2,6 +2,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use crate::tile::{Tile, ObjectColor};
 use macroquad::prelude::*;
+use crate::player::Player;
 
 use std::sync::Mutex;
 use lazy_static::lazy_static;
@@ -40,7 +41,7 @@ impl Level {
     }
   }
   
-  pub fn next(&mut self, dir:i32) -> bool  {
+  pub fn next(&mut self, dir:i32, player: Player) -> bool  {
 
     println!("Init Level Transition");
 
@@ -60,19 +61,34 @@ impl Level {
       println!("{} || {}", level.current_file, format!("level_{new_file}.sw"));
       if level.current_file == format!("level_{new_file}.sw") {
         new_level = Some(level.clone());
+        match dir {
+          0 => {
+            self.spawn_point = (player.x/8,0)
+          },
+          1 => {
+            self.spawn_point = (player.x/8,15)
+          },
+          2 => {
+            self.spawn_point = (15, player.y/8)
+          },
+          3 => {
+            
+            self.spawn_point = (0, player.y/8)
+          }
+          _ => {}
+        }
       }
     }
 
     match new_level {
       None => {
         new_level = Some(load_from_file(format!("level_{new_file}.sw").as_str()));
+        self.spawn_point = (new_level.clone().unwrap().spawn_point.0,new_level.clone().unwrap().spawn_point.1);
       }
       _ => {}
     }
-
+    
     let new_level = new_level.unwrap();
-
-    self.spawn_point = (new_level.spawn_point.0,new_level.spawn_point.1);
     
     
     
