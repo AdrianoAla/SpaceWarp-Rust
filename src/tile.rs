@@ -4,17 +4,29 @@ use macroquad::{prelude::*};
 use crate::utils::ImageLoader;
 use lazy_static::lazy_static;
 
+#[derive(Clone, Copy)]
+pub enum ObjectColor {
+  Red,
+  Blue,
+  Yellow,
+  None,
+}
 
 #[derive(Clone)]
 pub struct Tile {
   pub x: i32,
   pub y: i32,
+  pub oy: i32,
   pub width: i32,
   pub height: i32,
   pub color: Color,
   pub tile_type: char,
   textures: Vec<Texture2D>,
-  pub collidable: bool
+  pub collidable: bool,
+  pub timer: i32,
+  pub anim_timer: i32,
+  pub visible: bool,
+  pub locked: bool,
 } impl Tile {
   
   pub fn new(x: i32, y: i32, mut tile_type:char) -> Tile {
@@ -44,25 +56,54 @@ pub struct Tile {
       '4' => textures.push(IMAGE_WALL_19.get_texture()),
       '5' => textures.push(IMAGE_WALL_20.get_texture()),
       '👈' | '👉' | '👇' | '👆' => textures.push(IMAGE_FIRE.get_texture()),
+      
       '🟥' => textures.push(BOTTOM_DOOR_RED.get_texture()),
+      '🟦' => textures.push(BOTTOM_DOOR_BLUE.get_texture()),
+      '🟨' => textures.push(BOTTOM_DOOR_YELLOW.get_texture()),
+      
       '❤' => textures.push(KEY_RED.get_texture()),
+      '💙' => textures.push(KEY_BLUE.get_texture()),
+      '💛' => textures.push(KEY_YELLOW.get_texture()),
+
+      '🔴' => textures.push(BUTTON_RED.get_texture()),
+      '🔵' => textures.push(BUTTON_BLUE.get_texture()),
+      '🟡' => textures.push(BUTTON_YELLOW.get_texture()),
+      
       _ => tile_type = '⬜',
     }
 
     Tile {
       x,
       y,
+      oy: y,
       width: 8,
       height: 8,
       color,
       tile_type,
       textures,
       collidable: true,
+      timer: 0,
+      anim_timer:0 ,
+      visible: true,
+      locked: false,
     }
   }
 
   pub fn is_object(&self) -> bool {
     self.tile_type != '⬜'
+  }
+
+  pub fn is_key(&self) -> ObjectColor {
+    if self.tile_type == '❤' {
+      return ObjectColor::Red;
+    }
+    else if self.tile_type == '💙' {
+      return ObjectColor::Blue;
+    }
+    else if self.tile_type == '💛' {
+      return ObjectColor::Yellow;
+    }
+    ObjectColor::None
   }
   
   pub fn is_fire(&self) -> bool {
@@ -83,17 +124,106 @@ pub struct Tile {
     rotation
   }
 
-  pub fn is_door(&self) -> bool {
-    self.tile_type == '🟥'
+  pub fn is_button(&self) -> ObjectColor {
+    if self.tile_type == '🔴' {
+      return ObjectColor::Red;
+    }
+    else if self.tile_type == '🔵' {
+      return ObjectColor::Blue;
+    }
+    else if self.tile_type == '🟡' {
+      return ObjectColor::Yellow;
+    }
+    ObjectColor::None
+  }
+
+  pub fn is_door(&self, color: ObjectColor) -> bool {
+    match color {
+      ObjectColor::Red => self.tile_type == '🟥',
+      ObjectColor::Blue => self.tile_type == '🟦',
+      ObjectColor::Yellow => self.tile_type == '🟨',
+      ObjectColor::None => self.tile_type == '🟥' || self.tile_type == '🟦' || self.tile_type == '🟨'
+    }
+  }
+
+  pub fn update(&mut self) {
+    if self.timer > 0 {
+      self.timer -= 1;
+      println!("{}, {}", self.tile_type, self.timer);
+      
+      if self.timer == 0 {
+        println!("timer over");
+        self.collidable = true;
+        self.visible = true;
+        if self.is_door(ObjectColor::None) {
+          self.anim_timer = 8;
+        }
+      }
+    
+    }
+
+    if self.anim_timer > 0 {
+      if self.anim_timer == 8 {
+        if !self.collidable {
+          self.y = self.oy;
+        } else {
+          self.y = self.oy + 8;
+        }
+      }
+      self.anim_timer -= 1;
+      if self.collidable {
+        self.y -= 1;
+      } else {
+        self.y += 1;
+        if self.anim_timer == 0 {
+          self.visible = false;
+        }
+      }
+    }
   }
 
   pub fn draw(&mut self) {
     
-    if self.is_door() && !self.collidable {return;}
+    if !self.visible {return;}
+
+    match self.is_button() {
+      ObjectColor::None => {},
+      _ => {if !self.collidable {return;}}
+    }
 
     if self.is_object() {
-      if self.is_door() {
-        draw_texture_ex(TOP_DOOR_RED.get_texture(), self.x as f32, self.y as f32 - 8.0, self.color, DrawTextureParams::default());  
+      if self.is_door(ObjectColor::Red) {
+        if !self.collidable {
+          draw_texture_ex(TOP_DOOR_RED.get_texture(), self.x as f32, (self.y - (8-self.anim_timer)*2) as f32 - 8.0, self.color, DrawTextureParams::default());
+        }
+        else if self.anim_timer != 0 {
+          draw_texture_ex(TOP_DOOR_RED.get_texture(), self.x as f32, (self.y - (self.anim_timer)*2) as f32 - 8.0, self.color, DrawTextureParams::default());
+        }
+        else {
+          draw_texture_ex(TOP_DOOR_RED.get_texture(), self.x as f32, (self.y) as f32 - 8.0, self.color, DrawTextureParams::default());
+        }
+      }
+      if self.is_door(ObjectColor::Blue) {
+        if !self.collidable {
+          draw_texture_ex(TOP_DOOR_BLUE.get_texture(), self.x as f32, (self.y - (8-self.anim_timer)*2) as f32 - 8.0, self.color, DrawTextureParams::default());
+        }
+        else if self.anim_timer != 0 {
+          draw_texture_ex(TOP_DOOR_BLUE.get_texture(), self.x as f32, (self.y - (self.anim_timer)*2) as f32 - 8.0, self.color, DrawTextureParams::default());
+        }
+        else {
+          draw_texture_ex(TOP_DOOR_BLUE.get_texture(), self.x as f32, (self.y) as f32 - 8.0, self.color, DrawTextureParams::default());
+        }
+      }
+      if self.is_door(ObjectColor::Yellow) {
+        if !self.collidable {
+          draw_texture_ex(TOP_DOOR_YELLOW.get_texture(), self.x as f32, (self.y - (8-self.anim_timer)*2) as f32 - 8.0, self.color, DrawTextureParams::default());
+        }
+        else if self.anim_timer != 0 {
+          draw_texture_ex(TOP_DOOR_YELLOW.get_texture(), self.x as f32, (self.y - (self.anim_timer)*2) as f32 - 8.0, self.color, DrawTextureParams::default());
+        }
+        else {
+          draw_texture_ex(TOP_DOOR_YELLOW.get_texture(), self.x as f32, (self.y) as f32 - 8.0, self.color, DrawTextureParams::default());
+        }
       }
       let params:DrawTextureParams = DrawTextureParams {  rotation: self.get_fire_rotation(), ..Default::default() };
       draw_texture_ex(*self.textures.get(0).unwrap(), self.x as f32, self.y as f32, self.color, params);
@@ -131,7 +261,21 @@ lazy_static! {
   static ref IMAGE_WALL_18: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/top-right.png", *PACK));
   static ref IMAGE_WALL_19: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/bottom-left.png", *PACK));
   static ref IMAGE_WALL_20: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/bottom-right.png", *PACK));
+  
   static ref BOTTOM_DOOR_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/door/bottom.png", *PACK));
   static ref TOP_DOOR_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/door/top.png", *PACK));
+  
+  static ref BOTTOM_DOOR_YELLOW: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/yellow/door/bottom.png", *PACK));
+  static ref TOP_DOOR_YELLOW: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/yellow/door/top.png", *PACK));
+  
+  static ref BOTTOM_DOOR_BLUE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/blue/door/bottom.png", *PACK));
+  static ref TOP_DOOR_BLUE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/blue/door/top.png", *PACK));
+  
   static ref KEY_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/key.png", *PACK));
+  static ref KEY_BLUE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/blue/key.png", *PACK));
+  static ref KEY_YELLOW: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/yellow/key.png", *PACK));
+
+  static ref BUTTON_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/button.png", *PACK));
+  static ref BUTTON_BLUE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/blue/button.png", *PACK));
+  static ref BUTTON_YELLOW: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/yellow/button.png", *PACK));
 }

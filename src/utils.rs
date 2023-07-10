@@ -5,6 +5,8 @@ use macroquad_text::Fonts;
 use crate::level::get_level;
 use lazy_static::lazy_static;
 
+use crate::tile::ObjectColor;
+
 const FONT_SIZE: u16 = 8;
 
 pub fn screen_size() -> i32 {
@@ -23,29 +25,67 @@ pub fn _colliding(x1:i32, y1:i32, w1:i32, h1:i32, x2:i32, y2:i32, w2:i32, h2:i32
 
 pub fn get_collision(x:i32, y:i32) -> i32 {
   let mut level = get_level().lock().unwrap();
-  for (index, tile) in level.tiles.iter().enumerate() {
+  for (index, tile) in level.tiles.iter_mut().enumerate() {
     if tile.collidable == false { continue; }
+
+    let button = tile.is_button();
+
+    match button {
+      ObjectColor::None => {},
+      _ => {
+        if x >= tile.x && x <= tile.x + tile.width && y >= tile.y && y <= tile.y + tile.height - 1 && tile.collidable {
+
+          tile.visible = false;
+          tile.collidable = false;
+          tile.timer = 158;
+
+          for t in level.tiles.iter_mut() {
+            if t.is_door(button) && !t.locked {
+
+              t.collidable = false;
+              t.timer = 150;
+              
+              t.anim_timer = 8;
+              
+              
+            }
+          }
+          return 4;
+
+        }
+      }
+    }
+
     if x >= tile.x && x <= tile.x + tile.width && y >= tile.y && y <= tile.y + tile.height {
       if tile.is_fire() {
         return 2;
       } else {
-        if tile.tile_type == '❤' {
-          level.tiles.remove(index);
-          
-          for t in level.tiles.iter_mut() {
-            if t.is_door() {
-              t.collidable = false;
-            }
-          }
+        let key = tile.is_key();
+        match key {
+          ObjectColor::None => {},
+          _ => {
+            
+            // is a key
 
-          play_sound(PICKUP_SOUND.get_sound(), PlaySoundParams {looped:false, volume:0.5});
-          return 3;
+            level.tiles.remove(index);
+            
+            for t in level.tiles.iter_mut() {
+              if t.is_door(key) {
+                t.collidable = false;
+                t.timer = -1;
+                t.anim_timer = 8;
+                t.locked = true;
+              }
+            }
+
+            play_sound(PICKUP_SOUND.get_sound(), PlaySoundParams {looped:false, volume:0.5});
+            return 3;
+          }
         }
         return 1;
       }
     }
-    if tile.is_door() && x >= tile.x && x <= tile.x + tile.width && y >= tile.y - 8 && y <= tile.y - 8 + tile.height {
-      println!("{}, {}, {}, {}", tile.x, tile.y, tile.tile_type, index);
+    if tile.is_door(ObjectColor::None) && x >= tile.x && x <= tile.x + tile.width && y >= tile.y - 8 && y <= tile.y - 8 + tile.height {
       return 1;
     }
   }

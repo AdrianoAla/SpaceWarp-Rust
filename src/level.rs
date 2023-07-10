@@ -1,17 +1,19 @@
 use std::fs::File;
 use std::io::prelude::*;
-use crate::tile::Tile;
+use crate::tile::{Tile, ObjectColor};
 use macroquad::prelude::*;
 
 use std::sync::Mutex;
 use lazy_static::lazy_static;
  
+ #[derive(Clone)]
 pub struct Level {
   pub current_file: String,
   pub tiles: Vec<Tile>,
   pub next_levels: Vec<String>,
   pub spawn_point: (i32, i32),
   pub original_state: Vec<Tile>,
+  pub previous_levels: Vec<Level>,
 } 
 
 impl Level {
@@ -20,24 +22,61 @@ impl Level {
 
   pub fn draw(&mut self) {
     for tile in &mut self.tiles {
-      tile.draw();
+      if tile.is_door(ObjectColor::None) {
+        tile.draw();
+      }
+    }
+
+    for tile in &mut self.tiles {
+      if !tile.is_door(ObjectColor::None) {
+        tile.draw();
+      }
+    }
+  }
+
+  pub fn update(&mut self) {
+    for tile in self.tiles.iter_mut() {
+      tile.update();
     }
   }
   
   pub fn next(&mut self, dir:i32) -> bool  {
+
+    println!("Init Level Transition");
+
+    let mut add = true;
+    for level in self.previous_levels.iter() {
+      if level.current_file == self.current_file {
+        add = false;
+      }
+    } 
+    if add {self.previous_levels.push(self.clone());}
   
     let new_file = self.next_levels.get(dir as usize).unwrap();
     if new_file == "-1" {return false;}
     
-    let file_name = format!("level_{}.sw", new_file);
-    
-    let new_level = load_from_file(&file_name);
+    let mut new_level: Option<Level> = None;
+    for level in self.previous_levels.iter_mut() {
+      println!("{} || {}", level.current_file, format!("level_{new_file}.sw"));
+      if level.current_file == format!("level_{new_file}.sw") {
+        new_level = Some(level.clone());
+      }
+    }
+
+    match new_level {
+      None => {
+        new_level = Some(load_from_file(format!("level_{new_file}.sw").as_str()));
+      }
+      _ => {}
+    }
+
+    let new_level = new_level.unwrap();
 
     self.spawn_point = (new_level.spawn_point.0,new_level.spawn_point.1);
     
     
     
-    self.current_file = String::from(new_file);
+    self.current_file = format!("level_{new_file}.sw");
     self.next_levels = new_level.next_levels;
     self.tiles = new_level.tiles;
     self.original_state = new_level.original_state;
@@ -97,7 +136,8 @@ pub fn load_from_file(filename:&str) -> Level {
       tiles,
       next_levels,
       spawn_point: (x,y),
-      original_state
+      original_state,
+      previous_levels: Vec::new()
     }
 }
 
