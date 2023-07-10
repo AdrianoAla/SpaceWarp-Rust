@@ -114,6 +114,15 @@ function isValidCell(row, col) {
     return row >= 0 && row < grid.length && col >= 0 && col < grid[row].length;
 }
 
+function isSymbolPlaced(symbol) {
+    for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[i].length; j++) {
+            if (grid[i][j] === symbol) return true;
+        }
+    }
+    return false;
+}
+
 function setObject(value, id) {
     selected = !isNaN(value) ? recent[value] : value;
 
@@ -268,7 +277,6 @@ function exportRoom() {
 
 function changePack() {
     refreshMenu();
-    setElement("tiles", `./img/menu/${texturePack}.png`);
     setMultipleElements("wall-", 20, (i) => `${texturePath}/${getImageName(i)}.png`);
     setMultipleElements("default-wall-", 4, (i) => `${texturePath}/${getImageName(i)}.png`);
     setMultipleElements("fire-", 4, (i) => `${texturePath}/fire/${getFireImageName(i)}.png`);
@@ -344,7 +352,7 @@ function getPath(value) {
         "❤️": "objects/red/key",
         "🟦": "objects/blue/door/bottom",
         "🔵": "objects/blue/button",
-        "💙": "objects/blue/key"
+        "💙": "objects/blue/key",
     };
 
     return `${texturePath}/${paths[value]}.png`;
@@ -369,6 +377,47 @@ function toggleMenu() {
 
 document.addEventListener('keydown', (event) => {
     if (event.code === 'KeyE') toggleEraser();
+});
+
+const customSelect = document.querySelector('.dropdown');
+const selectSelected = customSelect.querySelector('.select-selected');
+const selectItems = customSelect.querySelector('.select-items');
+const optionItems = customSelect.querySelectorAll('.select-items div');
+
+customSelect.addEventListener('mouseover', () => selectItems.classList.add('open'));
+customSelect.addEventListener('mouseout', () => selectItems.classList.remove('open'));
+
+function changeMenu(option) {
+    const selectedImageSrc = option.querySelector('img').src;
+    const selectedHTML = option.innerHTML;
+
+    selectSelected.innerHTML = selectedHTML;
+    option.parentNode.removeChild(option);
+
+    const ids = ["metal", "natural", "classic"];
+    ids.forEach((id) => {
+        if (id === option.id) return;
+        document.getElementById(id).style.display = "block";
+    });
+
+    const hiddenOption = document.createElement('div');
+    hiddenOption.style.display = 'none';
+    hiddenOption.innerHTML = selectedHTML;
+    hiddenOption.id = option.id;
+    hiddenOption.onclick = () => changeMenu(hiddenOption);
+    hiddenOption.querySelector('img').src = selectedImageSrc;
+
+    selectItems.insertBefore(hiddenOption, selectItems.firstChild);
+    selectItems.classList.remove('open');
+
+    texturePath = `img/${hiddenOption.id}`;
+
+    loadTileImages();
+    changePack();
+}
+
+window.addEventListener('click', (event) => {
+    if (!customSelect.contains(event.target)) selectItems.classList.remove('open');
 });
 
 refreshMenu();

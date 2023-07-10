@@ -10,7 +10,22 @@
 
 <body>
     <ul class="top-nav frosted">
-        <button id="tiles" class="button left" onclick="ToggleTiles()" ><img src="./img/menu/metal.png"></button>
+        <div class="dropdown left">
+            <div class="select-selected">
+                <img src="./img/metal/icon.png">
+            </div>
+            <div class="select-items">
+                <div id="metal" style="display:none;" onclick="changeMenu(this)">
+                    <img src="./img/metal/icon.png">
+                </div>
+                <div id="natural" onclick="changeMenu(this)">
+                    <img src="./img/natural/icon.png">
+                </div>
+                <div id="classic" onclick="changeMenu(this)">
+                    <img src="./img/classic/icon.png">
+                </div>
+            </div>
+        </div>
         <button class="button right last" onclick="exportRoom()"><img src="./img/menu/export.png"></button>
         <button class="button right" onclick="importRoom()"><img src="./img/menu/import.png"></button>
         <div class="center">
