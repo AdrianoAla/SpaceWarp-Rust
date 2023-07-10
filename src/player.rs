@@ -187,9 +187,9 @@ impl Player {
       }
 
       // Exit from top
-      if (self.y - self.height/2) < 0 {
+      if (self.y) < 0 {
         if !unwrapped_level.next(0, self.clone()) {
-          self.y = self.height/2;
+          self.y = self.height;
         } else {
           self.y = screen_size()-self.height;
         }

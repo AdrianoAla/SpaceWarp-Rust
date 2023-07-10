@@ -63,10 +63,10 @@ impl Level {
         new_level = Some(level.clone());
         match dir {
           0 => {
-            self.spawn_point = (player.x/8,0)
+            self.spawn_point = (player.x/8,15)
           },
           1 => {
-            self.spawn_point = (player.x/8,15)
+            self.spawn_point = (player.x/8,0)
           },
           2 => {
             self.spawn_point = (15, player.y/8)
