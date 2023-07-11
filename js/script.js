@@ -60,7 +60,7 @@ function loadTileImages() {
 }
 
 function setup() {
-    const canvas = createCanvas(800, 800);
+    const canvas = createCanvas(768, 768);
     canvas.parent('editor');
 
     grid = Array.from({ length: 16 }, () => Array(16).fill('⬜'));
@@ -85,8 +85,8 @@ function draw() {
         }
     }
 
-    const gx = int((mouseX - mouseX % 50) / 50);
-    const gy = int((mouseY - mouseY % 50) / 50);
+    const gx = int((mouseX - mouseX % 48) / 48);
+    const gy = int((mouseY - mouseY % 48) / 48);
 
     if (mouseIsPressed && !menuCheck) {
         const row = floor(mouseY / (height / grid.length));
@@ -102,7 +102,7 @@ function draw() {
 
     if (!menuCheck) {
         fill(eraser ? 255 : 0, eraser ? 255 : 0, eraser ? 255 : 0, 100);
-        rect(gx * 50, gy * 50, 50, 50);
+        rect(gx * 48, gy * 48, 48, 48);
     }
 }
 

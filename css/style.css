@@ -278,15 +278,22 @@ body {
 
 @media (max-height: 1000px) {
     canvas {
-        width: 400px!important;
-        height: 400px!important;
+        width: 512px!important;
+        height: 512px!important;
     }
 }
 
-@media (max-height: 600px) {
+@media (max-height: 700px) {
     canvas {
-        width: 300px!important;
-        height: 300px!important;
+        width: 384px!important;
+        height: 384px!important;
+    }
+}
+
+@media (max-height: 574px) {
+    canvas {
+        width: 256px!important;
+        height: 256px!important;
     }
 }
 
