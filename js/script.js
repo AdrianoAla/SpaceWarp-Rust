@@ -55,19 +55,19 @@ function loadTileImages() {
     for (const [tileValue, imagePath] of imagePaths) {
         tileImages[tileValue] = loadImage(`${texturePath}${imagePath}`);
     }
+
+    backgroundImage = loadImage("img/game.png");
 }
 
 function setup() {
     const canvas = createCanvas(800, 800);
     canvas.parent('editor');
 
-    background(255);
-
     grid = Array.from({ length: 16 }, () => Array(16).fill('⬜'));
 }
 
 function draw() {
-    background(255);
+    background(backgroundImage);
 
     noStroke();
     noSmooth();
@@ -81,10 +81,6 @@ function draw() {
             if (tileImages[tileValue]) {
                 if (tileValue === '🟥' || tileValue === '🟦' || tileValue === '🟨') image(tileImages[`${tileValue}⬇️`], tileX, tileY - tileSize, tileSize, tileSize);
                 image(tileImages[tileValue], tileX, tileY, tileSize, tileSize);
-            }
-            else {
-                fill(255);
-                rect(tileX, tileY, tileSize, tileSize);
             }
         }
     }
