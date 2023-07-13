@@ -5,55 +5,221 @@ let selectedElement = "recent-1";
 let tileImages = {};
 let texturePack = "metal";
 let menuCheck = false;
-let recent = ["⬆️", "⬇️", "⬅️", "➡️"];
+let recent = ["⬆️", "⬇️", "⬅️", "➡️", "⏹️", "👆", "👇", "👈", "👉", "🟨", "🟡", "💛"];
 let texturePath = `img/${texturePack}`;
+
+const tiles = [
+    {
+        "emoji": "⬆️",
+        "image": "/square/top.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "⬇️",
+        "image": "/square/bottom.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "⬅️",
+        "image": "/square/left.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "➡️",
+        "image": "/square/right.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "↖️",
+        "image": "/square/top-left.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "↗️",
+        "image": "/square/top-right.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "↙️",
+        "image": "/square/bottom-left.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "↘️",
+        "image": "/square/bottom-right.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "⏹️",
+        "image": "/square/center.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "⏪",
+        "image": "/bottom/left.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "0️⃣",
+        "image": "/bottom/center.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "⏩",
+        "image": "/bottom/right.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "⏫",
+        "image": "/top/top.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "1️⃣",
+        "image": "/top/center.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "⏬",
+        "image": "/top/bottom.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "⏺️",
+        "image": "/single.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "2️⃣",
+        "image": "/corner/top-left.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "3️⃣",
+        "image": "/corner/top-right.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "4️⃣",
+        "image": "/corner/bottom-left.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "5️⃣",
+        "image": "/corner/bottom-right.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "👆",
+        "image": "/fire/up.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "👇",
+        "image": "/fire/down.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "👈",
+        "image": "/fire/left.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "👉",
+        "image": "/fire/right.png",
+        "type": "terrain",
+        "isDoor": false
+    },
+    {
+        "emoji": "🟨",
+        "image": "/objects/yellow/door/bottom.png",
+        "type": "gizmos",
+        "isDoor": true
+    },
+    {
+        "emoji": "🟡",
+        "image": "/objects/yellow/button.png",
+        "type": "gizmos",
+        "isDoor": false
+    },
+    {
+        "emoji": "💛",
+        "image": "/objects/yellow/key.png",
+        "type": "gizmos",
+        "isDoor": false
+    },
+    {
+        "emoji": "🟥",
+        "image": "/objects/red/door/bottom.png",
+        "type": "gizmos",
+        "isDoor": true
+    },
+    {
+        "emoji": "🔴",
+        "image": "/objects/red/button.png",
+        "type": "gizmos",
+        "isDoor": false
+    },
+    {
+        "emoji": "❤️",
+        "image": "/objects/red/key.png",
+        "type": "gizmos",
+        "isDoor": false
+    },
+    {
+        "emoji": "🟦",
+        "image": "/objects/blue/door/bottom.png",
+        "type": "gizmos",
+        "isDoor": true
+    },
+    {
+        "emoji": "🔵",
+        "image": "/objects/blue/button.png",
+        "type": "gizmos",
+        "isDoor": false
+    },
+    {
+        "emoji": "💙",
+        "image": "/objects/blue/key.png",
+        "type": "gizmos",
+        "isDoor": false
+    }
+]
 
 function preload() {
     loadTileImages();
 }
 
 function loadTileImages() {
-    const imagePaths = [
-        ['⬆️', '/square/top.png'],
-        ['⬇️', '/square/bottom.png'],
-        ['⬅️', '/square/left.png'],
-        ['➡️', '/square/right.png'],
-        ['↖️', '/square/top-left.png'],
-        ['↗️', '/square/top-right.png'],
-        ['↙️', '/square/bottom-left.png'],
-        ['↘️', '/square/bottom-right.png'],
-        ['⏹️', '/square/center.png'],
-        ['⏪', '/bottom/left.png'],
-        ['0️⃣', '/bottom/center.png'],
-        ['⏩', '/bottom/right.png'],
-        ['⏫', '/top/top.png'],
-        ['1️⃣', '/top/center.png'],
-        ['⏬', '/top/bottom.png'],
-        ['⏺️', '/single.png'],
-        ['2️⃣', '/corner/top-left.png'],
-        ['3️⃣', '/corner/top-right.png'],
-        ['4️⃣', '/corner/bottom-left.png'],
-        ['5️⃣', '/corner/bottom-right.png'],
-        ['👆', '/fire/up.png'],
-        ['👇', '/fire/down.png'],
-        ['👈', '/fire/left.png'],
-        ['👉', '/fire/right.png'],
-        ['🟨', '/objects/yellow/door/bottom.png'],
-        ['🟨⬇️', '/objects/yellow/door/top.png'],
-        ['🟡', '/objects/yellow/button.png'],
-        ['💛', '/objects/yellow/key.png'],
-        ['🟥', '/objects/red/door/bottom.png'],
-        ['🟥⬇️', '/objects/red/door/top.png'],
-        ['🔴', '/objects/red/button.png'],
-        ['❤️', '/objects/red/key.png'],
-        ['🟦', '/objects/blue/door/bottom.png'],
-        ['🟦⬇️', '/objects/blue/door/top.png'],
-        ['🔵', '/objects/blue/button.png'],
-        ['💙', '/objects/blue/key.png']
-    ];
+    for (let index = 0; index < tiles.length; index++) {
+        const { emoji, image, type, isDoor } = tiles[index];
 
-    for (const [tileValue, imagePath] of imagePaths) {
-        tileImages[tileValue] = loadImage(`${texturePath}${imagePath}`);
+        tileImages[emoji] = loadImage(`${texturePath}${image}`);
+
+        if (isDoor) tileImages[`${emoji}⬇️`] = loadImage(`${texturePath}${image.replace("bottom", "top")}`);
     }
 
     backgroundImage = loadImage("img/game.png");
@@ -79,7 +245,7 @@ function draw() {
             const tileY = i * tileSize;
             const tileValue = grid[i][j];
             if (tileImages[tileValue]) {
-                if (tileValue === '🟥' || tileValue === '🟦' || tileValue === '🟨') image(tileImages[`${tileValue}⬇️`], tileX, tileY - tileSize, tileSize, tileSize);
+                if (isDoor(tileValue)) image(tileImages[`${tileValue}⬇️`], tileX, tileY - tileSize, tileSize, tileSize);
                 image(tileImages[tileValue], tileX, tileY, tileSize, tileSize);
             }
         }
@@ -93,7 +259,7 @@ function draw() {
         const col = floor(mouseX / (width / grid[0].length));
 
         if (isValidCell(row, col)) {
-            if ((selected === '🟨' || selected === '🟥' || selected === '🟦') && (gy > 0 && grid[gy - 1][gx] !== '⬜')) return;
+            if (isDoor(selected) && (gy > 0 && grid[gy - 1][gx] !== '⬜')) return;
             else if ((gy < 15 && grid[gy + 1][gx] === '🟨') || (gy < 15 && grid[gy + 1][gx] === '🟥') || (gy < 15 && grid[gy + 1][gx] === '🟦')) return;
 
             grid[row][col] = eraser ? '⬜' : selected;
@@ -108,6 +274,11 @@ function draw() {
 
 function isValidCell(row, col) {
     return row >= 0 && row < grid.length && col >= 0 && col < grid[row].length;
+}
+
+function isDoor(emoji) {
+    const tile = tiles.find((tile) => tile.emoji === emoji);
+    return tile && tile.isDoor;
 }
 
 function isSymbolPlaced(symbol) {
@@ -130,7 +301,7 @@ function setObject(value, id) {
         if (!recent.includes(value)) recent.unshift(value);
         else selectedElement = `recent-${recent.indexOf(value) + 1}`;
 
-        if (recent.length > 4) recent.pop();
+        if (recent.length > 12) recent.pop();
     }
 
     refreshMenu();
@@ -144,15 +315,17 @@ function setSelected() {
 function refreshMenu() {
     const paths = recent.map((element) => getPath(element));
 
-    setMultipleElements("recent-", 4, (i) => paths[i - 1]);
-}
+    setMultipleElements("recent-", 12, (i) => {
+        const imagePath = paths[i - 1];
+        const element = document.getElementById(`recent-${i}`);
 
-function ToggleTiles() {
-    texturePack = texturePack === "natural" ? "metal" : "natural";
-    texturePath = `img/${texturePack}`;
+        element.className = "button";
 
-    loadTileImages();
-    changePack();
+        const tile = tiles.find((tile) => `img/${texturePack}${tile.image}` === imagePath);
+        if (tile) element.classList.add(tile.type);
+
+        return imagePath;
+    });
 }
 
 function toggleEraser() {
@@ -273,13 +446,11 @@ function exportRoom() {
 
 function changePack() {
     refreshMenu();
-    setMultipleElements("wall-", 20, (i) => `${texturePath}/${getImageName(i)}.png`);
-    setMultipleElements("default-wall-", 4, (i) => `${texturePath}/${getImageName(i)}.png`);
-    setMultipleElements("fire-", 4, (i) => `${texturePath}/fire/${getFireImageName(i)}.png`);
-    setMultipleElements("default-fire-", 4, (i) => `${texturePath}/fire/${getFireImageName(i)}.png`);
-    setMultipleElements("yellow-", 3, (i) => `${texturePath}/objects/yellow/${getObjectImageName(i)}.png`);
-    setMultipleElements("red-", 3, (i) => `${texturePath}/objects/red/${getObjectImageName(i)}.png`);
-    setMultipleElements("blue-", 3, (i) => `${texturePath}/objects/blue/${getObjectImageName(i)}.png`);
+    setMultipleElements("wall-", 20, (i) => getPath(tiles[i - 1].emoji));
+    setMultipleElements("fire-", 4, (i) => getPath(tiles[i + 15].emoji));
+    setMultipleElements("yellow-", 3, (i) => getPath(tiles[i + 25].emoji));
+    setMultipleElements("red-", 3, (i) => getPath(tiles[i + 28].emoji));
+    setMultipleElements("blue-", 3, (i) => getPath(tiles[i + 31].emoji));
 }
 
 function setElement(elementId, imagePath) {
@@ -291,67 +462,26 @@ function setMultipleElements(elementPrefix, count, imagePathFn) {
 }
 
 function getImageName(index) {
-    const imageNames = [
-        'square/top', 'square/bottom', 'square/left', 'square/right', 'square/top-left',
-        'square/top-right', 'square/bottom-left', 'square/bottom-right', 'square/center',
-        'bottom/left', 'bottom/center', 'bottom/right', 'top/top', 'top/center',
-        'top/bottom', 'single', 'corner/top-left', 'corner/top-right', 'corner/bottom-left',
-        'corner/bottom-right'
-    ];
-
-    return imageNames[index - 1] || '';
+    if (index <= tiles.length) return tiles[index - 1].image;
+    return '';
 }
 
 function getFireImageName(index) {
     const fireImageNames = ['up', 'down', 'left', 'right'];
-
-    return fireImageNames[index - 1] || '';
+    if (index <= fireImageNames.length) return `fire/${fireImageNames[index - 1]}.png`;
+    return '';
 }
 
 function getObjectImageName(index) {
     const objectImageNames = ['door/bottom', 'button', 'key'];
-
-    return objectImageNames[index - 1] || '';
+    if (index <= objectImageNames.length) return `objects/${objectImageNames[index - 1]}.png`;
+    return '';
 }
 
 function getPath(value) {
-    const paths = {
-        "⬆️": "square/top",
-        "⬇️": "square/bottom",
-        "⬅️": "square/left",
-        "➡️": "square/right",
-        "↖️": "square/top-left",
-        "↗️": "square/top-right",
-        "↙️": "square/bottom-left",
-        "↘️": "square/bottom-right",
-        "⏹️": "square/center",
-        "⏪": "bottom/left",
-        "0️⃣": "bottom/center",
-        "⏩": "bottom/right",
-        "⏫": "top/top",
-        "1️⃣": "top/center",
-        "⏬": "top/bottom",
-        "⏺️": "single",
-        "2️⃣": "corner/top-left",
-        "3️⃣": "corner/top-right",
-        "4️⃣": "corner/bottom-left",
-        "5️⃣": "corner/bottom-right",
-        "👆": "fire/up",
-        "👇": "fire/down",
-        "👈": "fire/left",
-        "👉": "fire/right",
-        "🟨": "objects/yellow/door/bottom",
-        "🟡": "objects/yellow/button",
-        "💛": "objects/yellow/key",
-        "🟥": "objects/red/door/bottom",
-        "🔴": "objects/red/button",
-        "❤️": "objects/red/key",
-        "🟦": "objects/blue/door/bottom",
-        "🔵": "objects/blue/button",
-        "💙": "objects/blue/key",
-    };
-
-    return `${texturePath}/${paths[value]}.png`;
+    const tile = tiles.find((tile) => tile.emoji === value);
+    if (tile) return `${texturePath}${tile.image}`;
+    return '';
 }
 
 function toggleMenu() {
@@ -362,13 +492,13 @@ function toggleMenu() {
         setElement("menuButton", "./img/menu/down.png");
         menuButton.classList.remove("selected");
         menu.style.display = "none";
-        menuCheck = false;
     } else {
         setElement("menuButton", "./img/menu/up.png");
         menuButton.classList.add("selected");
         menu.style.display = "block";
-        menuCheck = true;
     }
+
+    menuCheck = !menuCheck;
 }
 
 document.addEventListener('keydown', (event) => {
@@ -416,4 +546,4 @@ window.addEventListener('click', (event) => {
     if (!customSelect.contains(event.target)) selectItems.classList.remove('open');
 });
 
-refreshMenu();
+// refreshMenu();

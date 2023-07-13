@@ -84,6 +84,18 @@ body {
     border-color: #ac3435;
 }
 
+.terrain {
+    border-color: #00c3f2;
+}
+
+.enemies {
+    border-color: #66e11c;
+}
+
+.gizmos {
+    border-color: #f8e300;
+}
+
 .selected {
     background-color: rgba(31, 26, 26, 0.5);
     border: solid 4px rgba(84, 77, 104, 0.5);

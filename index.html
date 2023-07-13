@@ -30,20 +30,18 @@
         <button class="button right last" onclick="exportRoom()"><img src="./img/menu/export.png"></button>
         <button class="button right" onclick="importRoom()"><img src="./img/menu/import.png"></button>
         <div class="center">
-            <button id="recent-1" class="button" onclick="setObject(0, 'recent-1')"><img src="./img/metal/square/top.png"></button>
-            <button id="recent-2" class="button" onclick="setObject(1, 'recent-2')"><img src="./img/metal/square/bottom.png"></button>
-            <button id="recent-3" class="button" onclick="setObject(2, 'recent-3')"><img src="./img/metal/square/left.png"></button>
-            <button id="recent-4" class="button" onclick="setObject(3, 'recent-4')"><img src="./img/metal/square/right.png"></button>
-            <div class="gap"></div>
-            <button id="default-wall-1" class="button" onclick="setObject('⬆️', 'default-wall-1')"><img src="./img/metal/square/top.png"></button>
-            <button id="default-wall-2" class="button" onclick="setObject('⬇️', 'default-wall-2')"><img src="./img/metal/square/bottom.png"></button>
-            <button id="default-wall-3" class="button" onclick="setObject('⬅️', 'default-wall-3')"><img src="./img/metal/square/left.png"></button>
-            <button id="default-wall-4" class="button" onclick="setObject('➡️', 'default-wall-4')"><img src="./img/metal/square/right.png"></button>
-            <div class="gap"></div>
-            <button id="default-fire-1" class="button" onclick="setObject('👆', 'default-fire-1')"><img src="./img/metal/fire/up.png"></button>
-            <button id="default-fire-2" class="button" onclick="setObject('👇', 'default-fire-2')"><img src="./img/metal/fire/down.png"></button>
-            <button id="default-fire-3" class="button" onclick="setObject('👈', 'default-fire-3')"><img src="./img/metal/fire/left.png"></button>
-            <button id="default-fire-4" class="button" onclick="setObject('👉', 'default-fire-4')"><img src="./img/metal/fire/right.png"></button>
+            <button id="recent-1" class="button terrain" onclick="setObject(0, 'recent-1')"><img src="./img/metal/square/top.png"></button>
+            <button id="recent-2" class="button terrain" onclick="setObject(1, 'recent-2')"><img src="./img/metal/square/bottom.png"></button>
+            <button id="recent-3" class="button terrain" onclick="setObject(2, 'recent-3')"><img src="./img/metal/square/left.png"></button>
+            <button id="recent-4" class="button terrain" onclick="setObject(3, 'recent-4')"><img src="./img/metal/square/right.png"></button>
+            <button id="recent-5" class="button terrain" onclick="setObject(4, 'recent-5')"><img src="./img/metal/square/center.png"></button>
+            <button id="recent-6" class="button enemies" onclick="setObject(5, 'recent-6')"><img src="./img/metal/fire/up.png"></button>
+            <button id="recent-7" class="button enemies" onclick="setObject(6, 'recent-7')"><img src="./img/metal/fire/down.png"></button>
+            <button id="recent-8" class="button enemies" onclick="setObject(7, 'recent-8')"><img src="./img/metal/fire/left.png"></button>
+            <button id="recent-9" class="button enemies" onclick="setObject(8, 'recent-9')"><img src="./img/metal/fire/right.png"></button>
+            <button id="recent-10" class="button gizmos" onclick="setObject(9, 'recent-10')"><img src="./img/metal/objects/yellow/door/bottom.png"></button>
+            <button id="recent-11" class="button gizmos" onclick="setObject(10, 'recent-11')"><img src="./img/metal/objects/red/button.png"></button>
+            <button id="recent-12" class="button gizmos" onclick="setObject(11, 'recent-12')"><img src="./img/metal/objects/yellow/key.png"></button>
             <div class="gap"></div>
             <button id="menuButton" class="button" onclick="toggleMenu()"><img src="./img/menu/down.png"></button>
             <div class="gap"></div>
@@ -55,43 +53,43 @@
 
     <div id="menu" class="menu">
         <div class="menu-content frosted">
-            <button id="wall-1" class="button" onclick="setObject('⬆️', 'recent-1')"><img src="./img/metal/square/top.png"></button>
-            <button id="wall-2" class="button" onclick="setObject('⬇️', 'recent-1')"><img src="./img/metal/square/bottom.png"></button>
-            <button id="wall-3" class="button" onclick="setObject('⬅️', 'recent-1')"><img src="./img/metal/square/left.png"></button>
-            <button id="wall-4" class="button" onclick="setObject('➡️', 'recent-1')"><img src="./img/metal/square/right.png"></button>
-            <button id="wall-5" class="button" onclick="setObject('↖️', 'recent-1')"><img src="./img/metal/square/top-left.png"></button>
-            <button id="wall-6" class="button" onclick="setObject('↗️', 'recent-1')"><img src="./img/metal/square/top-right.png"></button>
-            <button id="wall-7" class="button" onclick="setObject('↙️', 'recent-1')"><img src="./img/metal/square/bottom-left.png"></button>
-            <button id="wall-8" class="button" onclick="setObject('↘️', 'recent-1')"><img src="./img/metal/square/bottom-right.png"></button>
-            <button id="wall-9" class="button" onclick="setObject('⏹️', 'recent-1')"><img src="./img/metal/square/center.png"></button>
-            <button id="wall-10" class="button" onclick="setObject('⏪', 'recent-1')"><img src="./img/metal/bottom/left.png"></button>
-            <button id="wall-11" class="button" onclick="setObject('0️⃣', 'recent-1')"><img src="./img/metal/bottom/center.png"></button>
-            <button id="wall-12" class="button" onclick="setObject('⏩', 'recent-1')"><img src="./img/metal/bottom/right.png"></button>
-            <button id="wall-13" class="button" onclick="setObject('⏫', 'recent-1')"><img src="./img/metal/top/top.png"></button>
-            <button id="wall-14" class="button" onclick="setObject('1️⃣', 'recent-1')"><img src="./img/metal/top/center.png"></button>
-            <button id="wall-15" class="button" onclick="setObject('⏬', 'recent-1')"><img src="./img/metal/top/bottom.png"></button>
-            <button id="wall-16" class="button" onclick="setObject('⏺️', 'recent-1')"><img src="./img/metal/single.png"></button>
-            <button id="wall-17" class="button" onclick="setObject('2️⃣', 'recent-1')"><img src="./img/metal/corner/top-left.png"></button>
-            <button id="wall-18" class="button" onclick="setObject('3️⃣', 'recent-1')"><img src="./img/metal/corner/top-right.png"></button>
-            <button id="wall-19" class="button" onclick="setObject('4️⃣', 'recent-1')"><img src="./img/metal/corner/bottom-left.png"></button>
-            <button id="wall-20" class="button" onclick="setObject('5️⃣', 'recent-1')"><img src="./img/metal/corner/bottom-right.png"></button>
+            <button id="wall-1" class="button terrain" onclick="setObject('⬆️', 'recent-1')"><img src="./img/metal/square/top.png"></button>
+            <button id="wall-2" class="button terrain" onclick="setObject('⬇️', 'recent-1')"><img src="./img/metal/square/bottom.png"></button>
+            <button id="wall-3" class="button terrain" onclick="setObject('⬅️', 'recent-1')"><img src="./img/metal/square/left.png"></button>
+            <button id="wall-4" class="button terrain" onclick="setObject('➡️', 'recent-1')"><img src="./img/metal/square/right.png"></button>
+            <button id="wall-5" class="button terrain" onclick="setObject('↖️', 'recent-1')"><img src="./img/metal/square/top-left.png"></button>
+            <button id="wall-6" class="button terrain" onclick="setObject('↗️', 'recent-1')"><img src="./img/metal/square/top-right.png"></button>
+            <button id="wall-7" class="button terrain" onclick="setObject('↙️', 'recent-1')"><img src="./img/metal/square/bottom-left.png"></button>
+            <button id="wall-8" class="button terrain" onclick="setObject('↘️', 'recent-1')"><img src="./img/metal/square/bottom-right.png"></button>
+            <button id="wall-9" class="button terrain" onclick="setObject('⏹️', 'recent-1')"><img src="./img/metal/square/center.png"></button>
+            <button id="wall-10" class="button terrain" onclick="setObject('⏪', 'recent-1')"><img src="./img/metal/bottom/left.png"></button>
+            <button id="wall-11" class="button terrain" onclick="setObject('0️⃣', 'recent-1')"><img src="./img/metal/bottom/center.png"></button>
+            <button id="wall-12" class="button terrain" onclick="setObject('⏩', 'recent-1')"><img src="./img/metal/bottom/right.png"></button>
+            <button id="wall-13" class="button terrain" onclick="setObject('⏫', 'recent-1')"><img src="./img/metal/top/top.png"></button>
+            <button id="wall-14" class="button terrain" onclick="setObject('1️⃣', 'recent-1')"><img src="./img/metal/top/center.png"></button>
+            <button id="wall-15" class="button terrain" onclick="setObject('⏬', 'recent-1')"><img src="./img/metal/top/bottom.png"></button>
+            <button id="wall-16" class="button terrain" onclick="setObject('⏺️', 'recent-1')"><img src="./img/metal/single.png"></button>
+            <button id="wall-17" class="button terrain" onclick="setObject('2️⃣', 'recent-1')"><img src="./img/metal/corner/top-left.png"></button>
+            <button id="wall-18" class="button terrain" onclick="setObject('3️⃣', 'recent-1')"><img src="./img/metal/corner/top-right.png"></button>
+            <button id="wall-19" class="button terrain" onclick="setObject('4️⃣', 'recent-1')"><img src="./img/metal/corner/bottom-left.png"></button>
+            <button id="wall-20" class="button terrain" onclick="setObject('5️⃣', 'recent-1')"><img src="./img/metal/corner/bottom-right.png"></button>
             <hr>
-            <button id="fire-1" class="button" onclick="setObject('👆', 'recent-1')"><img src="./img/metal/fire/up.png"></button>
-            <button id="fire-2" class="button" onclick="setObject('👇', 'recent-1')"><img src="./img/metal/fire/down.png"></button>
-            <button id="fire-3" class="button" onclick="setObject('👈', 'recent-1')"><img src="./img/metal/fire/left.png"></button>
-            <button id="fire-4" class="button" onclick="setObject('👉', 'recent-1')"><img src="./img/metal/fire/right.png"></button>
+            <button id="fire-1" class="button enemies" onclick="setObject('👆', 'recent-1')"><img src="./img/metal/fire/up.png"></button>
+            <button id="fire-2" class="button enemies" onclick="setObject('👇', 'recent-1')"><img src="./img/metal/fire/down.png"></button>
+            <button id="fire-3" class="button enemies" onclick="setObject('👈', 'recent-1')"><img src="./img/metal/fire/left.png"></button>
+            <button id="fire-4" class="button enemies" onclick="setObject('👉', 'recent-1')"><img src="./img/metal/fire/right.png"></button>
             <hr>
-            <button id="yellow-1" class="button" onclick="setObject('🟨', 'recent-1')"><img src="./img/metal/objects/yellow/door/bottom.png"></button>
-            <button id="yellow-2" class="button" onclick="setObject('🟡', 'recent-1')"><img src="./img/metal/objects/yellow/button.png"></button>
-            <button id="yellow-3" class="button" onclick="setObject('💛', 'recent-1')"><img src="./img/metal/objects/yellow/key.png"></button>
+            <button id="yellow-1" class="button gizmos" onclick="setObject('🟨', 'recent-1')"><img src="./img/metal/objects/yellow/door/bottom.png"></button>
+            <button id="yellow-2" class="button gizmos" onclick="setObject('🟡', 'recent-1')"><img src="./img/metal/objects/yellow/button.png"></button>
+            <button id="yellow-3" class="button gizmos" onclick="setObject('💛', 'recent-1')"><img src="./img/metal/objects/yellow/key.png"></button>
             <hr>
-            <button id="red-1" class="button" onclick="setObject('🟥', 'recent-1')"><img src="./img/metal/objects/red/door/bottom.png"></button>
-            <button id="red-2" class="button" onclick="setObject('🔴', 'recent-1')"><img src="./img/metal/objects/red/button.png"></button>
-            <button id="red-3" class="button" onclick="setObject('❤️', 'recent-1')"><img src="./img/metal/objects/red/key.png"></button>
+            <button id="red-1" class="button gizmos" onclick="setObject('🟥', 'recent-1')"><img src="./img/metal/objects/red/door/bottom.png"></button>
+            <button id="red-2" class="button gizmos" onclick="setObject('🔴', 'recent-1')"><img src="./img/metal/objects/red/button.png"></button>
+            <button id="red-3" class="button gizmos" onclick="setObject('❤️', 'recent-1')"><img src="./img/metal/objects/red/key.png"></button>
             <hr>
-            <button id="blue-1" class="button" onclick="setObject('🟦', 'recent-1')"><img src="./img/metal/objects/blue/door/bottom.png"></button>
-            <button id="blue-2" class="button" onclick="setObject('🔵', 'recent-1')"><img src="./img/metal/objects/blue/button.png"></button>
-            <button id="blue-3" class="button" onclick="setObject('💙', 'recent-1')"><img src="./img/metal/objects/blue/key.png"></button>
+            <button id="blue-1" class="button gizmos" onclick="setObject('🟦', 'recent-1')"><img src="./img/metal/objects/blue/door/bottom.png"></button>
+            <button id="blue-2" class="button gizmos" onclick="setObject('🔵', 'recent-1')"><img src="./img/metal/objects/blue/button.png"></button>
+            <button id="blue-3" class="button gizmos" onclick="setObject('💙', 'recent-1')"><img src="./img/metal/objects/blue/key.png"></button>
         </div>
     </div>
 
