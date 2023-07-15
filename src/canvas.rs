@@ -121,7 +121,7 @@ impl Canvas2D {
 
     /// Returns mouse position on the canvas
     #[inline]
-    pub fn _mouse_position(&self) -> (f32, f32) {
+    pub fn mouse_position(&self) -> (f32, f32) {
         self._mouse_position_ex(screen_width(), screen_height())
     }
 

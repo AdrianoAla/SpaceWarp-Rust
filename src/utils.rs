@@ -61,7 +61,8 @@ pub fn get_collision(x:i32, y:i32) -> i32 {
 
     if x >= tile.x && x <= tile.x + tile.width && y >= tile.y && y <= tile.y + tile.height {
       if tile.is_fire() {
-        return 2;
+        if x >= tile.x+1 && x <= tile.x - 2 + tile.width && y >= tile.y+2 && y <= tile.y + tile.height-4 {return 2;}
+        return -1;
       } else {
         let key = tile.is_key();
         match key {

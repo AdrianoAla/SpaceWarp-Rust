@@ -35,15 +35,20 @@ impl Level {
     }
   }
 
-  pub fn update(&mut self) {
+  pub fn update(&mut self, frame: u64) {
     for tile in self.tiles.iter_mut() {
-      tile.update();
+      tile.update(frame);
     }
   }
   
   pub fn next(&mut self, dir:i32, player: Player) -> bool  {
 
     println!("Init Level Transition");
+
+    self.original_state = Vec::new();
+    for tile in self.tiles.iter() {
+      self.original_state.push(tile.clone());
+    }
 
     let mut add = true;
     for level in self.previous_levels.iter() {

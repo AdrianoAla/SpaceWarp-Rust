@@ -76,7 +76,7 @@ impl Player {
 
       // Left and right movement
 
-      if is_key_down(KeyCode::Right)
+      if is_key_down(KeyCode::Right) || is_key_down(KeyCode::D)
          && get_collision(self.x+8, self.y+1) != 1
          && get_collision(self.x+8, self.y+7) != 1 
       {
@@ -84,7 +84,7 @@ impl Player {
         self.flip = false;
         self.moving = true;
       }
-      if is_key_down(KeyCode::Left)
+      if is_key_down(KeyCode::Left) || is_key_down(KeyCode::A)
          && get_collision(self.x, self.y+1) != 1
          && get_collision(self.x, self.y+7) != 1 
       {
@@ -95,7 +95,7 @@ impl Player {
 
       // Jumping
 
-      if (is_key_down(KeyCode::Up) || is_key_down(KeyCode::Space)) && (get_collision(self.x+1, self.y+self.height) == 1 || get_collision(self.x+7, self.y+self.height) == 1) && !(get_collision(self.x+1, self.y-1) == 1 || get_collision(self.x+7, self.y-1) == 1)
+      if (is_key_down(KeyCode::Up) || is_key_down(KeyCode::Space) || is_key_down(KeyCode::W)) && (get_collision(self.x+1, self.y+self.height) == 1 || get_collision(self.x+7, self.y+self.height) == 1) && !(get_collision(self.x+1, self.y-1) == 1 || get_collision(self.x+7, self.y-1) == 1)
       {
         self.jump = self.jump_height;
         play_sound(SOUND_JUMP.get_sound(), PlaySoundParams {looped: false, volume: 0.15})

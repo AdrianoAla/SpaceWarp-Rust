@@ -16,9 +16,15 @@ pub enum ObjectColor {
 pub struct Tile {
   pub x: i32,
   pub y: i32,
+  
+  pub vx: i32,
+  pub vy: i32,
+
   pub oy: i32,
+
   pub width: i32,
   pub height: i32,
+  
   pub color: Color,
   pub tile_type: char,
   textures: Vec<Texture2D>,
@@ -86,6 +92,8 @@ pub struct Tile {
       anim_timer:0 ,
       visible: true,
       locked: false,
+      vx: 0,
+      vy: 0,
     }
   }
 
@@ -146,7 +154,18 @@ pub struct Tile {
     }
   }
 
-  pub fn update(&mut self) {
+  pub fn update(&mut self, frame: u64) {
+   
+    match self.is_key() {
+      ObjectColor::None => {}
+      _ => {
+        if frame % 12 == 0 {
+          self.vy += 1;
+          self.vy %= 2;
+        }
+      }
+    }
+
     if self.timer > 0 {
       self.timer -= 1;
       println!("{}, {}", self.tile_type, self.timer);
@@ -226,7 +245,7 @@ pub struct Tile {
         }
       }
       let params:DrawTextureParams = DrawTextureParams {  rotation: self.get_fire_rotation(), ..Default::default() };
-      draw_texture_ex(*self.textures.get(0).unwrap(), self.x as f32, self.y as f32, self.color, params);
+      draw_texture_ex(*self.textures.get(0).unwrap(), self.x as f32, (self.y + self.vy) as f32, self.color, params);
     } else {
       draw_rectangle(self.x as f32, self.y as f32, self.width as f32, self.height as f32, self.color);
     }

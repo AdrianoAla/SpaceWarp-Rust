@@ -4,7 +4,7 @@ use macroquad::{prelude::*, audio::{play_sound, PlaySoundParams}};
 use macroquad_text::*;
 
 mod canvas;
-use canvas::Canvas2D;
+use canvas::*;
 
 mod player;
 use player::Player;
@@ -21,11 +21,18 @@ use lazy_static::lazy_static;
 
 const FONT: &[u8] = include_bytes!("../assets/font.ttf");
 
+#[derive(Clone, Copy)]
+enum Tile {
+    Void,
+    Tile,
+}
+
 enum GameStates {
     Menu,
     Game,
     Win,
     Pause,
+    Editor,
 }
 
 #[macroquad::main("SpaceWarp: Definitive Edition")]
@@ -85,7 +92,9 @@ async fn main() {
 
     let mut selected_option: i32 = 0;
 
-    let options = vec!["Play", "Settings", "Quit"];
+    let mut editor_level = [[Tile::Void; 16]; 16];
+
+    let options = vec!["Play", "Editor", "Settings", "Quit"];
     
     loop {
         
@@ -143,10 +152,9 @@ async fn main() {
                     
                     draw_texture(background_texture, 0.0, 0.0, WHITE);
 
-                    
                     draw_texture_ex(ship, ship_x as f32, ship_y as f32, WHITE, DrawTextureParams { dest_size: Some(Vec2::new(12.5, 16.0)), rotation: ship_angle as f32, ..Default::default() });
                     
-                    draw_rectangle(10.0, 30.0, screen_size() as f32 - 20.0, screen_size() as f32 - 40.0, Color::from_rgba(0, 0, 0, 100));
+                    draw_rectangle(10.0, 30.0, screen_size() as f32 - 20.0, screen_size() as f32 - 35.0, Color::from_rgba(0, 0, 0, 100));
                     
                     
                     fonts.draw_text(&format!("SpaceWarp"), (screen_size()/2) as f32 - (fonts.measure_text(&format!("SpaceWarp"), 8).width/2.0), 15.0, 8, WHITE);
@@ -175,12 +183,15 @@ async fn main() {
                     }
 
                     if is_key_pressed(KeyCode::Enter) {
-                        if options[selected_option as usize] == "Play" {
+                        if options[selected_option as usize] == "Play" && !animating {
                             anim_frames = 51;
                             animating = true;
                         } else if options[selected_option as usize] == "Settings" {
 
                         } 
+                        else if options[selected_option as usize] == "Editor" {
+                            game_state = GameStates::Editor;
+                        }
                         else if options[selected_option as usize] == "Quit" {
                             break;
                         }
@@ -214,7 +225,7 @@ async fn main() {
 
                             player.update();
 
-                            level.lock().unwrap().update();
+                            level.lock().unwrap().update(frame);
 
                             frame += 1;
                         
@@ -226,13 +237,14 @@ async fn main() {
 
                     draw_texture(background_texture, 0.0, 0.0, WHITE);
 
+                    // Draw level
+
+                    level.lock().unwrap().draw();
+                    
                     // Draw the player
                     
                     player.draw(frame);
 
-                    // Draw level
-
-                    level.lock().unwrap().draw();
 
                     if is_key_pressed(KeyCode::R) {
                         let mut level = get_level().lock().unwrap();
@@ -274,9 +286,60 @@ async fn main() {
                         allow_update = true
                     }
                 },
+
+                GameStates::Editor => {
+                    
+                    clear_background(BLACK);
+
+                    draw_texture(background_texture, 0.0, 0.0, WHITE);
+                    
+                    let (mouse_x, mouse_y) = canvas.mouse_position();
+                    
+                    let mouse_x = mouse_x as i32;
+                    let mouse_y = mouse_y as i32;
+
+                    let gx = mouse_x - mouse_x % 8;
+                    let gy = mouse_y - mouse_y % 8;
+
+                    let mut x = gx as usize/8;
+                    let mut y = gy as usize/8;
+                    
+                    if x > 15 {x = 15};
+                    if y > 15 {y = 15};
+
+                    if is_mouse_button_down(MouseButton::Left) {
+                        editor_level[x][y] = Tile::Tile;
+                    } else if is_mouse_button_down(MouseButton::Right) {
+                        editor_level[x][y] = Tile::Void;
+                    }
+
+                    for (index, row) in editor_level.iter().enumerate() {
+                        for (index_2, item) in row.iter().enumerate() {
+                            match *item {
+                                Tile::Void => {},
+                                Tile::Tile => {
+                                    draw_rectangle(index as f32 * 8.0, index_2 as f32 * 8.0, 8.0, 8.0, BLACK);
+                                }
+                            }
+                        }
+                    }
+
+                    draw_rectangle(gx as f32, gy as f32, 8.0, 8.0, BLACK);
+
+                    if is_key_pressed(KeyCode::Backspace) {
+                        game_state = GameStates::Menu
+                    }
+
+                }
+
                 GameStates::Win => {
 
                 },
+
+                GameStates::Pause => {
+                    draw_texture(background_texture, 0.0, 0.0, WHITE);
+                },
+
                 _ => {}
             }
 
