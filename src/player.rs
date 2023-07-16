@@ -95,7 +95,9 @@ impl Player {
 
       // Jumping
 
-      if (is_key_down(KeyCode::Up) || is_key_down(KeyCode::Space) || is_key_down(KeyCode::W)) && (get_collision(self.x+1, self.y+self.height) == 1 || get_collision(self.x+7, self.y+self.height) == 1) && !(get_collision(self.x+1, self.y-1) == 1 || get_collision(self.x+7, self.y-1) == 1)
+      if (is_key_down(KeyCode::Up) || is_key_down(KeyCode::Space) || is_key_down(KeyCode::W))
+      && (get_collision(self.x+1, self.y+self.height) == 1 || get_collision(self.x+7, self.y+self.height) == 1 || (self.y + self.height/2) >= screen_size())
+      && !(get_collision(self.x+1, self.y-1) == 1 || get_collision(self.x+7, self.y-1) == 1)
       {
         self.jump = self.jump_height;
         play_sound(SOUND_JUMP.get_sound(), PlaySoundParams {looped: false, volume: 0.15})
@@ -178,7 +180,7 @@ impl Player {
         }
       }
       // Exit from bottom
-      if (self.y) > screen_size() {
+      if (self.y + self.height/2) > screen_size() {
         if !unwrapped_level.next(1, self.clone()) {
           self.y = screen_size()-self.height/2;
         } else {
@@ -187,9 +189,10 @@ impl Player {
       }
 
       // Exit from top
-      if (self.y) < 0 {
+      if (self.y+self.height/2) < 0 {
         if !unwrapped_level.next(0, self.clone()) {
-          self.y = self.height;
+          self.y = -self.height/2;
+          self.jump = 0;
         } else {
           self.y = screen_size()-self.height;
         }
