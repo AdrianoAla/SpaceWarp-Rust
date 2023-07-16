@@ -1,6 +1,6 @@
 use macroquad::audio::*;
-use crate::{player::Player};
-use macroquad::{prelude::*};
+use crate::player::Player;
+use macroquad::prelude::*;
 use macroquad_text::Fonts;
 use crate::level::get_level;
 use lazy_static::lazy_static;

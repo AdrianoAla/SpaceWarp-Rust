@@ -1,6 +1,6 @@
 use std::f32::consts::PI;
 
-use macroquad::{prelude::*};
+use macroquad::prelude::*;
 use crate::utils::ImageLoader;
 use lazy_static::lazy_static;
 
@@ -74,6 +74,8 @@ pub struct Tile {
       '🔴' => textures.push(BUTTON_RED.get_texture()),
       '🔵' => textures.push(BUTTON_BLUE.get_texture()),
       '🟡' => textures.push(BUTTON_YELLOW.get_texture()),
+      
+      '🚀' => textures.push(BUTTON_YELLOW.get_texture()),
       
       _ => tile_type = '⬜',
     }
@@ -168,10 +170,10 @@ pub struct Tile {
 
     if self.timer > 0 {
       self.timer -= 1;
-      println!("{}, {}", self.tile_type, self.timer);
+      //println!("{}, {}", self.tile_type, self.timer);
       
       if self.timer == 0 {
-        println!("timer over");
+        //println!("timer over");
         self.collidable = true;
         self.visible = true;
         if self.is_door(ObjectColor::None) {

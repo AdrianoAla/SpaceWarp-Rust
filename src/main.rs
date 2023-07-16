@@ -1,7 +1,11 @@
 use std::f32::consts::PI;
 
-use macroquad::{prelude::*, audio::{play_sound, PlaySoundParams}};
+use macroquad::{prelude::*, audio::{play_sound, PlaySoundParams, stop_sound}};
 use macroquad_text::*;
+
+
+use std::fs::File;
+use std::io::prelude::*;
 
 mod canvas;
 use canvas::*;
@@ -27,11 +31,17 @@ enum Tile {
     Tile,
 }
 
+#[derive(Clone, Copy)]
+enum PlayState {
+    Testing,
+    Playing,
+}
+
 enum GameStates {
     Menu,
-    Game,
+    Game(PlayState),
     Win,
-    Pause,
+    Pause(PlayState),
     Editor,
 }
 
@@ -41,6 +51,7 @@ async fn main() {
     // Create a canvas
     
     let canvas = Canvas2D::new(screen_size() as f32, screen_size() as f32);
+    let canvas_editor = Canvas2D::new(screen_size() as f32, screen_size() as f32 + 24_f32);
 
     // Load a font
 
@@ -72,6 +83,7 @@ async fn main() {
     // Load background texture
 
     let background_texture = load_texture("assets/background.png").await.unwrap();
+    let spacewarp_texture = load_texture("assets/spacewarp.png").await.unwrap();
 
     let ship = load_texture("assets/rocket.png").await.unwrap();
     let mut ship_x = 0.0;
@@ -93,33 +105,39 @@ async fn main() {
     let mut selected_option: i32 = 0;
 
     let mut editor_level = [[Tile::Void; 16]; 16];
+    let mut spawn_x = 0;
+    let mut spawn_y = 0;
 
     let options = vec!["Play", "Editor", "Settings", "Quit"];
+    let pause_options = vec!["Back", "Settings", "Menu", "Quit"];
     
     loop {
-        
-        set_camera(&canvas.camera);
+
+        let current_canvas = match game_state {
+            GameStates::Editor => canvas_editor,
+            _ => canvas,
+        };
+
+        set_camera(&current_canvas.camera);
         {
 
-            
+            let mut delta_frame_time = get_frame_time();
+                    
+            if (delta_frame_time - 1.0/120.0).abs() < 0.0002 {
+                delta_frame_time = 1.0/120.0;
+            }
+            if (delta_frame_time - 1.0/60.0).abs() < 0.0002 {
+                delta_frame_time = 1.0/60.0;
+            }
+            if (delta_frame_time - 1.0/30.0).abs() < 0.0002 {
+                delta_frame_time = 1.0/30.0;
+            } accumulator += delta_frame_time;    
            
             
             match game_state {
 
                 GameStates::Menu => {
 
-                    let mut delta_frame_time = get_frame_time();
-                    
-                    if (delta_frame_time - 1.0/120.0).abs() < 0.0002 {
-                        delta_frame_time = 1.0/120.0;
-                    }
-                    if (delta_frame_time - 1.0/60.0).abs() < 0.0002 {
-                        delta_frame_time = 1.0/60.0;
-                    }
-                    if (delta_frame_time - 1.0/30.0).abs() < 0.0002 {
-                        delta_frame_time = 1.0/30.0;
-                    } accumulator += delta_frame_time;
-                    
                     while accumulator >= 1.0 / target_fps as f32 {
                         
                         ship_x += ship_dx;
@@ -141,9 +159,14 @@ async fn main() {
                         if anim_frames > 0 {
                             anim_frames -= 1;
                             if anim_frames == 0 {
-                                game_state = GameStates::Game;
+                                game_state = GameStates::Game(PlayState::Playing);
                                 frame = 0;
+
+                                level.lock().unwrap().unsafe_set_level_from_file("levels/level_1.sw");
+
                                 play_sound(BGM.sound, PlaySoundParams {looped:true, volume: 1.0});
+                                
+                                player = Player::new();
                             }
                         }
                     }
@@ -153,18 +176,19 @@ async fn main() {
                     draw_texture(background_texture, 0.0, 0.0, WHITE);
 
                     draw_texture_ex(ship, ship_x as f32, ship_y as f32, WHITE, DrawTextureParams { dest_size: Some(Vec2::new(12.5, 16.0)), rotation: ship_angle as f32, ..Default::default() });
+    
+                    draw_rectangle(10.0, 5.0, screen_size() as f32 - 20.0, screen_size() as f32 - 10.0, Color::from_rgba(0, 0, 0, 200));
                     
-                    draw_rectangle(10.0, 30.0, screen_size() as f32 - 20.0, screen_size() as f32 - 35.0, Color::from_rgba(0, 0, 0, 100));
-                    
-                    
-                    fonts.draw_text(&format!("SpaceWarp"), (screen_size()/2) as f32 - (fonts.measure_text(&format!("SpaceWarp"), 8).width/2.0), 15.0, 8, WHITE);
+                    draw_texture_ex(spacewarp_texture, 23.0, 5.0, WHITE, DrawTextureParams {dest_size: Some(Vec2::new(80.0,35.0)), ..Default::default()});
+
+                        //fonts.draw_text(&format!("SpaceWarp"), (screen_size()/2) as f32 - (fonts.measure_text(&format!("SpaceWarp"), 8).width/2.0), 15.0, 8, WHITE);
 
                     for (index, option) in options.iter().enumerate() {
                         let mut color = WHITE;
                         if index as i32 == selected_option {
                             color = YELLOW;
                         }
-                        fonts.draw_text(&format!("{option}"), (screen_size()/2) as f32 - (fonts.measure_text(&format!("{option}"), 8).width/2.0), (index*20+40) as f32, 8, color);
+                        fonts.draw_text(&format!("{option}"), (screen_size()/2) as f32 - (fonts.measure_text(&format!("{option}"), 8).width/2.0), (index*20+45) as f32, 8, color);
                     }
 
                     if animating {
@@ -199,21 +223,7 @@ async fn main() {
                 
                 },
 
-                GameStates::Game => {
-                    
-                    // Limit updates to 30 TPS 
-
-                    let mut delta_frame_time = get_frame_time();
-                    
-                    if (delta_frame_time - 1.0/120.0).abs() < 0.0002 {
-                        delta_frame_time = 1.0/120.0;
-                    }
-                    if (delta_frame_time - 1.0/60.0).abs() < 0.0002 {
-                        delta_frame_time = 1.0/60.0;
-                    }
-                    if (delta_frame_time - 1.0/30.0).abs() < 0.0002 {
-                        delta_frame_time = 1.0/30.0;
-                    } accumulator += delta_frame_time;
+                GameStates::Game(state) => {
                     
                     while accumulator >= 1.0 / target_fps as f32 {
                         
@@ -285,15 +295,47 @@ async fn main() {
                     if is_key_pressed(KeyCode::Enter) {
                         allow_update = true
                     }
+
+                    if is_key_down(KeyCode::Escape) {
+                        selected_option = 0;
+                        game_state = GameStates::Pause(state);
+                    } 
+
+                    if is_key_down(KeyCode::Backspace) {
+                        match state {
+                            PlayState::Testing => {
+                                game_state = GameStates::Editor;
+                            }
+                            PlayState::Playing => {
+                                
+                                print!("> ");
+                                std::io::stdout().flush();
+                                let mut line = String::new();
+                                std::io::stdin().read_line(&mut line).unwrap();
+                                line = String::from(line.trim());
+
+                                let command: Vec<&str> = line.split(" ").collect();
+
+                                if command[0] == "load" {
+                                    level.lock().unwrap().unsafe_set_level_from_file(command[1]);
+                                    player = Player::new();
+                                }
+                            }
+                        }
+                    }
+                
+                    
                 },
 
                 GameStates::Editor => {
                     
-                    clear_background(BLACK);
+                    while accumulator >= 1.0 / target_fps as f32 {accumulator -= 1.0 / target_fps as f32;}
+                    
+                    clear_background(WHITE);
 
                     draw_texture(background_texture, 0.0, 0.0, WHITE);
                     
-                    let (mouse_x, mouse_y) = canvas.mouse_position();
+                    let (mouse_x, mouse_y) = canvas_editor.mouse_position();
                     
                     let mouse_x = mouse_x as i32;
                     let mouse_y = mouse_y as i32;
@@ -308,9 +350,12 @@ async fn main() {
                     if y > 15 {y = 15};
 
                     if is_mouse_button_down(MouseButton::Left) {
-                        editor_level[x][y] = Tile::Tile;
+                        editor_level[y][x] = Tile::Tile;
                     } else if is_mouse_button_down(MouseButton::Right) {
-                        editor_level[x][y] = Tile::Void;
+                        editor_level[y][x] = Tile::Void;
+                    } else if is_mouse_button_down(MouseButton::Middle) {
+                        spawn_x = x;
+                        spawn_y = y;
                     }
 
                     for (index, row) in editor_level.iter().enumerate() {
@@ -318,8 +363,11 @@ async fn main() {
                             match *item {
                                 Tile::Void => {},
                                 Tile::Tile => {
-                                    draw_rectangle(index as f32 * 8.0, index_2 as f32 * 8.0, 8.0, 8.0, BLACK);
-                                }
+                                    draw_texture(IMAGE_WALL_9.texture, index_2 as f32 * 8.0, index as f32 * 8.0, WHITE);
+                                },
+                            }
+                            if index == spawn_y && index_2 == spawn_x {
+                                draw_rectangle(index_2 as f32 * 8.0, index as f32 * 8.0, 8.0, 8.0, RED);
                             }
                         }
                     }
@@ -330,31 +378,106 @@ async fn main() {
                         game_state = GameStates::Menu
                     }
 
-                }
+                    if is_key_pressed(KeyCode::Enter) {
+                        let mut file = File::create("out.sw").expect("Error writing");
+                        let mut string = String::new();
+                       
+                        for row in editor_level.iter() {
+                            for item in row.iter() {
+                                match *item {
+                                    Tile::Void => {
+                                        string.push_str("⬜️");
+                                    },
+                                    Tile::Tile => {
+                                        string.push_str("⏹️");
+                                    },
+                                }
+                            }
+                            string.push_str("\n");
+                        }
+
+
+                        string.push_str(format!("-1\n-1\n-1\n-1\n{spawn_x}\n{spawn_y}").as_str());
+
+                        file.write_all(string.as_bytes()).expect("Failed to write file");
+
+                        level.lock().unwrap().unsafe_set_level_from_file("out.sw");
+
+                        player = Player::new();
+                        game_state = GameStates::Game(PlayState::Testing);
+
+                    }
+
+                    
+                },
 
                 GameStates::Win => {
 
                 },
 
-                GameStates::Pause => {
+                GameStates::Pause(state) => {
+
+                    while accumulator >= 1.0 / target_fps as f32 {accumulator -= 1.0 / target_fps as f32;}
+
                     draw_texture(background_texture, 0.0, 0.0, WHITE);
+                    
+                    draw_rectangle(0.0, 0.0, 128.0, 128.0, Color::from_rgba(0,0,0,100));
+                    
+                    draw_rectangle(10.0, 5.0, screen_size() as f32 - 20.0, screen_size() as f32 - 10.0, Color::from_rgba(0, 0, 0, 100));
+                    
+                    draw_texture_ex(spacewarp_texture, 23.0, 5.0, WHITE, DrawTextureParams {dest_size: Some(Vec2::new(80.0,35.0)), ..Default::default()});
+
+
+                    for (index, option) in pause_options.iter().enumerate() {
+                        let mut color = WHITE;
+                        if index as i32 == selected_option {
+                            color = YELLOW;
+                        }
+                        fonts.draw_text(&format!("{option}"), (screen_size()/2) as f32 - (fonts.measure_text(&format!("{option}"), 8).width/2.0), (index*20+45) as f32, 8, color);
+                    }
+
+                    if is_key_pressed(KeyCode::Up) {
+                        selected_option -= 1;
+                        if selected_option < 0 {
+                            selected_option = (options.len()-1) as i32;
+                        }
+                    }
+                    if is_key_pressed(KeyCode::Down) {
+                        selected_option += 1;
+                        selected_option %= options.len() as i32;
+                    }
+
+                    if is_key_pressed(KeyCode::Enter) {
+                        if pause_options[selected_option as usize] == "Back" {
+                            game_state = GameStates::Game(state);
+                        } else if pause_options[selected_option as usize] == "Settings" {
+
+                        } 
+                        else if pause_options[selected_option as usize] == "Menu" {
+                            game_state = GameStates::Menu;
+                            animating = false;
+                            anim_frames = 0;
+                            selected_option = 0;
+                            stop_sound(BGM.sound);
+                        } 
+                        else if pause_options[selected_option as usize] == "Quit" {
+                            break;
+                        }
+                    }
+
                 },
-
-                _ => {}
             }
-
-            // Break the loop if the escape key is pressed
-
-            if is_key_pressed(KeyCode::Escape) {
-                break;
-            }
-            
-
-            
         }
         
         set_default_camera();
-        canvas.draw();
+
+        match game_state {
+            GameStates::Editor => {
+                canvas_editor.draw();
+            },
+            _ => canvas.draw(),
+        };
+        
 
         next_frame().await
     }
@@ -363,3 +486,49 @@ async fn main() {
 lazy_static! {
     static ref BGM: SoundLoader = SoundLoader::new(&format!("assets/sounds/bgm.wav"));
 }
+
+lazy_static! {
+    static ref PACK: String = {
+        let pack = "metal";
+        pack.to_owned()
+    };
+
+    static ref IMAGE_FIRE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/fire.png", *PACK));
+    static ref IMAGE_WALL_1: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/top.png", *PACK));
+    static ref IMAGE_WALL_2: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/bottom.png", *PACK));
+    static ref IMAGE_WALL_3: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/left.png", *PACK));
+    static ref IMAGE_WALL_4: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/right.png", *PACK));
+    static ref IMAGE_WALL_5: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/top-left.png", *PACK));
+    static ref IMAGE_WALL_6: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/top-right.png", *PACK));
+    static ref IMAGE_WALL_7: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/bottom-left.png", *PACK));
+    static ref IMAGE_WALL_8: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/bottom-right.png", *PACK));
+    static ref IMAGE_WALL_9: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/center.png", *PACK));
+    static ref IMAGE_WALL_10: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/bottom/left.png", *PACK));
+    static ref IMAGE_WALL_11: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/bottom/center.png", *PACK));
+    static ref IMAGE_WALL_12: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/bottom/right.png", *PACK));
+    static ref IMAGE_WALL_13: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/top/top.png", *PACK));
+    static ref IMAGE_WALL_14: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/top/center.png", *PACK));
+    static ref IMAGE_WALL_15: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/top/bottom.png", *PACK));
+    static ref IMAGE_WALL_16: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/single.png", *PACK));
+    static ref IMAGE_WALL_17: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/top-left.png", *PACK));
+    static ref IMAGE_WALL_18: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/top-right.png", *PACK));
+    static ref IMAGE_WALL_19: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/bottom-left.png", *PACK));
+    static ref IMAGE_WALL_20: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/corner/bottom-right.png", *PACK));
+
+    static ref BOTTOM_DOOR_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/door/bottom.png", *PACK));
+    static ref TOP_DOOR_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/door/top.png", *PACK));
+
+    static ref BOTTOM_DOOR_YELLOW: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/yellow/door/bottom.png", *PACK));
+    static ref TOP_DOOR_YELLOW: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/yellow/door/top.png", *PACK));
+
+    static ref BOTTOM_DOOR_BLUE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/blue/door/bottom.png", *PACK));
+    static ref TOP_DOOR_BLUE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/blue/door/top.png", *PACK));
+
+    static ref KEY_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/key.png", *PACK));
+    static ref KEY_BLUE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/blue/key.png", *PACK));
+    static ref KEY_YELLOW: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/yellow/key.png", *PACK));
+
+    static ref BUTTON_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/button.png", *PACK));
+    static ref BUTTON_BLUE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/blue/button.png", *PACK));
+    static ref BUTTON_YELLOW: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/yellow/button.png", *PACK));
+    }

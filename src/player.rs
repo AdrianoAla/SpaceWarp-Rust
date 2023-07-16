@@ -1,6 +1,6 @@
 use macroquad::{prelude::*, audio::{play_sound, PlaySoundParams}};
 
-use crate::{utils::*, level::{get_level}};
+use crate::{utils::*, level::get_level};
 use lazy_static::lazy_static;
 
 #[derive(Clone, Copy)]
@@ -18,7 +18,7 @@ pub struct Player {
   jump_speed: i32,
   jump_height: i32,
 
-  flip: bool,
+  pub flip: bool,
 
   textures: [Texture2D; 132],
 }
@@ -76,7 +76,7 @@ impl Player {
 
       // Left and right movement
 
-      if is_key_down(KeyCode::Right) || is_key_down(KeyCode::D)
+      if (is_key_down(KeyCode::Right) || is_key_down(KeyCode::D))
          && get_collision(self.x+8, self.y+1) != 1
          && get_collision(self.x+8, self.y+7) != 1 
       {
@@ -84,7 +84,7 @@ impl Player {
         self.flip = false;
         self.moving = true;
       }
-      if is_key_down(KeyCode::Left) || is_key_down(KeyCode::A)
+      if (is_key_down(KeyCode::Left) || is_key_down(KeyCode::A))
          && get_collision(self.x, self.y+1) != 1
          && get_collision(self.x, self.y+7) != 1 
       {
@@ -112,7 +112,6 @@ impl Player {
       // Check for items
 
       if get_collision(self.x+8, self.y+1) == 3 || get_collision(self.x+8, self.y+7) == 3 || get_collision(self.x, self.y+1) == 3 || get_collision(self.x+7, self.y+1) == 3 {
-        println!("Got new item")
       }
 
       // Gravity

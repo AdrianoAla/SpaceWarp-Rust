@@ -19,7 +19,7 @@ pub struct Level {
 
 impl Level {
 
-  pub fn new(filename:&str) -> Level {load_from_file(filename)}
+  pub fn new(filename:&str) -> Level {load_from_file_prefix(filename)}
 
   pub fn draw(&mut self) {
     for tile in &mut self.tiles {
@@ -43,8 +43,6 @@ impl Level {
   
   pub fn next(&mut self, dir:i32, player: Player) -> bool  {
 
-    println!("Init Level Transition");
-
     self.original_state = Vec::new();
     for tile in self.tiles.iter() {
       self.original_state.push(tile.clone());
@@ -63,7 +61,6 @@ impl Level {
     
     let mut new_level: Option<Level> = None;
     for level in self.previous_levels.iter_mut() {
-      println!("{} || {}", level.current_file, format!("level_{new_file}.sw"));
       if level.current_file == format!("level_{new_file}.sw") {
         new_level = Some(level.clone());
         match dir {
@@ -87,7 +84,7 @@ impl Level {
 
     match new_level {
       None => {
-        new_level = Some(load_from_file(format!("level_{new_file}.sw").as_str()));
+        new_level = Some(load_from_file_prefix(format!("level_{new_file}.sw").as_str()));
         self.spawn_point = (new_level.clone().unwrap().spawn_point.0,new_level.clone().unwrap().spawn_point.1);
       }
       _ => {}
@@ -109,11 +106,25 @@ impl Level {
   pub fn get_spawn_location(&self) -> (i32, i32) {
     self.spawn_point
   }
+
+  pub fn unsafe_set_level_from_file(&mut self, filename:&str) {
+    let level: Level = load_from_file(format!("{filename}").as_str());
+    self.spawn_point = level.spawn_point;
+    self.current_file = String::from(filename);
+    self.next_levels = level.next_levels;
+    self.tiles = level.tiles;
+    self.original_state = level.original_state;
+  }
+}
+
+
+pub fn load_from_file_prefix(filename:&str) -> Level {
+  load_from_file(format!("levels/{filename}").as_str())
 }
 
 pub fn load_from_file(filename:&str) -> Level {
-  let file_name = filename;
-    let mut file = File::open(format!("levels/{file_name}")).unwrap();
+
+    let mut file = File::open(filename).unwrap();
     let mut contents = String::new(); 
     file.read_to_string(&mut contents).unwrap();
     
