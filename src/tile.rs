@@ -1,10 +1,10 @@
 use std::f32::consts::PI;
 
 use macroquad::prelude::*;
-use crate::utils::ImageLoader;
+use crate::utils::{ImageLoader, PACK};
 use lazy_static::lazy_static;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum ObjectColor {
   Red,
   Blue,
@@ -12,22 +12,17 @@ pub enum ObjectColor {
   None,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub struct Tile {
-  pub x: i32,
-  pub y: i32,
-  
-  pub vx: i32,
-  pub vy: i32,
 
+  pub ox: i32,
   pub oy: i32,
 
   pub width: i32,
   pub height: i32,
   
-  pub color: Color,
   pub tile_type: char,
-  textures: Vec<Texture2D>,
+  texture: Option<Texture2D>,
   pub collidable: bool,
   pub timer: i32,
   pub anim_timer: i32,
@@ -35,67 +30,68 @@ pub struct Tile {
   pub locked: bool,
 } impl Tile {
   
-  pub fn new(x: i32, y: i32, mut tile_type:char) -> Tile {
+  pub fn new(mut tile_type:char) -> Tile {
 
-    let color:Color = WHITE;
-    let mut textures = Vec::new();
+    let mut texture = None;
     
     match tile_type {
-      '⬆' => textures.push(IMAGE_WALL_1.get_texture()),
-      '⬇' => textures.push(IMAGE_WALL_2.get_texture()),
-      '⬅' => textures.push(IMAGE_WALL_3.get_texture()),
-      '➡' => textures.push(IMAGE_WALL_4.get_texture()),
-      '↖' => textures.push(IMAGE_WALL_5.get_texture()),
-      '↗' => textures.push(IMAGE_WALL_6.get_texture()),
-      '↙' => textures.push(IMAGE_WALL_7.get_texture()),
-      '↘' => textures.push(IMAGE_WALL_8.get_texture()),
-      '⏹' => textures.push(IMAGE_WALL_9.get_texture()),
-      '⏪' => textures.push(IMAGE_WALL_10.get_texture()),
-      '0' => textures.push(IMAGE_WALL_11.get_texture()),
-      '⏩' => textures.push(IMAGE_WALL_12.get_texture()),
-      '⏫' => textures.push(IMAGE_WALL_13.get_texture()),
-      '1' => textures.push(IMAGE_WALL_14.get_texture()),
-      '⏬' => textures.push(IMAGE_WALL_15.get_texture()),
-      '⏺' => textures.push(IMAGE_WALL_16.get_texture()),
-      '2' => textures.push(IMAGE_WALL_17.get_texture()),
-      '3' => textures.push(IMAGE_WALL_18.get_texture()),
-      '4' => textures.push(IMAGE_WALL_19.get_texture()),
-      '5' => textures.push(IMAGE_WALL_20.get_texture()),
-      '👈' | '👉' | '👇' | '👆' => textures.push(IMAGE_FIRE.get_texture()),
+      '⬆' => texture = Some(IMAGE_WALL_1.texture),
+      '⬇' => texture = Some(IMAGE_WALL_2.texture),
+      '⬅' => texture = Some(IMAGE_WALL_3.texture),
+      '➡' => texture = Some(IMAGE_WALL_4.texture),
+      '↖' => texture = Some(IMAGE_WALL_5.texture),
+      '↗' => texture = Some(IMAGE_WALL_6.texture),
+      '↙' => texture = Some(IMAGE_WALL_7.texture),
+      '↘' => texture = Some(IMAGE_WALL_8.texture),
+      '⏹' => texture = Some(IMAGE_WALL_9.texture),
+      '⏪' => texture = Some(IMAGE_WALL_10.texture),
+      '0' => texture = Some(IMAGE_WALL_11.texture),
+      '⏩' => texture = Some(IMAGE_WALL_12.texture),
+      '⏫' => texture = Some(IMAGE_WALL_13.texture),
+      '1' => texture = Some(IMAGE_WALL_14.texture),
+      '⏬' => texture = Some(IMAGE_WALL_15.texture),
+      '⏺' => texture = Some(IMAGE_WALL_16.texture),
+      '2' => texture = Some(IMAGE_WALL_17.texture),
+      '3' => texture = Some(IMAGE_WALL_18.texture),
+      '4' => texture = Some(IMAGE_WALL_19.texture),
+      '5' => texture = Some(IMAGE_WALL_20.texture),
+      '👈' | '👉' | '👇' | '👆' => texture = Some(IMAGE_FIRE.texture),
       
-      '🟥' => textures.push(BOTTOM_DOOR_RED.get_texture()),
-      '🟦' => textures.push(BOTTOM_DOOR_BLUE.get_texture()),
-      '🟨' => textures.push(BOTTOM_DOOR_YELLOW.get_texture()),
+      '🟥' => texture = Some(BOTTOM_DOOR_RED.texture),
+      '🟦' => texture = Some(BOTTOM_DOOR_BLUE.texture),
+      '🟨' => texture = Some(BOTTOM_DOOR_YELLOW.texture),
       
-      '❤' => textures.push(KEY_RED.get_texture()),
-      '💙' => textures.push(KEY_BLUE.get_texture()),
-      '💛' => textures.push(KEY_YELLOW.get_texture()),
+      '❤' => texture = Some(KEY_RED.texture),
+      '💙' => texture = Some(KEY_BLUE.texture),
+      '💛' => texture = Some(KEY_YELLOW.texture),
 
-      '🔴' => textures.push(BUTTON_RED.get_texture()),
-      '🔵' => textures.push(BUTTON_BLUE.get_texture()),
-      '🟡' => textures.push(BUTTON_YELLOW.get_texture()),
+      '🔴' => texture = Some(BUTTON_RED.texture),
+      '🔵' => texture = Some(BUTTON_BLUE.texture),
+      '🟡' => texture = Some(BUTTON_YELLOW.texture),
       
-      '🚀' => textures.push(BUTTON_YELLOW.get_texture()),
+      '🚀' => texture = Some(BUTTON_YELLOW.texture),
       
       _ => tile_type = '⬜',
     }
 
     Tile {
-      x,
-      y,
-      oy: y,
+      ox: 0,
+      oy: 0,
+      
       width: 8,
       height: 8,
-      color,
+      
       tile_type,
-      textures,
+      
+      texture,
+      
       collidable: true,
+      
       timer: 0,
       anim_timer:0 ,
+      
       visible: true,
       locked: false,
-      vx: 0,
-      vy: 0,
     }
   }
 
@@ -147,13 +143,17 @@ pub struct Tile {
     ObjectColor::None
   }
 
-  pub fn is_door(&self, color: ObjectColor) -> bool {
-    match color {
-      ObjectColor::Red => self.tile_type == '🟥',
-      ObjectColor::Blue => self.tile_type == '🟦',
-      ObjectColor::Yellow => self.tile_type == '🟨',
-      ObjectColor::None => self.tile_type == '🟥' || self.tile_type == '🟦' || self.tile_type == '🟨'
+  pub fn is_door(&self) -> ObjectColor {
+    if self.tile_type == '🟥' {
+      return ObjectColor::Red;
     }
+    else if self.tile_type == '🟦' {
+      return ObjectColor::Blue;
+    }
+    else if self.tile_type == '🟨' {
+      return ObjectColor::Yellow;
+    }
+    ObjectColor::None
   }
 
   pub fn update(&mut self, frame: u64) {
@@ -162,105 +162,79 @@ pub struct Tile {
       ObjectColor::None => {}
       _ => {
         if frame % 12 == 0 {
-          self.vy += 1;
-          self.vy %= 2;
+          self.oy += 1;
+          self.oy %= 2;
         }
       }
     }
 
     if self.timer > 0 {
       self.timer -= 1;
-      //println!("{}, {}", self.tile_type, self.timer);
       
       if self.timer == 0 {
-        //println!("timer over");
         self.collidable = true;
         self.visible = true;
-        if self.is_door(ObjectColor::None) {
-          self.anim_timer = 8;
+        match self.is_door() {
+          ObjectColor::None => {},
+          _ => {self.anim_timer = 8;}
+        }
+
+        match self.is_button() {
+          ObjectColor::None => {},
+          _ => {self.anim_timer = 8;}
         }
       }
     
     }
 
     if self.anim_timer > 0 {
-      if self.anim_timer == 8 {
-        if !self.collidable {
-          self.y = self.oy;
-        } else {
-          self.y = self.oy + 8;
-        }
-      }
+      
       self.anim_timer -= 1;
+      
       if self.collidable {
-        self.y -= 1;
+        self.oy -= 1;
       } else {
-        self.y += 1;
+        self.oy += 1;
         if self.anim_timer == 0 {
           self.visible = false;
         }
       }
+    
     }
   }
 
-  pub fn draw(&mut self) {
+  pub fn draw(&mut self, x: i32, y: i32) {
+
+    let x = x * 8;
+    let y = y * 8;
     
     if !self.visible {return;}
 
-    match self.is_button() {
-      ObjectColor::None => {},
-      _ => {if !self.collidable {return;}}
-    }
-
     if self.is_object() {
-      if self.is_door(ObjectColor::Red) {
-        if !self.collidable {
-          draw_texture_ex(TOP_DOOR_RED.get_texture(), self.x as f32, (self.y - (8-self.anim_timer)*2) as f32 - 8.0, self.color, DrawTextureParams::default());
-        }
-        else if self.anim_timer != 0 {
-          draw_texture_ex(TOP_DOOR_RED.get_texture(), self.x as f32, (self.y - (self.anim_timer)*2) as f32 - 8.0, self.color, DrawTextureParams::default());
-        }
-        else {
-          draw_texture_ex(TOP_DOOR_RED.get_texture(), self.x as f32, (self.y) as f32 - 8.0, self.color, DrawTextureParams::default());
-        }
+      
+      match self.is_door() {
+        ObjectColor::Red => {
+          draw_texture_ex(TOP_DOOR_RED.texture, x as f32, (y - self.oy) as f32 - 8.0, WHITE, DrawTextureParams::default());
+        },
+        ObjectColor::Blue => {
+            draw_texture_ex(TOP_DOOR_BLUE.texture, x as f32, (y - self.oy) as f32 - 8.0, WHITE, DrawTextureParams::default());
+        },
+        ObjectColor::Yellow => {
+          draw_texture_ex(TOP_DOOR_YELLOW.texture, x as f32, (y - self.oy) as f32 - 8.0, WHITE, DrawTextureParams::default());
+        },
+        ObjectColor::None => {},
       }
-      if self.is_door(ObjectColor::Blue) {
-        if !self.collidable {
-          draw_texture_ex(TOP_DOOR_BLUE.get_texture(), self.x as f32, (self.y - (8-self.anim_timer)*2) as f32 - 8.0, self.color, DrawTextureParams::default());
-        }
-        else if self.anim_timer != 0 {
-          draw_texture_ex(TOP_DOOR_BLUE.get_texture(), self.x as f32, (self.y - (self.anim_timer)*2) as f32 - 8.0, self.color, DrawTextureParams::default());
-        }
-        else {
-          draw_texture_ex(TOP_DOOR_BLUE.get_texture(), self.x as f32, (self.y) as f32 - 8.0, self.color, DrawTextureParams::default());
-        }
-      }
-      if self.is_door(ObjectColor::Yellow) {
-        if !self.collidable {
-          draw_texture_ex(TOP_DOOR_YELLOW.get_texture(), self.x as f32, (self.y - (8-self.anim_timer)*2) as f32 - 8.0, self.color, DrawTextureParams::default());
-        }
-        else if self.anim_timer != 0 {
-          draw_texture_ex(TOP_DOOR_YELLOW.get_texture(), self.x as f32, (self.y - (self.anim_timer)*2) as f32 - 8.0, self.color, DrawTextureParams::default());
-        }
-        else {
-          draw_texture_ex(TOP_DOOR_YELLOW.get_texture(), self.x as f32, (self.y) as f32 - 8.0, self.color, DrawTextureParams::default());
-        }
-      }
+      
       let params:DrawTextureParams = DrawTextureParams {  rotation: self.get_fire_rotation(), ..Default::default() };
-      draw_texture_ex(*self.textures.get(0).unwrap(), self.x as f32, (self.y + self.vy) as f32, self.color, params);
-    } else {
-      draw_rectangle(self.x as f32, self.y as f32, self.width as f32, self.height as f32, self.color);
+      
+      draw_texture_ex(self.texture.expect("msg"), x as f32, (y + self.oy) as f32, WHITE, params);
+
     }
   }
 
 }
 
 lazy_static! {
-  static ref PACK: String = {
-    let pack = "metal";
-    pack.to_owned()
-  };
-
   static ref IMAGE_FIRE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/fire.png", *PACK));
   static ref IMAGE_WALL_1: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/top.png", *PACK));
   static ref IMAGE_WALL_2: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/bottom.png", *PACK));

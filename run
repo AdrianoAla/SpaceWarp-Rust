@@ -1,4 +1,4 @@
 #! /bin/bash
-
+export RUSTFLAGS="$RUSTFLAGS -A dead_code"
 cargo build --release
 ./target/release/space_warp-rust

@@ -10,10 +10,10 @@ use lazy_static::lazy_static;
  #[derive(Clone)]
 pub struct Level {
   pub current_file: String,
-  pub tiles: Vec<Tile>,
+  pub tiles: [[Tile; 16]; 16],
   pub next_levels: Vec<String>,
   pub spawn_point: (i32, i32),
-  pub original_state: Vec<Tile>,
+  pub original_state: [[Tile; 16]; 16],
   pub previous_levels: Vec<Level>,
 } 
 
@@ -22,30 +22,44 @@ impl Level {
   pub fn new(filename:&str) -> Level {load_from_file_prefix(filename)}
 
   pub fn draw(&mut self) {
-    for tile in &mut self.tiles {
-      if tile.is_door(ObjectColor::None) {
-        tile.draw();
+    for (y, row) in self.tiles.iter_mut().enumerate() {
+      for (x, tile) in row.iter_mut().enumerate() {
+        match tile.is_door() {
+          
+          // render all the doors first.
+
+          ObjectColor::None => {},
+            _ => {tile.draw(x as i32, y as i32);}
+        }
       }
     }
 
-    for tile in &mut self.tiles {
-      if !tile.is_door(ObjectColor::None) {
-        tile.draw();
+      for (y, row) in self.tiles.iter_mut().enumerate() {
+        for (x, tile) in row.iter_mut().enumerate() {
+          match tile.is_door() {
+            ObjectColor::None => {tile.draw(x as i32, y as i32);}
+            _ => {},
+          }
+        }
       }
-    }
   }
 
   pub fn update(&mut self, frame: u64) {
-    for tile in self.tiles.iter_mut() {
-      tile.update(frame);
+    for  row in self.tiles.iter_mut() {
+      for tile in row.iter_mut() {
+        tile.update(frame);
+      }
     }
   }
   
   pub fn next(&mut self, dir:i32, player: Player) -> bool  {
 
-    self.original_state = Vec::new();
-    for tile in self.tiles.iter() {
-      self.original_state.push(tile.clone());
+    self.original_state = [[Tile::new('⬜'); 16]; 16];
+
+    for (y, row) in self.tiles.iter().enumerate() {
+      for (x, tile) in row.iter().enumerate() {
+        self.original_state[y][x] = tile.clone();
+      }
     }
 
     let mut add = true;
@@ -93,7 +107,6 @@ impl Level {
     let new_level = new_level.unwrap();
     
     
-    
     self.current_file = format!("level_{new_file}.sw");
     self.next_levels = new_level.next_levels;
     self.tiles = new_level.tiles;
@@ -101,6 +114,7 @@ impl Level {
 
     return true;
     
+
   }
 
   pub fn get_spawn_location(&self) -> (i32, i32) {
@@ -141,14 +155,14 @@ pub fn load_from_file(filename:&str) -> Level {
     
     // create new tile for each character in each line
 
-    let mut tiles:Vec<Tile> = Vec::new();
-    let mut original_state: Vec<Tile> = Vec::new();
+    let mut tiles = [[Tile::new('⬜'); 16]; 16];
+    let mut original_state = [[Tile::new('⬜'); 16]; 16];
 
-    for (y, line) in lines.iter().enumerate() {
+    for (y, line) in lines.iter().enumerate().take(16) {
       for (x, c) in line.chars().enumerate() {
         if c != '⬜' {
-          tiles.push(Tile::new((x * 8) as i32, (y * 8) as i32, c));
-          original_state.push(Tile::new((x * 8) as i32, (y * 8) as i32, c));
+          tiles[y][x] = Tile::new(c);
+          original_state[y][x] = Tile::new(c);
         }
       }
     }

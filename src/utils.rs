@@ -1,11 +1,21 @@
-use macroquad::audio::*;
-use crate::player::Player;
+use macroquad::{audio::*};
+
+use crate::{player::Player, tile::*};
+
 use macroquad::prelude::*;
 use macroquad_text::Fonts;
+
 use crate::level::get_level;
 use lazy_static::lazy_static;
 
-use crate::tile::ObjectColor;
+use ini::Ini;
+
+pub enum CollisionState {
+  Solid,
+  Kill,
+  Interactable,
+  None
+}
 
 const FONT_SIZE: u16 = 8;
 
@@ -13,87 +23,103 @@ pub fn screen_size() -> i32 {
   return 128;
 }  
 
-pub fn _colliding(x1:i32, y1:i32, w1:i32, h1:i32, x2:i32, y2:i32, w2:i32, h2:i32) -> bool {
-    if x1 < x2 + w2 &&
-       x1 + w1 > x2 &&
-       y1 < y2 + h2 &&
-       y1 + h1 > y2 {
-        return true;
-    }
-    return false;
-}
-
-pub fn get_collision(x:i32, y:i32) -> i32 {
+pub fn get_collision(x:i32, y:i32) -> CollisionState {
+  
   let mut level = get_level().lock().unwrap();
-  for (index, tile) in level.tiles.iter_mut().enumerate() {
-    if tile.collidable == false { continue; }
 
-    let button = tile.is_button();
+  let tile_x = (x / 8) as usize;
+  let tile_y = (y / 8) as usize;
 
-    match button {
+  if tile_x == 16 || tile_y == 16 {return CollisionState::None};
+
+  if !level.tiles[tile_y][tile_x].collidable { return CollisionState::None };
+
+  let safe_door_y = tile_y + 1;
+
+  if level.tiles[tile_y][tile_x].is_object() {
+    if level.tiles[tile_y][tile_x].is_fire() {
+      return CollisionState::Kill;
+    }
+
+    match level.tiles[tile_y][tile_x].is_key() {
       ObjectColor::None => {},
-      _ => {
-        if x >= tile.x && x <= tile.x + tile.width && y >= tile.y && y <= tile.y + tile.height - 1 && tile.collidable {
+      key_color => {
 
-          tile.visible = false;
-          tile.collidable = false;
-          tile.timer = 158;
+        level.tiles[tile_y][tile_x] = Tile::new('⬜');
 
-          for t in level.tiles.iter_mut() {
-            if t.is_door(button) && !t.locked {
+        play_sound(KEY_SOUND.sound, PlaySoundParams {looped:false, volume:0.5});
 
-              t.collidable = false;
-              t.timer = 150;
-              
-              t.anim_timer = 8;
-              
-              
+        for row in level.tiles.iter_mut() {
+          for tile in row.iter_mut() {
+            
+            match tile.is_door() {
+              ObjectColor::None => {},
+              door_color => {
+                if door_color == key_color {
+                  tile.collidable = false;
+                  tile.timer = -1;
+                  tile.anim_timer = 8;
+                  tile.oy = 0;
+                  tile.locked = true;
+                }
+              },
             }
+            
           }
-
-          play_sound(BUTTON_SOUND.get_sound(), PlaySoundParams {looped:false, volume:0.5});
-
-          return 4;
-
         }
+
+        return CollisionState::Interactable;
       }
     }
 
-    if x >= tile.x && x <= tile.x + tile.width && y >= tile.y && y <= tile.y + tile.height {
-      if tile.is_fire() {
-        if x >= tile.x+1 && x <= tile.x - 2 + tile.width && y >= tile.y+2 && y <= tile.y + tile.height-4 {return 2;}
-        return -1;
-      } else {
-        let key = tile.is_key();
-        match key {
-          ObjectColor::None => {},
-          _ => {
-            
-            // is a key
+    match level.tiles[tile_y][tile_x].is_button() {
+      ObjectColor::None => {},
+      button_color => {
 
-            level.tiles.remove(index);
+        level.tiles[tile_y][tile_x].collidable = false;
+        level.tiles[tile_y][tile_x].anim_timer = 8;
+        level.tiles[tile_y][tile_x].oy = 0;
+        level.tiles[tile_y][tile_x].timer = 150;
+
+        play_sound(BUTTON_SOUND.sound, PlaySoundParams {looped:false, volume:0.5});
+
+        for row in level.tiles.iter_mut() {
+          for tile in row.iter_mut() {
             
-            for t in level.tiles.iter_mut() {
-              if t.is_door(key) {
-                t.collidable = false;
-                t.timer = -1;
-                t.anim_timer = 8;
-                t.locked = true;
-              }
+            match tile.is_door() {
+              ObjectColor::None => {},
+              door_color => {
+                if door_color == button_color && !tile.locked {
+                  tile.collidable = false;
+                  tile.timer = 150;
+                  tile.anim_timer = 8;
+                  tile.oy = 0;
+                }
+              },
             }
-
-            play_sound(KEY_SOUND.get_sound(), PlaySoundParams {looped:false, volume:0.5});
-            return 3;
+            
           }
         }
-        return 1;
+
+        return CollisionState::Interactable;
       }
     }
-    if tile.is_door(ObjectColor::None) && x >= tile.x && x <= tile.x + tile.width && y >= tile.y - 8 && y <= tile.y - 8 + tile.height {
-      return 1;
+
+    return CollisionState::Solid;
+  }
+
+  if safe_door_y < 16 {
+    match level.tiles[safe_door_y][tile_x].is_door() {
+      ObjectColor::None => {},
+      _ => { 
+        if level.tiles[safe_door_y][tile_x].collidable {
+          return CollisionState::Solid; 
+        }
+      }
     }
   }
-  return -1;
+
+  return CollisionState::None;
 }
 
 pub fn draw_debug_text(fonts:&Fonts, target_fps:&u32, player:&Player) {
@@ -113,10 +139,6 @@ impl SoundLoader {
       sound,
     }
   }
-
-  pub fn get_sound(&self) -> Sound {
-    self.sound
-  }
 }
 
 pub struct ImageLoader {
@@ -130,13 +152,25 @@ impl ImageLoader {
       texture,
     }
   }
-
-  pub fn get_texture(&self) -> Texture2D {
-    self.texture
-  }
 }
 
 lazy_static! {
   static ref KEY_SOUND:SoundLoader = SoundLoader::new("assets/sounds/item.wav");
   static ref BUTTON_SOUND:SoundLoader = SoundLoader::new("assets/sounds/button.wav");
+
+  pub static ref PACK: String = String::from(Ini::load_from_file("config.ini").unwrap().section(Some("Pack")).unwrap().get("name").unwrap());
+}
+
+pub fn is_kill(col: CollisionState) -> bool {
+  match col {
+    CollisionState::Kill => true,
+    _ => false
+  }
+}
+
+pub fn is_solid(col: CollisionState) -> bool {
+  match col {
+    CollisionState::Solid => true,
+    _ => false
+  }
 }

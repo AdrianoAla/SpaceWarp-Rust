@@ -1,6 +1,7 @@
 use macroquad::{prelude::*, audio::{play_sound, PlaySoundParams}};
 
 use crate::{utils::*, level::get_level};
+use crate::tile::Tile;
 use lazy_static::lazy_static;
 
 #[derive(Clone, Copy)]
@@ -14,6 +15,8 @@ pub struct Player {
   moving: bool,
   
   gravity: i32,
+  pub gravity_multiplier: i32,
+
   pub jump: i32,
   jump_speed: i32,
   jump_height: i32,
@@ -34,6 +37,7 @@ impl Player {
     Player {
       x: spawn_point.0*8,
       y: spawn_point.1*8,
+      
       width:8,
       height:8,
       
@@ -41,6 +45,8 @@ impl Player {
       moving: false,
       
       gravity: 2,
+      gravity_multiplier: 1,
+
       jump: 0,
       jump_height: 12,
       jump_speed: 2,
@@ -56,6 +62,7 @@ impl Player {
     
     let mut params:DrawTextureParams = Default::default();
     params.flip_x = self.flip;
+    params.flip_y = self.gravity_multiplier < 0;
     
     let mut texture:Texture2D = *self.textures.clone().get((frame/2%44) as usize).unwrap();
     
@@ -77,16 +84,16 @@ impl Player {
       // Left and right movement
 
       if (is_key_down(KeyCode::Right) || is_key_down(KeyCode::D))
-         && get_collision(self.x+8, self.y+1) != 1
-         && get_collision(self.x+8, self.y+7) != 1 
+         && !is_solid(get_collision(self.x+8, self.y+1))
+         && !is_solid(get_collision(self.x+8, self.y+7))
       {
         self.x += self.speed;
         self.flip = false;
         self.moving = true;
       }
       if (is_key_down(KeyCode::Left) || is_key_down(KeyCode::A))
-         && get_collision(self.x, self.y+1) != 1
-         && get_collision(self.x, self.y+7) != 1 
+         && !is_solid(get_collision(self.x, self.y+1))
+         && !is_solid(get_collision(self.x, self.y+7))
       {
         self.x -= self.speed;
         self.flip = true;
@@ -96,61 +103,63 @@ impl Player {
       // Jumping
 
       if (is_key_down(KeyCode::Up) || is_key_down(KeyCode::Space) || is_key_down(KeyCode::W))
-      && (get_collision(self.x+1, self.y+self.height) == 1 || get_collision(self.x+7, self.y+self.height) == 1 || (self.y + self.height/2) >= screen_size())
-      && !(get_collision(self.x+1, self.y-1) == 1 || get_collision(self.x+7, self.y-1) == 1)
+      && (is_solid(get_collision(self.x+1, self.y+self.height)) || is_solid(get_collision(self.x+7, self.y+self.height)) || (self.y + self.height/2) >= screen_size())
+      && !(is_solid(get_collision(self.x+1, self.y-1)) || is_solid(get_collision(self.x+7, self.y-1)))
       {
         self.jump = self.jump_height;
-        play_sound(SOUND_JUMP.get_sound(), PlaySoundParams {looped: false, volume: 0.15})
+        play_sound(SOUND_JUMP.sound, PlaySoundParams {looped: false, volume: 0.15})
       }
 
-      if get_collision(self.x+1, self.y-1) == 1 || get_collision(self.x+7, self.y-1) == 1
+      if is_solid(get_collision(self.x+1, self.y-1))
+      || is_solid(get_collision(self.x+7, self.y-1))
       {
-
         // Hit head on ceiling
-
         self.jump = 0;
-      }
-
-      // Check for items
-
-      if get_collision(self.x+8, self.y+1) == 3 || get_collision(self.x+8, self.y+7) == 3 || get_collision(self.x, self.y+1) == 3 || get_collision(self.x+7, self.y+1) == 3 {
       }
 
       // Gravity
 
       for _ in 0..self.gravity {
-        if self.jump == 0 && get_collision(self.x+1, self.y+self.height) != 1 && get_collision(self.x+7, self.y+self.height) != 1
+        
+        if self.jump == 0 && 
+           !is_solid(get_collision(self.x+1, self.y+self.height)) &&
+           !is_solid(get_collision(self.x+7, self.y+self.height))
+        
         {
-          self.y += 1;
+          self.y += 1 * self.gravity_multiplier;
         }
+      
       }
 
       // Jumping movement
 
       if self.jump > 0 {
         self.y -= self.jump_speed;
-        self.jump -= 1;
+        self.jump -= 1  * self.gravity_multiplier;
       }
       
       
       // Check if touching fire
       
-      if get_collision(self.x+1, self.y+1) == 2 ||
-      get_collision(self.x+7, self.y+1) == 2 ||
-      get_collision(self.x+1, self.y+7) == 2 ||
-      get_collision(self.x+7, self.y+7) == 2 {
+      if is_kill(get_collision(self.x+1, self.y+1)) ||
+         is_kill(get_collision(self.x+7, self.y+1)) ||
+         is_kill(get_collision(self.x+1, self.y+7)) ||
+         is_kill(get_collision(self.x+7, self.y+7)) {
         
         let mut level = get_level().lock().unwrap();
         let spawn_point = level.get_spawn_location();
         let original_state = level.original_state.clone();
         
-        level.tiles = Vec::new();
-        for tile in original_state.iter() {
-          let owned = tile.clone();
-          level.tiles.push(owned);
+        let mut tiles = [[Tile::new('⬜'); 16]; 16];
+        for (y, row) in original_state.iter().enumerate() {
+          for (x, tile) in row.iter().enumerate() {
+            let owned = tile.clone();
+            tiles[y][x] = owned;
+          }
         }
+        level.tiles = tiles;
         
-        play_sound(DIE_SOUND.get_sound(), PlaySoundParams { looped: false, volume: 1.5 });
+        play_sound(DIE_SOUND.sound, PlaySoundParams { looped: false, volume: 1.5 });
 
         self.x = spawn_point.0*8;
         self.y = spawn_point.1*8;

@@ -11,6 +11,7 @@ lazy_static = "1.4.0"
 macroquad = "0.3.25"
 macroquad-text = "0.1.1"
 tokio = { version = "1.28.2", features = ["full"] }
+rust-ini = "0.19"
 
 [[bin]]
 name = "space_warp-rust"

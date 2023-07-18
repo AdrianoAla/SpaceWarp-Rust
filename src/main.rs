@@ -1,7 +1,6 @@
 use macroquad::{prelude::*, audio::{play_sound, PlaySoundParams, stop_sound}};
 use macroquad_text::*;
 
-
 use std::fs::File;
 use std::io::prelude::*;
 
@@ -15,6 +14,7 @@ mod utils;
 use utils::*;
 
 mod tile;
+use tile::Tile;
 
 mod level;
 use level::*;
@@ -27,16 +27,16 @@ use lazy_static::lazy_static;
 const FONT: &[u8] = include_bytes!("../assets/font.ttf");
 
 #[derive(Clone, Copy)]
-enum Tile {
+pub enum TileState {
     Void,
     Tile,
 }
 
-// #[derive(Clone, Copy)]
-// enum SettingsState {
-//     Pause,
-//     Menu,
-// }
+#[derive(Clone, Copy)]
+enum SettingsState {
+    Pause,
+    Menu,
+}
 
 #[derive(Clone, Copy)]
 enum PlayState {
@@ -47,8 +47,8 @@ enum PlayState {
 enum GameStates {
     Menu,
     Game(PlayState),
-    Win,
     Pause(PlayState),
+    Settings(SettingsState),
     Editor,
 }
 
@@ -87,6 +87,9 @@ async fn main() {
 
     let mut player:Player = Player::new();
 
+    // let mut player2:Player = Player::new();
+    // player2.x = 16;
+
 
     // Clock variables
     
@@ -109,7 +112,7 @@ async fn main() {
 
     let mut selected_option: i32 = 0;
 
-    let mut editor_level = [[Tile::Void; 16]; 16];
+    let mut editor_level = [[TileState::Void; 16]; 16];
     let mut spawn_x = 0;
     let mut spawn_y = 0;
     let pause_options = vec!["Back", "Settings", "Menu", "Quit"];
@@ -161,6 +164,10 @@ async fn main() {
                             player = Player::new();
                         }
                         MenuEvents::GoToEditor => {
+                            let (lvl, a, b) = load_editor_saved();
+                            editor_level = lvl;
+                            spawn_x = a;
+                            spawn_y = b;
                             game_state = GameStates::Editor;
                         }
                         MenuEvents::GoToSettings => {}
@@ -171,6 +178,10 @@ async fn main() {
                     menu.render(&mut fonts);
                 
                 },
+
+                GameStates::Settings(_) => {
+
+                }
 
                 GameStates::Game(state) => {
                     
@@ -183,6 +194,7 @@ async fn main() {
                             // update the player
 
                             player.update();
+                            //player2.update();
 
                             level.lock().unwrap().update(frame);
 
@@ -203,6 +215,7 @@ async fn main() {
                     // Draw the player
                     
                     player.draw(frame);
+                    //player2.draw(frame);
 
 
                     if is_key_pressed(KeyCode::R) {
@@ -210,17 +223,26 @@ async fn main() {
                         let spawn_point = level.get_spawn_location();
                         let original_state = level.original_state.clone();
                         
-                        level.tiles = Vec::new();
-                        for tile in original_state.iter() {
-                        let owned = tile.clone();
-                        level.tiles.push(owned);
+                        let mut tiles = [[Tile::new('⬜'); 16]; 16];
+                        for (y, row) in original_state.iter().enumerate() {
+                            for (x, t) in row.iter().enumerate() {
+                                let owned = t.clone();
+                                tiles[y][x] = owned;
+                            }
                         }
+
+                        level.tiles = tiles;
+                        
 
                         player.x = spawn_point.0*8;
                         player.y = spawn_point.1*8;
                         player.jump = 0;
                     }
 
+
+                    if is_key_pressed(KeyCode::Z) {
+                        player.gravity_multiplier *= -1;
+                    }
 
                     // Debug text
 
@@ -280,7 +302,7 @@ async fn main() {
                 GameStates::Editor => {
                     
                     while accumulator >= 1.0 / target_fps as f32 {accumulator -= 1.0 / target_fps as f32;}
-                    
+
                     clear_background(WHITE);
 
                     draw_texture(background_texture, 0.0, 0.0, WHITE);
@@ -295,19 +317,20 @@ async fn main() {
                     let gx = mouse_x - mouse_x % 8;
                     let gy = mouse_y - mouse_y % 8;
 
-                    let mut x = gx as usize/8;
-                    let mut y = gy as usize/8;
+                    let x: i32 = gx as i32/8;
+                    let y: i32 = gy as i32/8;
                     
-                    if x > 15 {x = 15};
-                    if y > 15 {y = 15};
-
-                    if is_mouse_button_down(MouseButton::Left) {
-                        editor_level[y][x] = Tile::Tile;
-                    } else if is_mouse_button_down(MouseButton::Right) {
-                        editor_level[y][x] = Tile::Void;
-                    } else if is_mouse_button_down(MouseButton::Middle) {
-                        spawn_x = x;
-                        spawn_y = y;
+                    let can_draw = !(x > 15 || y > 15);
+                    
+                    if can_draw {
+                        if is_mouse_button_down(MouseButton::Left) {
+                            editor_level[y as usize][x as usize] = TileState::Tile;
+                        } else if is_mouse_button_down(MouseButton::Right) {
+                            editor_level[y as usize][x as usize] = TileState::Void;
+                        } else if is_mouse_button_down(MouseButton::Middle) {
+                            spawn_x = x;
+                            spawn_y = y;
+                        }
                     }
 
                     // Draw the tiles
@@ -315,18 +338,20 @@ async fn main() {
                     for (index, row) in editor_level.iter().enumerate() {
                         for (index_2, item) in row.iter().enumerate() {
                             match *item {
-                                Tile::Void => {},
-                                Tile::Tile => {
+                                TileState::Void => {},
+                                TileState::Tile => {
                                     draw_texture(IMAGE_WALL_9.texture, index_2 as f32 * 8.0, index as f32 * 8.0, WHITE);
                                 },
                             }
-                            if index == spawn_y && index_2 == spawn_x {
+                            if index == spawn_y as usize && index_2 == spawn_x as usize {
                                 draw_rectangle(index_2 as f32 * 8.0, index as f32 * 8.0, 8.0, 8.0, RED);
                             }
                         }
                     }
 
-                    draw_rectangle(gx as f32, gy as f32, 8.0, 8.0, BLACK);
+                    if can_draw {
+                        draw_rectangle(gx as f32, gy as f32, 8.0, 8.0, Color::from_rgba(255, 255, 255, 150));
+                    }
 
                     // Exit
 
@@ -343,10 +368,10 @@ async fn main() {
                         for row in editor_level.iter() {
                             for item in row.iter() {
                                 match *item {
-                                    Tile::Void => {
+                                    TileState::Void => {
                                         string.push_str("⬜️");
                                     },
-                                    Tile::Tile => {
+                                    TileState::Tile => {
                                         string.push_str("⏹️");
                                     },
                                 }
@@ -366,10 +391,6 @@ async fn main() {
 
                     }
 
-                },
-
-                GameStates::Win => {
-                    // Todo: Win state
                 },
 
                 GameStates::Pause(state) => {
@@ -444,13 +465,6 @@ async fn main() {
 
 lazy_static! {
     static ref BGM: SoundLoader = SoundLoader::new(&format!("assets/sounds/bgm.wav"));
-}
-
-lazy_static! {
-    static ref PACK: String = {
-        let pack = "metal";
-        pack.to_owned()
-    };
 
     static ref IMAGE_FIRE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/fire.png", *PACK));
     static ref IMAGE_WALL_1: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/tiles/square/top.png", *PACK));
@@ -490,4 +504,45 @@ lazy_static! {
     static ref BUTTON_RED: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/red/button.png", *PACK));
     static ref BUTTON_BLUE: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/blue/button.png", *PACK));
     static ref BUTTON_YELLOW: ImageLoader = ImageLoader::new(&format!("assets/packs/{}/objects/yellow/button.png", *PACK));
-    }
+}
+
+pub fn load_editor_saved() -> ([[TileState; 16]; 16], i32, i32) {
+    let file = File::open("out.sw");
+    return match file {
+        Ok(mut f) => {
+            let mut l = [[TileState::Void; 16]; 16];
+            let mut contents = String::new(); 
+            f.read_to_string(&mut contents).unwrap();
+
+                // filter out \u{fe0f} and \u{20e3} (aka: extra emoji characters)
+
+            let filtered_input: String = contents
+            .chars()
+            .filter(|&c| c != '\u{fe0f}' && c != '\u{20e3}')
+            .collect();
+
+            // separate into vec by newline
+
+            let lines: Vec<&str> = filtered_input.lines().collect();
+
+            for (y, line) in lines.iter().enumerate() {
+                for (x, c) in line.chars().enumerate() {
+                    if c == '⏹' {
+                        l[y][x] = TileState::Tile;
+                    } else if c == '⬜' {
+                        l[y][x] = TileState::Void;
+                    }
+                }
+            }
+
+            let x: i32 = lines.iter().skip(20).take(1).next().expect("err reading x").parse().expect("msg");
+            let y: i32 = lines.iter().skip(21).take(1).next().expect("err reading y").parse().expect("msg");
+                
+            
+
+            (l, x, y)
+            
+        }
+        Err(_) => ([[TileState::Void; 16]; 16], 0, 0)
+    };    
+}
